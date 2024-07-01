@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "RozetkaPay Demo"
-include(":app")
- 
+include(":demo")
+include(":sdk")
