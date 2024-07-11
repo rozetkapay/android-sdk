@@ -12,13 +12,15 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SimpleToolbar(
     title: String,
+    subtitle: String? = null,
     onBack: () -> Unit
 ) {
     TopAppBar(
         title = {
             ToolbarTitle(
                 modifier = Modifier.padding(end = 48.dp),
-                title = title
+                title = title,
+                subtitle = subtitle
             )
         },
         navigationIcon = {

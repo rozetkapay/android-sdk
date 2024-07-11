@@ -24,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".presentation.menu.ComposableMenuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RozetkaPayDemo" />
+        <activity
+            android:name=".presentation.menu.ClassicMenuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RozetkaPayDemo" />
+        <activity
+            android:name="com.rozetkapay.demo.presentation.tokenization.TokenizationSheetActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RozetkaPayDemo" />
     </application>
 
 </manifest>

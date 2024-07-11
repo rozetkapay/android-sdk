@@ -27,20 +27,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rozetkapay.demo.presentation.Route
 import com.rozetkapay.demo.presentation.components.ToolbarTitle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
+    title: String = "Rozetka Pay Demo",
+    subtitle: String? = null,
     onNavigationEvent: (Route) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    ToolbarTitle(title = "Rozetka Pay Demo")
+                    Column {
+                        ToolbarTitle(
+                            title = title,
+                            subtitle = subtitle
+                        )
+                    }
                 }
             )
         },
@@ -57,12 +63,13 @@ fun MenuScreen(
             InfoCard()
             Spacer(modifier = Modifier.height(16.dp))
             MenuButton(
-                text = "Tokenization - Build In",
-                onClick = { onNavigationEvent(Route.TokenizationBuildIn) }
+                text = "Tokenization - Sheet",
+                onClick = { onNavigationEvent(Route.TokenizationSeparate) }
             )
             MenuButton(
-                text = "Tokenization - Separate",
-                onClick = { onNavigationEvent(Route.TokenizationSeparate) }
+                text = "Tokenization - Build In",
+                enabled = false,
+                onClick = { onNavigationEvent(Route.TokenizationBuildIn) }
             )
         }
     }
@@ -106,11 +113,13 @@ private fun InfoCard() {
 @Composable
 private fun MenuButton(
     text: String,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
         modifier = Modifier.width(280.dp),
-        onClick = onClick
+        onClick = onClick,
+        enabled = enabled
     ) {
         Text(text = text)
     }
@@ -121,6 +130,7 @@ private fun MenuButton(
 private fun MenuScreenPreview() {
     RozetkaPayDemoTheme {
         MenuScreen(
-            onNavigationEvent = {})
+            onNavigationEvent = {}
+        )
     }
 }

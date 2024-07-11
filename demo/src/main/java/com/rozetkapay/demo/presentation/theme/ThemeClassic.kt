@@ -6,7 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val lightScheme = with(RozetkaPayDemoAppColors) {
+private val lightScheme = with(RozetkaPayDemoAppClassicColors) {
     lightColorScheme(
         primary = primaryLight,
         onPrimary = onPrimaryLight,
@@ -39,7 +39,7 @@ private val lightScheme = with(RozetkaPayDemoAppColors) {
     )
 }
 
-private val darkScheme = with(RozetkaPayDemoAppColors) {
+private val darkScheme = with(RozetkaPayDemoAppClassicColors) {
     darkColorScheme(
         primary = primaryDark,
         onPrimary = onPrimaryDark,
@@ -73,7 +73,7 @@ private val darkScheme = with(RozetkaPayDemoAppColors) {
 }
 
 @Composable
-fun RozetkaPayDemoTheme(
+fun RozetkaPayDemoClassicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

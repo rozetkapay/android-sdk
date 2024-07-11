@@ -1,5 +1,12 @@
 package com.rozetkapay.demo.presentation.tokenization
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -20,29 +27,55 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.rozetkapay.demo.R
 import com.rozetkapay.demo.presentation.components.Label
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
-import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
+import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
 import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.presentation.tokenization.rememberTokenizationSheet
+import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheet
+
+class TokenizationSheetActivity : ComponentActivity() {
+    private val viewModel: CardsViewModel by viewModels()
+    private lateinit var tokenizationSheet: TokenizationSheet
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        tokenizationSheet = TokenizationSheet(this, viewModel::tokenizationFinished)
+        setContent {
+            RozetkaPayDemoClassicTheme {
+                Screen(
+                    viewModel = viewModel,
+                    onBack = { finish() },
+                    onAddNewCard = {
+                        tokenizationSheet.show(
+                            client = ClientParameters(
+                                key = viewModel.clientSecret
+                            )
+                        )
+                    },
+                )
+            }
+        }
+    }
+
+    companion object {
+        fun startIntent(context: Context) = Intent(context, TokenizationSheetActivity::class.java)
+    }
+}
 
 @Composable
-fun TokenizationSeparateScreen(
+private fun Screen(
+    viewModel: CardsViewModel,
     onBack: () -> Unit,
+    onAddNewCard: () -> Unit,
 ) {
-    val viewModel = viewModel<CardsViewModel>()
     val snackbarHostState = remember { SnackbarHostState() }
     HandleErrorsFlow(errorsFlow = viewModel.errorEventsFlow, snackbarHostState)
 
-    val tokenizationSheet = rememberTokenizationSheet(
-        onResultCallback = { result ->
-            viewModel.tokenizationFinished(result)
-        }
-    )
     Scaffold(
         topBar = {
             SimpleToolbar(
@@ -54,13 +87,7 @@ fun TokenizationSeparateScreen(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {
-                    tokenizationSheet.show(
-                        client = ClientParameters(
-                            key = viewModel.clientSecret
-                        )
-                    )
-                }
+                onClick = onAddNewCard
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -92,15 +119,5 @@ fun TokenizationSeparateScreen(
                 cards = cards
             )
         }
-    }
-}
-
-@Composable
-@Preview
-private fun TokenizationBuiltInScreenPreview() {
-    RozetkaPayDemoTheme {
-        TokenizationSeparateScreen(
-            onBack = {}
-        )
     }
 }

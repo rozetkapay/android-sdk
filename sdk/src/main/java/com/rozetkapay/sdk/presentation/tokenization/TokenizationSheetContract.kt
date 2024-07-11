@@ -18,7 +18,8 @@ class TokenizationSheetContract :
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): TokenizationResult {
-        val result = intent?.getParcelableExtra(EXTRA_RESULT, Result::class.java)?.tokenizationResult
+        @Suppress("DEPRECATION")
+        val result = intent?.getParcelableExtra<Result>(EXTRA_RESULT)?.tokenizationResult
         return result ?: TokenizationResult.Failed(
             IllegalArgumentException("Failed to retrieve a TokenizationResult.")
         )
@@ -31,7 +32,8 @@ class TokenizationSheetContract :
 
         companion object {
             internal fun fromIntent(intent: Intent): Parameters? {
-                return intent.getParcelableExtra(EXTRA_PARAMS, Parameters::class.java)
+                @Suppress("DEPRECATION")
+                return intent.getParcelableExtra(EXTRA_PARAMS)
             }
         }
     }
