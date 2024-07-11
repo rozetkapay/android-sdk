@@ -19,13 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.demo.R
 import com.rozetkapay.demo.domain.models.PaymentSystem
-import com.rozetkapay.demo.domain.models.TokenizedCard
+import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    card: TokenizedCard,
+    card: CardToken,
 ) {
     OutlinedCard(
         modifier = modifier
@@ -85,7 +85,7 @@ private fun CardPreview() {
 @Composable
 fun CardsList(
     modifier: Modifier = Modifier,
-    cards: List<TokenizedCard>,
+    cards: List<CardToken>,
 ) {
     Column(
         modifier = modifier

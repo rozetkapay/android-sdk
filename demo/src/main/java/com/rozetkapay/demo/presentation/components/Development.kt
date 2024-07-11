@@ -51,7 +51,6 @@ fun InDevelopmentBlock(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-
     }
 }
 

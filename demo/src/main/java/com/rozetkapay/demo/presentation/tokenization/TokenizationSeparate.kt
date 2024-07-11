@@ -1,6 +1,5 @@
 package com.rozetkapay.demo.presentation.tokenization
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -13,24 +12,37 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozetkapay.demo.presentation.components.Label
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
+import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.presentation.tokenization.rememberTokenizationSheet
 
 @Composable
 fun TokenizationSeparateScreen(
     onBack: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val viewModel = viewModel<CardsViewModel>()
+    val snackbarHostState = remember { SnackbarHostState() }
+    HandleErrorsFlow(errorsFlow = viewModel.errorEventsFlow, snackbarHostState)
+
+    val tokenizationSheet = rememberTokenizationSheet(
+        onResultCallback = { result ->
+            viewModel.tokenizationFinished(result)
+        }
+    )
     Scaffold(
         topBar = {
             SimpleToolbar(
@@ -38,11 +50,16 @@ fun TokenizationSeparateScreen(
                 onBack = onBack
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show()
+                    tokenizationSheet.show(
+                        client = ClientParameters(
+                            key = viewModel.clientSecret
+                        )
+                    )
                 }
             ) {
                 Icon(
@@ -62,7 +79,6 @@ fun TokenizationSeparateScreen(
                 .padding(innerPadding)
                 .padding(bottom = 80.dp)
         ) {
-            val viewModel = viewModel<CardsViewModel>()
             val cards by viewModel.cards.collectAsState()
             Label(
                 modifier = Modifier.padding(
