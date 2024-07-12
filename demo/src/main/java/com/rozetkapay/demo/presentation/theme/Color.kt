@@ -96,13 +96,6 @@ object RozetkaPayDemoAppClassicColors {
     val inverseSurfaceLight = Color(0xFF2C3133)
     val inverseOnSurfaceLight = Color(0xFFECF2F4)
     val inversePrimaryLight = Color(0xFF85D2E8)
-    val surfaceDimLight = Color(0xFFD5DBDD)
-    val surfaceBrightLight = Color(0xFFF5FAFC)
-    val surfaceContainerLowestLight = Color(0xFFFFFFFF)
-    val surfaceContainerLowLight = Color(0xFFEFF4F7)
-    val surfaceContainerLight = Color(0xFFE9EFF1)
-    val surfaceContainerHighLight = Color(0xFFE4E9EB)
-    val surfaceContainerHighestLight = Color(0xFFDEE3E6)
 
     // dark
     val primaryDark = Color(0xFF85D2E8)
@@ -133,11 +126,4 @@ object RozetkaPayDemoAppClassicColors {
     val inverseSurfaceDark = Color(0xFFDEE3E6)
     val inverseOnSurfaceDark = Color(0xFF2C3133)
     val inversePrimaryDark = Color(0xFF00687B)
-    val surfaceDimDark = Color(0xFF0F1416)
-    val surfaceBrightDark = Color(0xFF343A3C)
-    val surfaceContainerLowestDark = Color(0xFF090F11)
-    val surfaceContainerLowDark = Color(0xFF171C1E)
-    val surfaceContainerDark = Color(0xFF1B2022)
-    val surfaceContainerHighDark = Color(0xFF252B2D)
-    val surfaceContainerHighestDark = Color(0xFF303638)
 }
