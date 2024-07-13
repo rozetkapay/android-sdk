@@ -6,7 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.domain.models.TokenizationResult
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheetContract
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheetResultCallback

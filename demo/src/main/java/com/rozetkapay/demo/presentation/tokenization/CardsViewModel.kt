@@ -7,8 +7,8 @@ import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.domain.models.parsePaymentSystem
 import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.domain.models.TokenizationResult
-import com.rozetkapay.sdk.domain.models.TokenizedCard
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

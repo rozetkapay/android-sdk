@@ -26,7 +26,7 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 @Composable
 internal fun RozetkaPayBottomSheet(
     showSheet: MutableState<Boolean> = remember { mutableStateOf(false) },
-    modalBottomSheetState: SheetState = rememberModalBottomSheetState(),
+    modalBottomSheetState: SheetState = rememberRozetkaPayBottomSheetState(),
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -50,6 +50,35 @@ internal fun RozetkaPayBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+internal fun rememberRozetkaPayBottomSheetState() = rememberModalBottomSheetState(
+    skipPartiallyExpanded = true,
+    confirmValueChange = { false }
+)
+
+private const val SHEET_PADDING_TOP_DP = 20
+private const val SHEET_PADDING_BOTTOM_DP = 42
+private const val SHEET_PADDING_HORIZONTAL_DP = 16
+
+@Composable
+internal fun Modifier.Companion.inSheetPaddings() = this
+    .padding(
+        top = SHEET_PADDING_TOP_DP.dp,
+        start = SHEET_PADDING_HORIZONTAL_DP.dp,
+        end = SHEET_PADDING_HORIZONTAL_DP.dp,
+        bottom = SHEET_PADDING_BOTTOM_DP.dp,
+    )
+
+@Composable
+internal fun Modifier.inSheetPaddings() = this
+    .padding(
+        top = SHEET_PADDING_TOP_DP.dp,
+        start = SHEET_PADDING_HORIZONTAL_DP.dp,
+        end = SHEET_PADDING_HORIZONTAL_DP.dp,
+        bottom = SHEET_PADDING_BOTTOM_DP.dp,
+    )
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 @Preview(
     showBackground = true
 )
@@ -64,7 +93,7 @@ private fun RozetkaPayBottomSheetPreview() {
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(600.dp)
             )
         }
     }

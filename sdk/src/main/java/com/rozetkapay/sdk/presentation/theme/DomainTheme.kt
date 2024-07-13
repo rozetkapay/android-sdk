@@ -14,10 +14,15 @@ internal object DomainTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalDomainSizes.current
+    val typography: DomainTypography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDomainTypography.current
 }
 
 internal val LocalDomainColorScheme = staticCompositionLocalOf { RozetkaPayDomainThemeDefaults.lightColors() }
 internal val LocalDomainSizes = staticCompositionLocalOf { RozetkaPayDomainThemeDefaults.sizes() }
+internal val LocalDomainTypography = staticCompositionLocalOf { RozetkaPayDomainThemeDefaults.typography() }
 
 @Composable
 internal fun DomainTheme(
@@ -29,7 +34,8 @@ internal fun DomainTheme(
     val sizes = themeConfigurator.sizes
     CompositionLocalProvider(
         LocalDomainColorScheme provides colorScheme,
-        LocalDomainSizes provides sizes
+        LocalDomainSizes provides sizes,
+        LocalDomainTypography provides RozetkaPayDomainThemeDefaults.typography()
     ) {
         content()
     }

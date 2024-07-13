@@ -91,6 +91,8 @@ fun RozetkaPayDemoClassicTheme(
 val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
     lightColorScheme = RozetkaPayDomainThemeDefaults.lightColors(
         surface = lightScheme.primaryContainer,
+        primary = lightScheme.primary,
+        appBarIcon = lightScheme.primary,
     ),
     darkColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
     sizes = RozetkaPayDomainThemeDefaults.sizes(

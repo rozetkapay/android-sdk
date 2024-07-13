@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="rozetka_pay_common_loading_message">Операція виконується...</string>
+
+    <string name="rozetka_pay_tokenization_title">Додайте Вашу нову картку</string>
+
+</resources>

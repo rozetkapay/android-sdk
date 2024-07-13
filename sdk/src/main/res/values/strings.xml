@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="rozetka_pay_common_loading_message">Operation in progress...</string>
+
+    <string name="rozetka_pay_tokenization_title">Add your new card</string>
+
+</resources>

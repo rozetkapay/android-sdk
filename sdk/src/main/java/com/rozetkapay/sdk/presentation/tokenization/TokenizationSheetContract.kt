@@ -7,7 +7,8 @@ import android.os.Parcelable
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.os.bundleOf
 import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.domain.models.TokenizationResult
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import kotlinx.parcelize.Parcelize
 
@@ -29,6 +30,7 @@ class TokenizationSheetContract :
     @Parcelize
     data class Parameters(
         val client: ClientParameters,
+        val parameters: TokenizationParameters = TokenizationParameters(),
         val themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) : Parcelable {
 

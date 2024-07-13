@@ -13,7 +13,6 @@ data class RozetkaPayThemeConfigurator(
     val sizes: DomainSizes = RozetkaPayDomainThemeDefaults.sizes(),
 ) : Parcelable
 
-
 object RozetkaPayDomainThemeDefaults {
     fun lightColors(
         surface: Color = Color(0xFFFFFFFF),
@@ -83,4 +82,6 @@ object RozetkaPayDomainThemeDefaults {
         buttonCornerRadius = buttonCornerRadius,
         borderWidth = borderWidth,
     )
+
+    internal fun typography() = DomainTypographyDefaults
 }
