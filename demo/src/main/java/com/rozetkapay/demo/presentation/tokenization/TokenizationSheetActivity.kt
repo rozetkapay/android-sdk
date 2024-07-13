@@ -51,9 +51,7 @@ class TokenizationSheetActivity : ComponentActivity() {
                     onBack = { finish() },
                     onAddNewCard = {
                         tokenizationSheet.show(
-                            client = ClientParameters(
-                                key = viewModel.clientSecret
-                            ),
+                            client = viewModel.clientParameters,
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )
                     },

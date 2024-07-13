@@ -6,7 +6,16 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TokenizedCard(
     val token: String,
-    val maskedNumber: String,
-    val paymentSystem: String?,
     val name: String? = null,
-) : Parcelable
+    val cardInfo: CardInfo? = null,
+) : Parcelable {
+
+    @Parcelize
+    data class CardInfo(
+        val maskedNumber: String? = null,
+        val paymentSystem: String? = null,
+        val bank: String? = null,
+        val isoA3Code: String? = null,
+        val cardType: String? = null,
+    ) : Parcelable
+}

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.domain.models.parsePaymentSystem
+import com.rozetkapay.sdk.domain.models.ClientParameters
 import com.rozetkapay.sdk.domain.models.TokenizationResult
 import com.rozetkapay.sdk.domain.models.TokenizedCard
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +23,10 @@ class CardsViewModel : ViewModel() {
     private val errorEventsChannel = Channel<String>()
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
-    val clientSecret = "demo_client_secret"
+    val clientParameters = ClientParameters(
+        widgetKey = "demo_widget_key",
+        secretKey = "demo_secret_key"
+    )
 
     companion object {
         val mockedCards = listOf(
@@ -71,8 +75,8 @@ class CardsViewModel : ViewModel() {
             CardToken(
                 token = tokenizedCard.token,
                 name = tokenizedCard.name ?: "New card",
-                maskedNumber = tokenizedCard.maskedNumber,
-                paymentSystem = tokenizedCard.paymentSystem.parsePaymentSystem()
+                maskedNumber = tokenizedCard.cardInfo?.maskedNumber ?: "****",
+                paymentSystem = tokenizedCard.cardInfo?.paymentSystem.parsePaymentSystem()
             )
         )
         _cards.value = newCards

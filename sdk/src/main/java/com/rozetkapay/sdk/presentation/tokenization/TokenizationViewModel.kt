@@ -7,7 +7,7 @@ import com.rozetkapay.sdk.domain.models.TokenizedCard
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class TokenizationViewModel : ViewModel() {
+internal class TokenizationViewModel : ViewModel() {
     private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 1)
     val resultStateFlow = _resultStateFlow.asSharedFlow()
 
@@ -17,9 +17,12 @@ class TokenizationViewModel : ViewModel() {
             TokenizationResult.Complete(
                 tokenizedCard = TokenizedCard(
                     token = "demotoken",
-                    maskedNumber = "**** **** **** 4242",
-                    PaymentSystem.Visa,
-                    name = "New card"
+                    name = "New card",
+                    cardInfo = TokenizedCard.CardInfo(
+                        maskedNumber = "**** **** **** 4242",
+                        paymentSystem = PaymentSystem.Visa,
+                        cardType = "CREDIT"
+                    )
                 )
             )
         )

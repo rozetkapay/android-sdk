@@ -5,5 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ClientParameters(
-    val key: String,
+    val widgetKey: String,
+    val secretKey: String,
 ) : Parcelable
