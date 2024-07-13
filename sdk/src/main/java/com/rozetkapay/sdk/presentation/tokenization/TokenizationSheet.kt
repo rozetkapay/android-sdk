@@ -10,6 +10,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.tokenization.launcher.DefaultTokenizationSheetLauncher
 import com.rozetkapay.sdk.presentation.tokenization.launcher.TokenizationSheetLauncher
 
@@ -54,9 +55,11 @@ class TokenizationSheet internal constructor(
 
     fun show(
         client: ClientParameters,
+        themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) {
         launcher.present(
-            client = client
+            client = client,
+            themeConfigurator = themeConfigurator,
         )
     }
 }

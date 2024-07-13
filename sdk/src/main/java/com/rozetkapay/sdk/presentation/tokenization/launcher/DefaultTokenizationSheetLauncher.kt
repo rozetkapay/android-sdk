@@ -7,6 +7,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientParameters
 import com.rozetkapay.sdk.domain.models.TokenizationResult
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheetContract
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheetResultCallback
 import com.rozetkapay.sdk.presentation.util.RozetkaPayAnimations
@@ -41,9 +42,11 @@ internal class DefaultTokenizationSheetLauncher(
 
     override fun present(
         client: ClientParameters,
+        themeConfigurator: RozetkaPayThemeConfigurator,
     ) {
         val parameters = TokenizationSheetContract.Parameters(
-            client = client
+            client = client,
+            themeConfigurator = themeConfigurator,
         )
         val options = ActivityOptionsCompat.makeCustomAnimation(
             application.applicationContext,

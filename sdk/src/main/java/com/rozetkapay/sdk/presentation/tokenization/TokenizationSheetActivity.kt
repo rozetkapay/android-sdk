@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import com.rozetkapay.sdk.domain.models.TokenizationResult
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import kotlinx.coroutines.launch
 
 internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
@@ -48,7 +48,9 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
             viewModel.cancelled()
         }
         setContent {
-            RozetkaPayTheme {
+            RozetkaPayTheme(
+                themeConfigurator = parameters?.themeConfigurator ?: RozetkaPayThemeConfigurator()
+            ) {
                 val showSheet = remember { mutableStateOf(true) }
                 val modalBottomSheetState = rememberModalBottomSheetState()
                 val scope = rememberCoroutineScope()
@@ -102,42 +104,40 @@ private fun TokenizationContent(
     onSuccess: () -> Unit,
     onFailure: () -> Unit,
 ) {
-    Surface {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.run {
-                spacedBy(
-                    space = 8.dp,
-                    alignment = Alignment.CenterVertically
-                )
-            },
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                color = MaterialTheme.colorScheme.onSurface,
-                text = "Tokenization bottom sheet",
-                modifier = Modifier.fillMaxWidth(),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.run {
+            spacedBy(
+                space = 8.dp,
+                alignment = Alignment.CenterVertically
             )
-            Text(
-                color = MaterialTheme.colorScheme.onSurface,
-                text = "In development",
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Button(onClick = onSuccess) {
-                Text(text = "Success button")
-            }
-            Button(onClick = onFailure) {
-                Text(text = "Error button")
-            }
+        },
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            color = MaterialTheme.colorScheme.onSurface,
+            text = "Tokenization bottom sheet",
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            color = MaterialTheme.colorScheme.onSurface,
+            text = "In development",
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(onClick = onSuccess) {
+            Text(text = "Success button")
+        }
+        Button(onClick = onFailure) {
+            Text(text = "Error button")
         }
     }
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 private fun TokenizationContentPreview() {
     RozetkaPayTheme {
         TokenizationContent(

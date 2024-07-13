@@ -7,17 +7,11 @@ plugins {
 
 buildscript {
     extra.apply {
-        set("minSdk", 26)
+        set("minSdk", 23)
         set("targetSdk", 34)
         set("compileSdk", 34)
 
         set("versionCode", 1)
         set("versionName", "0.1-alpha01")
     }
-}
-
-object ProjectConstants {
-    const val minSdk =  26
-    const val targetSdk =  34
-    const val compileSdk =  34
 }

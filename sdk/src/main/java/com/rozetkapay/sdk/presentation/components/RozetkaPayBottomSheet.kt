@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -32,6 +33,11 @@ internal fun RozetkaPayBottomSheet(
     if (showSheet.value) {
         ModalBottomSheet(
             containerColor = DomainTheme.colorScheme.surface,
+            contentColor = DomainTheme.colorScheme.onSurface,
+            shape = RoundedCornerShape(
+                topStart = DomainTheme.sizes.sheetCornerRadius,
+                topEnd = DomainTheme.sizes.sheetCornerRadius
+            ),
             onDismissRequest = onDismiss,
             sheetState = modalBottomSheetState,
             dragHandle = null,

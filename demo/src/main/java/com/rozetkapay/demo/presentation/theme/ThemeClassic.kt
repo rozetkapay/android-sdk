@@ -5,6 +5,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayDomainThemeDefaults
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 
 private val lightScheme = with(RozetkaPayDemoAppClassicColors) {
     lightColorScheme(
@@ -75,7 +78,7 @@ private val darkScheme = with(RozetkaPayDemoAppClassicColors) {
 @Composable
 fun RozetkaPayDemoClassicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) darkScheme else lightScheme,
@@ -83,3 +86,16 @@ fun RozetkaPayDemoClassicTheme(
         content = content
     )
 }
+
+// TODO: create full customized classic UI theme for SDK
+val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
+    lightColorScheme = RozetkaPayDomainThemeDefaults.lightColors(
+        surface = lightScheme.primaryContainer,
+    ),
+    darkColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
+    sizes = RozetkaPayDomainThemeDefaults.sizes(
+        sheetCornerRadius = 0.dp,
+        componentCornerRadius = 0.dp,
+        buttonCornerRadius = 50.dp
+    ),
+)

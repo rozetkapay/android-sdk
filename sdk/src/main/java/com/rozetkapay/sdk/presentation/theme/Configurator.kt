@@ -7,4 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class RozetkaPayThemeConfigurator(
     val lightColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.lightColors(),
     val darkColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
+    val sizes: DomainSizes = RozetkaPayDomainThemeDefaults.sizes(),
 ) : Parcelable
