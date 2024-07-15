@@ -2,7 +2,6 @@ package com.rozetkapay.sdk.presentation.tokenization
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
@@ -37,10 +36,6 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        onBackPressedDispatcher.addCallback {
-            viewModel.cancelled()
-        }
         setContent {
             RozetkaPayTheme(
                 themeConfigurator = parameters?.themeConfigurator ?: RozetkaPayThemeConfigurator()

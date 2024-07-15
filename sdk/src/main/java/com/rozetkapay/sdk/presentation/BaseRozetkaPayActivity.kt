@@ -9,8 +9,8 @@ import com.rozetkapay.sdk.presentation.util.RozetkaPayAnimations
 internal abstract class BaseRozetkaPayActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
     }
 
     override fun finish() {

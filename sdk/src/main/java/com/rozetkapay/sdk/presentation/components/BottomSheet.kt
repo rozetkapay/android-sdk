@@ -1,15 +1,15 @@
 package com.rozetkapay.sdk.presentation.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -41,9 +41,17 @@ internal fun RozetkaPayBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = modalBottomSheetState,
             dragHandle = null,
-            windowInsets = BottomSheetDefaults.windowInsets.only(WindowInsetsSides.Bottom),
+            properties = ModalBottomSheetDefaults.properties(
+                shouldDismissOnBackPress = false,
+            ),
+            windowInsets = WindowInsets(0, 0, 0, 0),
         ) {
-            content()
+            Box(
+                modifier = Modifier
+                    .navigationBarsPadding()
+            ) {
+                content()
+            }
         }
     }
 }
