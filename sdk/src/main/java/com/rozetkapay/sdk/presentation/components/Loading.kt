@@ -34,7 +34,7 @@ internal fun LoadingScreen(
         CircularProgressIndicator(
             modifier = Modifier.size(36.dp),
             strokeCap = StrokeCap.Round,
-            color = DomainTheme.colorScheme.primary
+            color = DomainTheme.colors.primary
         )
         Label(title = message)
     }

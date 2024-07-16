@@ -36,7 +36,15 @@ private val lightScheme = with(RozetkaPayDemoAppColors) {
         inverseSurface = inverseSurfaceLight,
         inverseOnSurface = inverseOnSurfaceLight,
         inversePrimary = inversePrimaryLight,
-    )
+        surfaceContainer = surfaceVariantLight,
+        surfaceContainerLow = surfaceVariantLight,
+        surfaceContainerHigh = surfaceVariantLight,
+        surfaceBright = surfaceVariantLight,
+        surfaceDim = surfaceVariantLight,
+        surfaceContainerLowest = surfaceVariantLight,
+        surfaceTint = surfaceVariantLight,
+        surfaceContainerHighest = surfaceVariantLight,
+        )
 }
 
 private val darkScheme = with(RozetkaPayDemoAppColors) {
@@ -69,13 +77,21 @@ private val darkScheme = with(RozetkaPayDemoAppColors) {
         inverseSurface = inverseSurfaceDark,
         inverseOnSurface = inverseOnSurfaceDark,
         inversePrimary = inversePrimaryDark,
+        surfaceContainer = surfaceVariantLight,
+        surfaceContainerLow = surfaceVariantLight,
+        surfaceContainerHigh = surfaceVariantLight,
+        surfaceBright = surfaceVariantLight,
+        surfaceDim = surfaceVariantLight,
+        surfaceContainerLowest = surfaceVariantLight,
+        surfaceTint = surfaceVariantLight,
+        surfaceContainerHighest = surfaceVariantLight,
     )
 }
 
 @Composable
 fun RozetkaPayDemoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) darkScheme else lightScheme,

@@ -30,10 +30,6 @@ class ClassicMenuActivity : ComponentActivity() {
                                     // skip
                                 }
 
-                                Route.TokenizationBuildIn -> {
-                                    // TODO:
-                                }
-
                                 Route.TokenizationSeparate -> {
                                     startActivity(TokenizationSheetActivity.startIntent(this))
                                 }

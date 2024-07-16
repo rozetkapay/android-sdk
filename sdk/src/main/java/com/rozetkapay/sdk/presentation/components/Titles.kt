@@ -19,7 +19,7 @@ internal fun Title(
     Text(
         modifier = modifier,
         text = title,
-        color = DomainTheme.colorScheme.title,
+        color = DomainTheme.colors.title,
         style = DomainTheme.typography.title,
     )
 }
@@ -32,7 +32,7 @@ internal fun Subtitle(
     Text(
         modifier = modifier,
         text = title,
-        color = DomainTheme.colorScheme.subtitle,
+        color = DomainTheme.colors.subtitle,
         style = DomainTheme.typography.subtitle,
     )
 }
@@ -45,8 +45,8 @@ internal fun Label(
     Text(
         modifier = modifier,
         text = title,
-        color = DomainTheme.colorScheme.onSurface,
-        style = DomainTheme.typography.label,
+        color = DomainTheme.colors.onSurface,
+        style = DomainTheme.typography.labelSmall,
     )
 }
 

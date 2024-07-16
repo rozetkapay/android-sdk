@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -32,8 +33,9 @@ internal fun RozetkaPayBottomSheet(
 ) {
     if (showSheet.value) {
         ModalBottomSheet(
-            containerColor = DomainTheme.colorScheme.surface,
-            contentColor = DomainTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(top = 24.dp),
+            containerColor = DomainTheme.colors.surface,
+            contentColor = DomainTheme.colors.onSurface,
             shape = RoundedCornerShape(
                 topStart = DomainTheme.sizes.sheetCornerRadius,
                 topEnd = DomainTheme.sizes.sheetCornerRadius
@@ -41,10 +43,10 @@ internal fun RozetkaPayBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = modalBottomSheetState,
             dragHandle = null,
-            properties = ModalBottomSheetDefaults.properties(
+            properties = ModalBottomSheetProperties(
                 shouldDismissOnBackPress = false,
             ),
-            windowInsets = WindowInsets(0, 0, 0, 0),
+            contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         ) {
             Box(
                 modifier = Modifier
@@ -60,7 +62,7 @@ internal fun RozetkaPayBottomSheet(
 @Composable
 internal fun rememberRozetkaPayBottomSheetState() = rememberModalBottomSheetState(
     skipPartiallyExpanded = true,
-    confirmValueChange = { false }
+    confirmValueChange = { it != SheetValue.Hidden }
 )
 
 private const val SHEET_PADDING_TOP_DP = 20

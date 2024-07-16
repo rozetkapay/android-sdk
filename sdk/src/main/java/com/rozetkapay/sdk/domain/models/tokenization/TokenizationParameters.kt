@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TokenizationParameters(
-    val requestTokenName: Boolean = false,
+    val withName: Boolean = false,
 ) : Parcelable

@@ -61,20 +61,15 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
                 RozetkaPayBottomSheet(
                     showSheet = showSheet,
                     modalBottomSheetState = modalBottomSheetState,
-                    onDismiss = { viewModel.cancelled() }
+                    onDismiss = { viewModel.onAction(TokenizationAction.Cancel) }
                 ) {
                     val state = viewModel.uiState.collectAsState()
                     TokenizationScreen(
                         state = state.value,
-                        onSuccess = {
-                            viewModel.success()
-                        },
-                        onFailure = {
-                            viewModel.error()
-                        },
-                        onCancel = {
-                            viewModel.cancelled()
-                        }
+                        onSave = { viewModel.onAction(TokenizationAction.Save) },
+                        onCancel = { viewModel.onAction(TokenizationAction.Cancel) },
+                        onNameChanged = { viewModel.onAction(TokenizationAction.UpdateName(it)) },
+                        onCardFieldStateChanged = { viewModel.onAction(TokenizationAction.UpdateCard(it)) }
                     )
                 }
             }

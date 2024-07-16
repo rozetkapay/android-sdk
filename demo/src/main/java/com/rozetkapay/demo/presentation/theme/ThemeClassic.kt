@@ -39,6 +39,14 @@ private val lightScheme = with(RozetkaPayDemoAppClassicColors) {
         inverseSurface = inverseSurfaceLight,
         inverseOnSurface = inverseOnSurfaceLight,
         inversePrimary = inversePrimaryLight,
+        surfaceContainer = surfaceVariantLight,
+        surfaceContainerLow = surfaceVariantLight,
+        surfaceContainerHigh = surfaceVariantLight,
+        surfaceBright = surfaceVariantLight,
+        surfaceDim = surfaceVariantLight,
+        surfaceContainerLowest = surfaceVariantLight,
+        surfaceTint = surfaceVariantLight,
+        surfaceContainerHighest = surfaceVariantLight,
     )
 }
 
@@ -72,6 +80,14 @@ private val darkScheme = with(RozetkaPayDemoAppClassicColors) {
         inverseSurface = inverseSurfaceDark,
         inverseOnSurface = inverseOnSurfaceDark,
         inversePrimary = inversePrimaryDark,
+        surfaceContainer = surfaceVariantLight,
+        surfaceContainerLow = surfaceVariantLight,
+        surfaceContainerHigh = surfaceVariantLight,
+        surfaceBright = surfaceVariantLight,
+        surfaceDim = surfaceVariantLight,
+        surfaceContainerLowest = surfaceVariantLight,
+        surfaceTint = surfaceVariantLight,
+        surfaceContainerHighest = surfaceVariantLight,
     )
 }
 
@@ -93,6 +109,8 @@ val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
         surface = lightScheme.primaryContainer,
         primary = lightScheme.primary,
         appBarIcon = lightScheme.primary,
+        componentDivider = lightScheme.primary,
+        subtitle = lightScheme.secondary
     ),
     darkColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
     sizes = RozetkaPayDomainThemeDefaults.sizes(

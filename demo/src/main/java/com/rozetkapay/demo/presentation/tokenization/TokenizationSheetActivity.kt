@@ -33,7 +33,7 @@ import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
-import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheet
 
 class TokenizationSheetActivity : ComponentActivity() {
@@ -52,6 +52,9 @@ class TokenizationSheetActivity : ComponentActivity() {
                     onAddNewCard = {
                         tokenizationSheet.show(
                             client = viewModel.clientParameters,
+                            parameters = TokenizationParameters(
+                                withName = false
+                            ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )
                     },
@@ -77,7 +80,7 @@ private fun Screen(
     Scaffold(
         topBar = {
             SimpleToolbar(
-                title = "Tokenization - Separate",
+                title = "Tokenize card",
                 onBack = onBack
             )
         },

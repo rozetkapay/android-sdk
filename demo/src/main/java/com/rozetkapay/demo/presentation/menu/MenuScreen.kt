@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -61,15 +62,22 @@ fun MenuScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             InfoCard()
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Choose an option to try:",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             MenuButton(
-                text = "Tokenization - Sheet",
+                text = "Tokenize card",
                 onClick = { onNavigationEvent(Route.TokenizationSeparate) }
             )
             MenuButton(
-                text = "Tokenization - Build In",
+                text = "Make a payment",
                 enabled = false,
-                onClick = { onNavigationEvent(Route.TokenizationBuildIn) }
+                onClick = {
+                    // TODO: wil be added in future
+                }
             )
         }
     }
@@ -78,6 +86,9 @@ fun MenuScreen(
 @Composable
 private fun InfoCard() {
     Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        ),
         modifier = Modifier
             .widthIn(max = 500.dp)
             .fillMaxWidth()
@@ -117,7 +128,9 @@ private fun MenuButton(
     onClick: () -> Unit,
 ) {
     Button(
-        modifier = Modifier.width(280.dp),
+        modifier = Modifier
+            .width(280.dp)
+            .height(56.dp),
         onClick = onClick,
         enabled = enabled
     ) {

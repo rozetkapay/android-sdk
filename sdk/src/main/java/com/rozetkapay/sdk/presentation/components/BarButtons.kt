@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
@@ -42,18 +44,19 @@ internal fun BarButton(
     Icon(
         modifier = modifier
             .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(
                     radius = 16.dp,
                     bounded = false
                 ),
                 onClick = onClick,
             )
-            .size(24.dp)
+            .padding(4.dp)
+            .size(20.dp)
             .clip(shape = CircleShape),
         painter = painter,
         contentDescription = contentDescription,
-        tint = DomainTheme.colorScheme.appBarIcon
+        tint = DomainTheme.colors.appBarIcon
     )
 }
 

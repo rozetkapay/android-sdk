@@ -8,7 +8,10 @@ import androidx.compose.ui.unit.sp
 internal interface DomainTypography {
     val title: TextStyle
     val subtitle: TextStyle
-    val label: TextStyle
+    val body: TextStyle
+    val labelSmall: TextStyle
+    val labelLarge: TextStyle
+    val input: TextStyle
 }
 
 internal object DomainTypographyDefaults : DomainTypography {
@@ -17,15 +20,32 @@ internal object DomainTypographyDefaults : DomainTypography {
     )
 
     override val title: TextStyle = defaultStyle.copy(
-        fontSize = 24.sp,
+        fontSize = 22.sp,
+        lineHeight = 24.sp,
         fontWeight = FontWeight.SemiBold
     )
     override val subtitle: TextStyle = defaultStyle.copy(
-        fontSize = 18.sp,
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
         fontWeight = FontWeight.SemiBold
     )
-    override val label: TextStyle = defaultStyle.copy(
-        fontSize = 14.sp,
+    override val body: TextStyle = defaultStyle.copy(
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.Normal
+    )
+    override val labelSmall: TextStyle = defaultStyle.copy(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal
+    )
+    override val labelLarge: TextStyle = defaultStyle.copy(
+        fontSize = 18.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.SemiBold
+    )
+    override val input: TextStyle = defaultStyle.copy(
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         fontWeight = FontWeight.Normal
     )
 }

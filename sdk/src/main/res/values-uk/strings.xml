@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="rozetka_pay_common_loading_message">Операція виконується...</string>
+    <string name="rozetka_pay_common_loading_message">Операція виконується…</string>
 
     <string name="rozetka_pay_tokenization_title">Додайте Вашу нову картку</string>
+
+    <string name="rozetka_pay_form_card_info_title">Інформація про картку</string>
+    <string name="rozetka_pay_form_optional_card_name">Назва (не обов\ʼязково)</string>
+    <string name="rozetka_pay_form_card_number">Номер картки</string>
+    <string name="rozetka_pay_form_cvv">CVV</string>
+    <string name="rozetka_pay_form_exp_date">ММ/РР</string>
 
 </resources>

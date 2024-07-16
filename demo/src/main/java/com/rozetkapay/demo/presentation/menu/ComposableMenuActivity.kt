@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
-import com.rozetkapay.demo.presentation.tokenization.TokenizationBuiltInScreen
 import com.rozetkapay.demo.presentation.tokenization.TokenizationSeparateScreen
 import kotlinx.serialization.Serializable
 
@@ -43,11 +42,6 @@ class ComposableMenuActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable<Route.TokenizationBuildIn> {
-                            TokenizationBuiltInScreen(
-                                onBack = { navController.navigateUp() }
-                            )
-                        }
                         composable<Route.TokenizationSeparate> {
                             TokenizationSeparateScreen(
                                 onBack = { navController.navigateUp() }
@@ -67,9 +61,6 @@ class ComposableMenuActivity : ComponentActivity() {
 sealed class Route {
     @Serializable
     data object Menu : Route()
-
-    @Serializable
-    data object TokenizationBuildIn : Route()
 
     @Serializable
     data object TokenizationSeparate : Route()

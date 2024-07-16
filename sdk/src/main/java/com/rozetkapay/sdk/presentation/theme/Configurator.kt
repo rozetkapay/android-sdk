@@ -21,7 +21,7 @@ object RozetkaPayDomainThemeDefaults {
         title: Color = Color(0xFF2B2B2B),
         subtitle: Color = Color(0xFF414345),
         error: Color = Color(0xFFFF0B0B),
-        primary: Color = Color(0xFF00A046),
+        primary: Color = Color(0xFF018F3F),
         onPrimary: Color = Color(0xFFFFFFFF),
         placeholder: Color = Color(0xFF9DA2A6),
         componentSurface: Color = Color(0xFFF6F7F9),
@@ -50,7 +50,7 @@ object RozetkaPayDomainThemeDefaults {
         title: Color = Color(0xFF2B2B2B),
         subtitle: Color = Color(0xFF414345),
         error: Color = Color(0xFFFF0B0B),
-        primary: Color = Color(0xFF00A046),
+        primary: Color = Color(0xFF018F3F),
         onPrimary: Color = Color(0xFFFFFFFF),
         placeholder: Color = Color(0xFF9DA2A6),
         componentSurface: Color = Color(0xFFF6F7F9),
@@ -72,7 +72,7 @@ object RozetkaPayDomainThemeDefaults {
     )
 
     fun sizes(
-        sheetCornerRadius: Dp = 24.dp,
+        sheetCornerRadius: Dp = 20.dp,
         componentCornerRadius: Dp = 12.dp,
         buttonCornerRadius: Dp = 12.dp,
         borderWidth: Dp = 1.dp,

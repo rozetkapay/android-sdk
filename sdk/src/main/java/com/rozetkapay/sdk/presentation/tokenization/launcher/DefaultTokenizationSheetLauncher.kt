@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheetContract
@@ -42,10 +43,12 @@ internal class DefaultTokenizationSheetLauncher(
 
     override fun present(
         client: ClientParameters,
+        parameters: TokenizationParameters,
         themeConfigurator: RozetkaPayThemeConfigurator,
     ) {
-        val parameters = TokenizationSheetContract.Parameters(
+        val contractParameters = TokenizationSheetContract.Parameters(
             client = client,
+            parameters = parameters,
             themeConfigurator = themeConfigurator,
         )
         val options = ActivityOptionsCompat.makeCustomAnimation(
@@ -54,7 +57,7 @@ internal class DefaultTokenizationSheetLauncher(
             RozetkaPayAnimations.fadeOut,
         )
         try {
-            activityResultLauncher.launch(parameters, options)
+            activityResultLauncher.launch(contractParameters, options)
         } catch (e: IllegalStateException) {
             val error = IllegalStateException("The host activity is not in a valid state", e)
             callback.onTokenizationSheetResult(TokenizationResult.Failed(error))

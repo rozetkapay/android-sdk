@@ -6,7 +6,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
 internal object DomainTheme {
-    val colorScheme: DomainColorScheme
+    val colors: DomainColorScheme
         @Composable
         @ReadOnlyComposable
         get() = LocalDomainColorScheme.current
