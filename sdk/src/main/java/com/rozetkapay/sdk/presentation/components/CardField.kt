@@ -90,7 +90,7 @@ internal fun CardField(
                 modifier = Modifier.weight(1f),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_exp_date),
                 value = state.expDate,
-                isError = state.isDateError,
+                isError = state.isExpDateError,
                 onValueChange = {
                     if (it.isDigitsOnly()) {
                         onStateChanged(state.copy(expDate = it.take(4)))
@@ -129,10 +129,11 @@ internal fun CardField(
                 )
             )
         }
-        if (state.errorMessages.isNotEmpty()) {
+
+        if (state.errors.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 10.dp),
-                text = state.errorMessages.first(),
+                text = state.errors.first(),
                 color = DomainTheme.colors.error,
                 style = DomainTheme.typography.labelSmall,
             )
@@ -142,20 +143,27 @@ internal fun CardField(
 
 internal data class CardFieldState(
     val cardNumber: String = "",
-    val isCardNumberError: Boolean = false,
+    val cardNumberError: String? = null,
     val cvv: String = "",
-    val isCvvError: Boolean = false,
+    val cvvError: String? = null,
     val expDate: String = "",
-    val isDateError: Boolean = false,
-    val errorMessages: List<String> = emptyList(),
+    val expDateError: String? = null,
     val paymentSystem: PaymentSystem? = null,
-)
+) {
+    val isCardNumberError: Boolean = cardNumberError != null
+    val isCvvError: Boolean = cvvError != null
+    val isExpDateError: Boolean = expDateError != null
+    val errors: List<String> = listOfNotNull(cardNumberError, cvvError, expDateError)
+    val hasErrors: Boolean = errors.isNotEmpty()
+}
 
 @DrawableRes
 private fun PaymentSystem?.iconRes(): Int {
     return when (this) {
         PaymentSystem.Visa -> R.drawable.ic_visa
         PaymentSystem.MasterCard -> R.drawable.ic_mastercard
+        PaymentSystem.Maestro -> R.drawable.ic_maestro
+        PaymentSystem.Prostir -> R.drawable.ic_prostir
         else -> R.drawable.ic_card_other
     }
 }
@@ -184,12 +192,11 @@ private fun CardFieldPreview() {
             CardField(
                 state = CardFieldState(
                     cardNumber = "1234567812345678",
-                    isCardNumberError = true,
+                    cardNumberError = "Error message",
                     cvv = "123",
-                    isDateError = true,
+                    expDateError = "Error message",
                     expDate = "1234",
-                    isCvvError = true,
-                    errorMessages = listOf("Error message")
+                    cvvError = "Error message",
                 ),
                 onStateChanged = { }
             )

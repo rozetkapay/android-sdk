@@ -10,5 +10,9 @@
     <string name="rozetka_pay_form_card_number">Card number</string>
     <string name="rozetka_pay_form_cvv">CVV</string>
     <string name="rozetka_pay_form_exp_date">MM/YY</string>
+    <string name="rozetka_pay_form_validation_exp_date_invalid">Invalid expiration date value</string>
+    <string name="rozetka_pay_form_validation_exp_date_expired">Card expired</string>
+    <string name="rozetka_pay_form_validation_card_number_incorrect">Incorrect card number</string>
+    <string name="rozetka_pay_form_validation_cvv_incorrect">Incorrect CVV value</string>
 
 </resources>

@@ -17,9 +17,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rozetkapay.demo.R
-import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.domain.models.CardToken
+import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 
 @Composable
@@ -65,9 +64,11 @@ val PaymentSystem.icon: Painter
     @Composable
     get() = painterResource(
         id = when (this) {
-            PaymentSystem.Visa -> R.drawable.ic_visa
-            PaymentSystem.MasterCard -> R.drawable.ic_mastercard
-            is PaymentSystem.Other -> R.drawable.ic_card_other
+            PaymentSystem.Visa -> com.rozetkapay.sdk.R.drawable.ic_visa
+            PaymentSystem.MasterCard -> com.rozetkapay.sdk.R.drawable.ic_mastercard
+            PaymentSystem.Maestro -> com.rozetkapay.sdk.R.drawable.ic_maestro
+            PaymentSystem.Prostir -> com.rozetkapay.sdk.R.drawable.ic_prostir
+            is PaymentSystem.Other -> com.rozetkapay.sdk.R.drawable.ic_card_other
         }
     )
 
@@ -80,7 +81,6 @@ private fun CardPreview() {
         )
     }
 }
-
 
 @Composable
 fun CardsList(
