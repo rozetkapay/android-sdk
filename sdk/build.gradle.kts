@@ -9,11 +9,10 @@ android {
     compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
-
         minSdk = rootProject.extra["minSdk"] as Int
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "VERSION", "\"${rootProject.extra["versionName"]}\"")
     }
 
     buildTypes {
@@ -26,8 +25,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "1.8"

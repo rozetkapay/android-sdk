@@ -6,13 +6,16 @@ import com.rozetkapay.sdk.domain.repository.TokenizationRepository
 
 internal class TokenizeCardUseCase(
     private val tokenizationRepository: TokenizationRepository,
+    private val getDeviceInfoUseCase: GetDeviceInfoUseCase,
 ) : ResultUseCase<TokenizeCardUseCase.Parameters, TokenizedCard>() {
 
     override suspend fun doWork(params: Parameters): TokenizedCard {
+        val deviceInfo = getDeviceInfoUseCase()
         return tokenizationRepository.tokenizeCard(
             widgetKey = params.widgetKey,
             secretKey = params.secretKey,
             cardData = params.cardData,
+            device = deviceInfo
         )
     }
 

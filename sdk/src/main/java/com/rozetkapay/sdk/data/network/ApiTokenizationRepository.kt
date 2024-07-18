@@ -1,6 +1,7 @@
 package com.rozetkapay.sdk.data.network
 
 import com.rozetkapay.sdk.domain.models.CardData
+import com.rozetkapay.sdk.domain.models.DeviceInfo
 import com.rozetkapay.sdk.domain.models.PaymentSystem
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import com.rozetkapay.sdk.domain.repository.TokenizationRepository
@@ -13,6 +14,7 @@ internal class ApiTokenizationRepository : TokenizationRepository {
         widgetKey: String,
         secretKey: String,
         cardData: CardData,
+        device: DeviceInfo,
     ): TokenizedCard {
         // TODO: implement real tokenization
         delay(5000)
