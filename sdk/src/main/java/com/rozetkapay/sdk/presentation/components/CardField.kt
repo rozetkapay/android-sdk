@@ -156,7 +156,7 @@ internal data class CardFieldState(
     val isCardNumberError: Boolean = cardNumberError != null
     val isCvvError: Boolean = cvvError != null
     val isExpDateError: Boolean = expDateError != null
-    val errors: List<String> = listOfNotNull(cardNumberError, cvvError, expDateError)
+    val errors: List<String> = listOfNotNull(cardNumberError, expDateError, cvvError)
     val hasErrors: Boolean = errors.isNotEmpty()
 }
 

@@ -2,34 +2,31 @@ package com.rozetkapay.sdk.presentation.tokenization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.rozetkapay.sdk.data.android.AndroidResourcesProvider
+import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.domain.models.PaymentSystem
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
-import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
-import com.rozetkapay.sdk.domain.validators.CardExpDateValidator
-import com.rozetkapay.sdk.domain.validators.CardNumberValidator
-import com.rozetkapay.sdk.domain.validators.CvvValidator
+import com.rozetkapay.sdk.domain.usecases.TokenizeCardUseCase
 import com.rozetkapay.sdk.presentation.components.CardFieldState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class TokenizationViewModel(
     private val client: ClientParameters,
     private val tokenizationParameters: TokenizationParameters,
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
     private val parseCardDataUseCase: ParseCardDataUseCase,
+    private val tokenizeCardUseCase: TokenizeCardUseCase,
 ) : ViewModel() {
 
     private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 1)
@@ -106,32 +103,40 @@ internal class TokenizationViewModel(
                 uiState.value.copy(cardState = cardState)
             )
         } else {
-            runTokenization()
+            runTokenization(cardState)
         }
     }
 
-    private fun runTokenization() {
-        // TODO: stub
-        viewModelScope.launch {
-            _uiState.tryEmit(
-                uiState.value.copy(
-                    isInProgress = true
+    private fun runTokenization(cardState: CardFieldState) {
+        _uiState.tryEmit(
+            uiState.value.copy(
+                isInProgress = true
+            )
+        )
+        val result = parseCardDataUseCase(
+            rawCardNumber = cardState.cardNumber,
+            rawCvv = cardState.cvv,
+            rawExpDate = cardState.expDate
+        )
+        if (result is CardParsingResult.Success) {
+            tokenizeCardUseCase(
+                TokenizeCardUseCase.Parameters(
+                    cardData = result.cardData,
+                    widgetKey = client.widgetKey,
+                    secretKey = client.secretKey
                 )
             )
-            delay(5000) // emulate network request
-            _resultStateFlow.tryEmit(
-                TokenizationResult.Complete(
-                    tokenizedCard = TokenizedCard(
-                        token = "demotoken",
-                        name = uiState.value.cardName,
-                        cardInfo = TokenizedCard.CardInfo(
-                            maskedNumber = "**** **** **** 4242",
-                            paymentSystem = PaymentSystem.Visa.name,
-                            cardType = "CREDIT"
-                        )
+                .catch { error ->
+                    _resultStateFlow.tryEmit(
+                        TokenizationResult.Failed(error = error)
                     )
-                )
-            )
+                }
+                .onEach { tokenizedCard ->
+                    _resultStateFlow.tryEmit(
+                        TokenizationResult.Complete(tokenizedCard)
+                    )
+                }
+                .launchIn(viewModelScope)
         }
     }
 
@@ -144,19 +149,12 @@ internal class TokenizationViewModel(
             modelClass: Class<T>,
             extras: CreationExtras,
         ): T {
-
-            val application = checkNotNull(extras[APPLICATION_KEY])
-            val resourcesProvider = AndroidResourcesProvider(application)
             return TokenizationViewModel(
                 client = parametersSupplier().client,
                 tokenizationParameters = parametersSupplier().parameters,
-                provideCardPaymentSystemUseCase = ProvideCardPaymentSystemUseCase(),
-                parseCardDataUseCase = ParseCardDataUseCase(
-                    cardNumberValidator = CardNumberValidator(resourcesProvider),
-                    cvvValidator = CvvValidator(resourcesProvider),
-                    expDateValidator = CardExpDateValidator(resourcesProvider),
-                    resourcesProvider = resourcesProvider
-                )
+                provideCardPaymentSystemUseCase = RozetkaPayKoinContext.koin.get(),
+                parseCardDataUseCase = RozetkaPayKoinContext.koin.get(),
+                tokenizeCardUseCase = RozetkaPayKoinContext.koin.get()
             ) as T
         }
     }
