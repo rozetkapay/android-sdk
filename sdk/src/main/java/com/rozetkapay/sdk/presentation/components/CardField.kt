@@ -132,7 +132,10 @@ internal fun CardField(
 
         if (state.errors.isNotEmpty()) {
             Text(
-                modifier = Modifier.padding(top = 10.dp),
+                modifier = Modifier.padding(
+                    start = 14.dp,
+                    top = 10.dp
+                ),
                 text = state.errors.first(),
                 color = DomainTheme.colors.error,
                 style = DomainTheme.typography.labelSmall,

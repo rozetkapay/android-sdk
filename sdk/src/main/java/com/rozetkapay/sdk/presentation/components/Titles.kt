@@ -38,19 +38,6 @@ internal fun Subtitle(
 }
 
 @Composable
-internal fun Label(
-    modifier: Modifier = Modifier,
-    title: String,
-) {
-    Text(
-        modifier = modifier,
-        text = title,
-        color = DomainTheme.colors.onSurface,
-        style = DomainTheme.typography.labelSmall,
-    )
-}
-
-@Composable
 @Preview(showBackground = true)
 fun TitlesPreview() {
     RozetkaPayTheme {
@@ -60,7 +47,6 @@ fun TitlesPreview() {
         ) {
             Title(title = "Title sample")
             Subtitle(title = "Subtitle sample")
-            Label(title = "Label sample")
         }
     }
 }

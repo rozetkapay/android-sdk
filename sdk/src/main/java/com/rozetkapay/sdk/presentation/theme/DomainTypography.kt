@@ -35,7 +35,8 @@ internal object DomainTypographyDefaults : DomainTypography {
         fontWeight = FontWeight.Normal
     )
     override val labelSmall: TextStyle = defaultStyle.copy(
-        fontSize = 16.sp,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
         fontWeight = FontWeight.Normal
     )
     override val labelLarge: TextStyle = defaultStyle.copy(

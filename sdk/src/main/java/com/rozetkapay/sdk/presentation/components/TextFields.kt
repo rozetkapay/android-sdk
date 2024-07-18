@@ -128,12 +128,15 @@ internal fun FormTextField(
         )
         if (isError && !errorMessage.isNullOrBlank()) {
             Text(
-                text = errorMessage,
-                style = DomainTheme.typography.labelSmall,
-                color = DomainTheme.colors.error,
                 modifier = Modifier
                     .semantics { this.contentDescription = "input-field-helper-text" }
-                    .padding(top = 10.dp)
+                    .padding(
+                        start = 14.dp,
+                        top = 10.dp
+                    ),
+                text = errorMessage,
+                style = DomainTheme.typography.labelSmall,
+                color = DomainTheme.colors.error
             )
         }
     }
