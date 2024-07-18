@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.components.CardField
 import com.rozetkapay.sdk.presentation.components.CardFieldState
-import com.rozetkapay.sdk.presentation.components.CloseButton
 import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
+import com.rozetkapay.sdk.presentation.components.SheetCloseHeader
 import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.components.Title
 import com.rozetkapay.sdk.presentation.components.inSheetPaddings
@@ -44,8 +44,8 @@ internal fun TokenizationScreen(
         if (state.isInProgress) {
             LoadingScreen()
         } else {
-            CloseButton(
-                onClick = onCancel
+            SheetCloseHeader(
+                onClose = onCancel
             )
             TokenizationContent(
                 state = state,

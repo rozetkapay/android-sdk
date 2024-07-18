@@ -9,6 +9,7 @@ class RozetkaPayDemoApp : Application() {
         super.onCreate()
         RozetkaPaySdk.init(
             appContext = this,
+            isDevMode = true
         )
     }
 }
