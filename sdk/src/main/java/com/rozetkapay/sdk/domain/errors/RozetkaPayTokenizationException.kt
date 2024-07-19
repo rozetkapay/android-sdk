@@ -4,3 +4,4 @@ class RozetkaPayTokenizationException(
     val id: String,
     val errorMessage: String,
 ) : Exception("$id: $errorMessage")
+

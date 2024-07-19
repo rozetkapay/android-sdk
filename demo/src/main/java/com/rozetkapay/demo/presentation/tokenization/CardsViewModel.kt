@@ -24,8 +24,8 @@ class CardsViewModel : ViewModel() {
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
     val clientParameters = ClientParameters(
-        widgetKey = "demo_widget_key",
-        secretKey = "demo_secret_key"
+        widgetKey = "VHma89CdSKyPnlovS73J9dIPgTJnI9Ny9f6t86v9xQm2hpSER+F29N9E9A6SsfdP",
+        secretKey = "akRwTFhqdEg1dTVBaEtxd0RoQTRoYnZ4"
     )
 
     companion object {
@@ -59,7 +59,11 @@ class CardsViewModel : ViewModel() {
 
             is TokenizationResult.Failed -> {
                 viewModelScope.launch {
-                    errorEventsChannel.send("An error occurred during tokenization process. Please try again.")
+                    if (result.message.isNullOrBlank()) {
+                        errorEventsChannel.send("An error occurred during tokenization process. Please try again.")
+                    } else {
+                        errorEventsChannel.send("An error with message \"${result.message}\". Please try again.")
+                    }
                 }
             }
 

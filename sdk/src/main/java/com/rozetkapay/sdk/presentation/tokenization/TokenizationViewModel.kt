@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
+import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
 import com.rozetkapay.sdk.domain.models.ClientParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
@@ -13,6 +14,7 @@ import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.domain.usecases.TokenizeCardUseCase
 import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.util.Logger
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -103,11 +105,17 @@ internal class TokenizationViewModel(
                 uiState.value.copy(cardState = cardState)
             )
         } else {
-            runTokenization(cardState)
+            runTokenization(
+                cardState = cardState,
+                cardName = uiState.value.cardName
+            )
         }
     }
 
-    private fun runTokenization(cardState: CardFieldState) {
+    private fun runTokenization(
+        cardState: CardFieldState,
+        cardName: String? = null,
+    ) {
         _uiState.tryEmit(
             uiState.value.copy(
                 isInProgress = true
@@ -122,13 +130,18 @@ internal class TokenizationViewModel(
             tokenizeCardUseCase(
                 TokenizeCardUseCase.Parameters(
                     cardData = result.cardData,
+                    cardName = cardName,
                     widgetKey = client.widgetKey,
                     secretKey = client.secretKey
                 )
             )
                 .catch { error ->
+                    Logger.e(throwable = error) { "Tokenization error" }
                     _resultStateFlow.tryEmit(
-                        TokenizationResult.Failed(error = error)
+                        TokenizationResult.Failed(
+                            message = if (error is RozetkaPayTokenizationException) error.errorMessage else null,
+                            error = error
+                        )
                     )
                 }
                 .onEach { tokenizedCard ->

@@ -23,7 +23,7 @@ class TokenizationSheetContract :
         @Suppress("DEPRECATION")
         val result = intent?.getParcelableExtra<Result>(EXTRA_RESULT)?.tokenizationResult
         return result ?: TokenizationResult.Failed(
-            IllegalArgumentException("Failed to retrieve a TokenizationResult.")
+            error = IllegalArgumentException("Failed to retrieve a TokenizationResult.")
         )
     }
 

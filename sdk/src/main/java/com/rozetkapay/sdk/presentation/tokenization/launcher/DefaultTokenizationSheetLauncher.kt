@@ -60,7 +60,7 @@ internal class DefaultTokenizationSheetLauncher(
             activityResultLauncher.launch(contractParameters, options)
         } catch (e: IllegalStateException) {
             val error = IllegalStateException("The host activity is not in a valid state", e)
-            callback.onTokenizationSheetResult(TokenizationResult.Failed(error))
+            callback.onTokenizationSheetResult(TokenizationResult.Failed(error = error))
         }
     }
 }

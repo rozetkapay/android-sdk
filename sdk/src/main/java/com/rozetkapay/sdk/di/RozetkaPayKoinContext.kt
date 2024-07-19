@@ -9,7 +9,8 @@ internal object RozetkaPayKoinContext {
         androidContext(RozetkaPaySdk.appContext)
         modules(
             useCaseModule,
-            repositoryModule
+            repositoryModule,
+            networkModule
         )
     }
 

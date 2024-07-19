@@ -2,6 +2,7 @@ package com.rozetkapay.demo
 
 import android.app.Application
 import com.rozetkapay.sdk.RozetkaPaySdk
+import com.rozetkapay.sdk.RozetkaPaySdkMode
 
 class RozetkaPayDemoApp : Application() {
 
@@ -9,7 +10,8 @@ class RozetkaPayDemoApp : Application() {
         super.onCreate()
         RozetkaPaySdk.init(
             appContext = this,
-            isDevMode = true
+            mode = RozetkaPaySdkMode.Development,
+            enableLogging = true
         )
     }
 }
