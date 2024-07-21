@@ -36,15 +36,14 @@ private val lightScheme = with(RozetkaPayDemoAppColors) {
         inverseSurface = inverseSurfaceLight,
         inverseOnSurface = inverseOnSurfaceLight,
         inversePrimary = inversePrimaryLight,
-        surfaceContainer = surfaceVariantLight,
-        surfaceContainerLow = surfaceVariantLight,
-        surfaceContainerHigh = surfaceVariantLight,
-        surfaceBright = surfaceVariantLight,
-        surfaceDim = surfaceVariantLight,
-        surfaceContainerLowest = surfaceVariantLight,
-        surfaceTint = surfaceVariantLight,
-        surfaceContainerHighest = surfaceVariantLight,
-        )
+        surfaceDim = surfaceDimLight,
+        surfaceBright = surfaceBrightLight,
+        surfaceContainerLowest = surfaceContainerLowestLight,
+        surfaceContainerLow = surfaceContainerLowLight,
+        surfaceContainer = surfaceContainerLight,
+        surfaceContainerHigh = surfaceContainerHighLight,
+        surfaceContainerHighest = surfaceContainerHighestLight
+    )
 }
 
 private val darkScheme = with(RozetkaPayDemoAppColors) {
@@ -77,14 +76,13 @@ private val darkScheme = with(RozetkaPayDemoAppColors) {
         inverseSurface = inverseSurfaceDark,
         inverseOnSurface = inverseOnSurfaceDark,
         inversePrimary = inversePrimaryDark,
-        surfaceContainer = surfaceVariantLight,
-        surfaceContainerLow = surfaceVariantLight,
-        surfaceContainerHigh = surfaceVariantLight,
-        surfaceBright = surfaceVariantLight,
-        surfaceDim = surfaceVariantLight,
-        surfaceContainerLowest = surfaceVariantLight,
-        surfaceTint = surfaceVariantLight,
-        surfaceContainerHighest = surfaceVariantLight,
+        surfaceDim = surfaceDimDark,
+        surfaceBright = surfaceBrightDark,
+        surfaceContainerLowest = surfaceContainerLowestDark,
+        surfaceContainerLow = surfaceContainerLowDark,
+        surfaceContainer = surfaceContainerDark,
+        surfaceContainerHigh = surfaceContainerHighDark,
+        surfaceContainerHighest = surfaceContainerHighestDark,
     )
 }
 

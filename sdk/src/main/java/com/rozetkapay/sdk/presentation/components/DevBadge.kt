@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.presentation.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -26,12 +27,14 @@ internal fun DevBadge(
                 horizontal = 12.dp
             ),
         text = "DEV",
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.labelMedium
     )
 }
 
 @Composable
 @Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DevBadgePreview() {
     RozetkaPayTheme {
         Column(
