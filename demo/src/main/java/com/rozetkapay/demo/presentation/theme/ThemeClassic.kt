@@ -101,7 +101,6 @@ fun RozetkaPayDemoClassicTheme(
     )
 }
 
-// TODO: create full customized classic UI theme for SDK
 val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
     lightColorScheme = RozetkaPayDomainThemeDefaults.lightColors(
         surface = lightScheme.primaryContainer,

@@ -21,13 +21,13 @@ internal fun DevBadge(
     Text(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(
                 vertical = 6.dp,
                 horizontal = 12.dp
             ),
         text = "DEV",
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = MaterialTheme.colorScheme.onSecondaryContainer,
         style = MaterialTheme.typography.labelMedium
     )
 }

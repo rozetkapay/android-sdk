@@ -76,7 +76,7 @@ fun MenuScreen(
                 text = "Make a payment",
                 enabled = false,
                 onClick = {
-                    // TODO: wil be added in future
+                    // TODO: will be implemented in future
                 }
             )
         }

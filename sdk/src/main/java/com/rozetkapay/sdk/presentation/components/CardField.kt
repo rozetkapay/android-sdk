@@ -69,8 +69,8 @@ internal fun CardField(
             trailingIcon = {
                 Image(
                     modifier = Modifier
-                        .height(20.dp)
-                        .width(33.dp)
+                        .height(22.dp)
+                        .width(36.dp)
                         .padding(end = 6.dp),
                     painter = painterResource(id = state.paymentSystem.iconRes()),
                     contentDescription = "payment-system-icon"

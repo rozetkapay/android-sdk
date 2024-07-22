@@ -43,19 +43,18 @@ object RozetkaPayDomainThemeDefaults {
     )
 
     fun darkColors(
-        // TODO: add dark theme colors
-        surface: Color = Color(0xFFFFFFFF),
-        onSurface: Color = Color(0xFF2B2B2B),
-        appBarIcon: Color = Color(0xFF9DA2A6),
-        title: Color = Color(0xFF2B2B2B),
-        subtitle: Color = Color(0xFF414345),
+        surface: Color = Color(0xFF221F1F),
+        onSurface: Color = Color(0xFFEEEEEE),
+        appBarIcon: Color = Color(0xFFA7A5A5),
+        title: Color = Color(0xFFEEEEEE),
+        subtitle: Color = Color(0xFFA7A5A5),
         error: Color = Color(0xFFFF0B0B),
         primary: Color = Color(0xFF018F3F),
         onPrimary: Color = Color(0xFFFFFFFF),
-        placeholder: Color = Color(0xFF9DA2A6),
-        componentSurface: Color = Color(0xFFF6F7F9),
-        componentDivider: Color = Color(0xFFDFE2E5),
-        onComponent: Color = Color(0xFF2B2B2B),
+        placeholder: Color = Color(0xFF9B9EA0),
+        componentSurface: Color = Color(0xFF363436),
+        componentDivider: Color = Color(0xFF4E4C4C),
+        onComponent: Color = Color(0xFFEEEEEE),
     ) = DomainColorScheme(
         surface = surface,
         onSurface = onSurface,
