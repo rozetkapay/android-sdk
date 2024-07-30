@@ -163,11 +163,10 @@ internal data class CardFieldState(
 @DrawableRes
 private fun PaymentSystem?.iconRes(): Int {
     return when (this) {
-        PaymentSystem.Visa -> R.drawable.ic_visa
-        PaymentSystem.MasterCard -> R.drawable.ic_mastercard
-        PaymentSystem.Maestro -> R.drawable.ic_maestro
-        PaymentSystem.Prostir -> R.drawable.ic_prostir
-        else -> R.drawable.ic_card_other
+        PaymentSystem.Visa -> R.drawable.rozetka_pay_ic_visa
+        PaymentSystem.MasterCard -> R.drawable.rozetka_pay_ic_mastercard
+        PaymentSystem.Prostir -> R.drawable.rozetka_pay_ic_prostir
+        else -> R.drawable.rozetka_pay_ic_card_default
     }
 }
 

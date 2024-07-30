@@ -14,18 +14,7 @@ internal enum class PaymentSystem(
         alias = "mastercard",
         prefixes = listOf(
             PrefixRange(51..55),
-            PrefixRange(2221..2720)
-        )
-    ),
-    Prostir(
-        alias = "prostir",
-        prefixes = listOf(
-            PrefixInt(9)
-        )
-    ),
-    Maestro(
-        alias = "maestro",
-        prefixes = listOf(
+            PrefixRange(2221..2720),
             PrefixInt(5018),
             PrefixInt(5020),
             PrefixInt(5038),
@@ -37,4 +26,10 @@ internal enum class PaymentSystem(
             PrefixInt(6763)
         )
     ),
+    Prostir(
+        alias = "prostir",
+        prefixes = listOf(
+            PrefixInt(9)
+        )
+    )
 }

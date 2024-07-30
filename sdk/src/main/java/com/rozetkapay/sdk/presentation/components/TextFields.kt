@@ -278,7 +278,7 @@ private fun FormTextFieldsPreview() {
             onValueChange = {},
             trailingIcon = {
                 TextFieldIcon(
-                    painter = painterResource(id = R.drawable.ic_close),
+                    painter = painterResource(id = R.drawable.rozetka_pay_ic_close),
                     tint = Color.Gray
                 )
             }

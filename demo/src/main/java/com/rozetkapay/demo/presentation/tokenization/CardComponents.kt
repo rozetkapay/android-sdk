@@ -64,11 +64,10 @@ val PaymentSystem.icon: Painter
     @Composable
     get() = painterResource(
         id = when (this) {
-            PaymentSystem.Visa -> com.rozetkapay.sdk.R.drawable.ic_visa
-            PaymentSystem.MasterCard -> com.rozetkapay.sdk.R.drawable.ic_mastercard
-            PaymentSystem.Maestro -> com.rozetkapay.sdk.R.drawable.ic_maestro
-            PaymentSystem.Prostir -> com.rozetkapay.sdk.R.drawable.ic_prostir
-            is PaymentSystem.Other -> com.rozetkapay.sdk.R.drawable.ic_card_other
+            PaymentSystem.Visa -> com.rozetkapay.sdk.R.drawable.rozetka_pay_ic_visa
+            PaymentSystem.MasterCard -> com.rozetkapay.sdk.R.drawable.rozetka_pay_ic_mastercard
+            PaymentSystem.Prostir -> com.rozetkapay.sdk.R.drawable.rozetka_pay_ic_prostir
+            is PaymentSystem.Other -> com.rozetkapay.sdk.R.drawable.rozetka_pay_ic_card_default
         }
     )
 

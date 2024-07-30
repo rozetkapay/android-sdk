@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -28,7 +27,7 @@ internal fun CloseButton(
 ) {
     BarButton(
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_close),
+        painter = painterResource(id = R.drawable.rozetka_pay_ic_close),
         contentDescription = "button-close",
         onClick = onClick
     )
