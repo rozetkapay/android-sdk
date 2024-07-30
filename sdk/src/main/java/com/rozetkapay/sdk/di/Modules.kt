@@ -1,7 +1,7 @@
 package com.rozetkapay.sdk.di
 
 import com.rozetkapay.sdk.RozetkaPaySdk
-import com.rozetkapay.sdk.RozetkaPaySdkMode
+import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import com.rozetkapay.sdk.data.android.AndroidResourcesProvider
 import com.rozetkapay.sdk.data.network.ApiProvider
 import com.rozetkapay.sdk.data.network.ApiProviderImpl
@@ -27,13 +27,16 @@ import org.koin.dsl.module
 internal val useCaseModule = module {
     single<ProvideCardPaymentSystemUseCase> { ProvideCardPaymentSystemUseCase() }
     single<GetDeviceInfoUseCase> { GetDeviceInfoUseCase(get()) }
-    single<ParseCardDataUseCase> {
+    factory<ParseCardDataUseCase> {
         val resourcesProvider: ResourcesProvider = get()
         ParseCardDataUseCase(
             cardNumberValidator = CardNumberValidator(resourcesProvider),
             cvvValidator = CvvValidator(resourcesProvider),
-            expDateValidator = CardExpDateValidator(resourcesProvider),
-            resourcesProvider = get()
+            expDateValidator = CardExpDateValidator(
+                resourcesProvider = resourcesProvider,
+                expirationValidationRule = RozetkaPaySdk.validationRules.cardExpirationDateValidationRule
+            ),
+            resourcesProvider = resourcesProvider,
         )
     }
     single<TokenizeCardUseCase> {

@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.RozetkaPaySdk
-import com.rozetkapay.sdk.RozetkaPaySdkMode
+import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 

@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import com.rozetkapay.sdk.checkInitialization
+import com.rozetkapay.sdk.init.checkInitialization
 import com.rozetkapay.sdk.presentation.util.RozetkaPayAnimations
 
 internal abstract class BaseRozetkaPayActivity : ComponentActivity() {

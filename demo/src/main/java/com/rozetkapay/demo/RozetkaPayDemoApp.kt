@@ -2,7 +2,8 @@ package com.rozetkapay.demo
 
 import android.app.Application
 import com.rozetkapay.sdk.RozetkaPaySdk
-import com.rozetkapay.sdk.RozetkaPaySdkMode
+import com.rozetkapay.sdk.init.RozetkaPaySdkMode
+import com.rozetkapay.sdk.init.RozetkaPaySdkValidationRules
 
 class RozetkaPayDemoApp : Application() {
 
@@ -11,7 +12,8 @@ class RozetkaPayDemoApp : Application() {
         RozetkaPaySdk.init(
             appContext = this,
             mode = RozetkaPaySdkMode.Development,
-            enableLogging = true
+            enableLogging = true,
+            validationRules = RozetkaPaySdkValidationRules()
         )
     }
 }

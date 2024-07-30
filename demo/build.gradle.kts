@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.splashscreen)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlin.serialization)
+    implementation(libs.kotlin.datetime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

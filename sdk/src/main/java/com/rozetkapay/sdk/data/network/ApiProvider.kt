@@ -1,7 +1,7 @@
 package com.rozetkapay.sdk.data.network
 
 import com.rozetkapay.sdk.RozetkaPaySdk
-import com.rozetkapay.sdk.RozetkaPaySdkMode
+import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 
 internal interface ApiProvider {
     val tokenizationUrl: String
