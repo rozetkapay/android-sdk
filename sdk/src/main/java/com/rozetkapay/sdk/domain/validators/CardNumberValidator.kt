@@ -13,7 +13,8 @@ internal class CardNumberValidator(
             )
         } else {
             val isValid = value.matches("^[0-9]+$".toRegex())
-                && value.length >= 16
+                && value.length >= MIN_CARD_NUMBER_LENGTH
+                && value.length <= MAX_CARD_NUMBER_LENGTH
                 && validateCardNumberWithLuhnAlgorithm(value)
             if (isValid) {
                 ValidationResult.Valid
@@ -37,6 +38,11 @@ internal class CardNumberValidator(
             digits[i] = value
         }
         return digits.sum() % 10 == 0
+    }
+
+    companion object {
+        const val MIN_CARD_NUMBER_LENGTH = 16
+        const val MAX_CARD_NUMBER_LENGTH = 19
     }
 }
 

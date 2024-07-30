@@ -78,7 +78,7 @@ class CardsViewModel : ViewModel() {
         newCards.add(
             CardToken(
                 token = tokenizedCard.token,
-                name = tokenizedCard.name ?: "New card",
+                name = tokenizedCard.name.takeIf { !it.isNullOrBlank() } ?: "New card",
                 maskedNumber = tokenizedCard.cardInfo?.maskedNumber ?: "****",
                 paymentSystem = tokenizedCard.cardInfo?.paymentSystem.parsePaymentSystem()
             )
