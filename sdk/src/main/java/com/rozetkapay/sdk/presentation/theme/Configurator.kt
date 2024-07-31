@@ -48,7 +48,7 @@ object RozetkaPayDomainThemeDefaults {
         appBarIcon: Color = Color(0xFFA7A5A5),
         title: Color = Color(0xFFEEEEEE),
         subtitle: Color = Color(0xFFA7A5A5),
-        error: Color = Color(0xFFFF0B0B),
+        error: Color = Color(0xFFE56464),
         primary: Color = Color(0xFF018F3F),
         onPrimary: Color = Color(0xFFFFFFFF),
         placeholder: Color = Color(0xFF9B9EA0),

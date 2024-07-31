@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
 import com.rozetkapay.sdk.domain.models.ClientParameters
@@ -61,6 +62,8 @@ internal class TokenizationViewModel(
             is TokenizationAction.UpdateCardName -> updateCardName(action.name)
             is TokenizationAction.UpdateCard -> updateCard(action.state)
             is TokenizationAction.UpdateEmail -> updateEmail(action.email)
+            is TokenizationAction.Failed -> failedDueToError(action.reason)
+            TokenizationAction.Retry -> retry()
         }
     }
 
@@ -103,6 +106,14 @@ internal class TokenizationViewModel(
             uiState.value.copy(
                 email = email,
                 emailError = (validationResult as? ValidationResult.Error)?.message
+            )
+        )
+    }
+
+    private fun retry() {
+        _uiState.tryEmit(
+            uiState.value.copy(
+                displayState = DisplayState.Content
             )
         )
     }
@@ -188,7 +199,7 @@ internal class TokenizationViewModel(
     ) {
         _uiState.tryEmit(
             uiState.value.copy(
-                isInProgress = true
+                displayState = DisplayState.Loading
             )
         )
         val result = parseCardDataUseCase(
@@ -210,10 +221,11 @@ internal class TokenizationViewModel(
             )
                 .catch { error ->
                     Logger.e(throwable = error) { "Tokenization error" }
-                    _resultStateFlow.tryEmit(
-                        TokenizationResult.Failed(
-                            message = if (error is RozetkaPayTokenizationException) error.errorMessage else null,
-                            error = error
+                    _uiState.tryEmit(
+                        uiState.value.copy(
+                            displayState = DisplayState.Error(
+                                message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common)
+                            )
                         )
                     )
                 }
@@ -224,6 +236,15 @@ internal class TokenizationViewModel(
                 }
                 .launchIn(viewModelScope)
         }
+    }
+
+    private fun failedDueToError(reason: Throwable? = null) {
+        _resultStateFlow.tryEmit(
+            TokenizationResult.Failed(
+                message = if (reason is RozetkaPayTokenizationException) reason.errorMessage else null,
+                error = reason
+            )
+        )
     }
 
     internal class Factory(

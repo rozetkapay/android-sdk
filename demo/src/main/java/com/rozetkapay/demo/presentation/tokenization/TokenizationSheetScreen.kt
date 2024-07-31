@@ -59,9 +59,9 @@ fun TokenizationSeparateScreen(
                     tokenizationSheet.show(
                         client = viewModel.clientParameters,
                         parameters = TokenizationParameters(
-                            cardNameField = FieldRequirement.Required,
-                            emailField = FieldRequirement.Required,
-                            cardholderNameField = FieldRequirement.Required,
+                            cardNameField = FieldRequirement.Optional,
+                            emailField = FieldRequirement.None,
+                            cardholderNameField = FieldRequirement.None,
                         ),
                     )
                 }

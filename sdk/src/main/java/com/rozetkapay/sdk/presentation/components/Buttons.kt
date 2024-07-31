@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,6 +44,30 @@ internal fun PrimaryButton(
 }
 
 @Composable
+internal fun TextButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit,
+) {
+    OutlinedButton(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        onClick = onClick,
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = DomainTheme.colors.primary,
+        ),
+        border = null,
+        shape = RoundedCornerShape(DomainTheme.sizes.buttonCornerRadius)
+    ) {
+        Text(
+            text = text,
+            color = DomainTheme.colors.primary,
+            style = DomainTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 private fun ButtonsPreview() {
     RozetkaPayTheme {
@@ -53,6 +78,12 @@ private fun ButtonsPreview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             PrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Button",
+                onClick = {}
+            )
+            TextButton(
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = "Button",

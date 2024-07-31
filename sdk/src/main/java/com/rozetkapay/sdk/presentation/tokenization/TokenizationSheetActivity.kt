@@ -70,7 +70,9 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
                         onCancel = { viewModel.onAction(TokenizationAction.Cancel) },
                         onCardNameChanged = { viewModel.onAction(TokenizationAction.UpdateCardName(it)) },
                         onCardFieldStateChanged = { viewModel.onAction(TokenizationAction.UpdateCard(it)) },
-                        onEmailChanged = { viewModel.onAction(TokenizationAction.UpdateEmail(it)) }
+                        onEmailChanged = { viewModel.onAction(TokenizationAction.UpdateEmail(it)) },
+                        onRetry = { viewModel.onAction(TokenizationAction.Retry) },
+                        onFailed = { viewModel.onAction(TokenizationAction.Failed(it)) }
                     )
                 }
             }

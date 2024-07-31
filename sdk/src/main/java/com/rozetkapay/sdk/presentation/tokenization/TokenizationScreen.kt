@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.components.CardField
 import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.presentation.components.ErrorScreen
 import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
@@ -37,6 +38,8 @@ internal fun TokenizationScreen(
     onCardFieldStateChanged: (CardFieldState) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
+    onFailed: (reason: Throwable?) -> Unit,
+    onRetry: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -44,19 +47,33 @@ internal fun TokenizationScreen(
             .verticalScroll(rememberScrollState())
             .inSheetPaddings()
     ) {
-        if (state.isInProgress) {
-            LoadingScreen()
-        } else {
-            SheetCloseHeader(
-                onClose = onCancel
-            )
-            TokenizationContent(
-                state = state,
-                onSave = onSave,
-                onCardNameChanged = onCardNameChanged,
-                onCardFieldStateChanged = onCardFieldStateChanged,
-                onEmailChanged = onEmailChanged
-            )
+        when (state.displayState) {
+            DisplayState.Content -> {
+                SheetCloseHeader(
+                    onClose = onCancel
+                )
+                TokenizationContent(
+                    state = state,
+                    onSave = onSave,
+                    onCardNameChanged = onCardNameChanged,
+                    onCardFieldStateChanged = onCardFieldStateChanged,
+                    onEmailChanged = onEmailChanged
+                )
+            }
+
+            is DisplayState.Error -> {
+                ErrorScreen(
+                    message = state.displayState.message,
+                    onRetry = onRetry,
+                    onCancel = {
+                        onFailed(state.displayState.reason)
+                    }
+                )
+            }
+
+            DisplayState.Loading -> {
+                LoadingScreen()
+            }
         }
     }
 }
@@ -136,13 +153,15 @@ private fun TokenizationContentPreview() {
     RozetkaPayTheme {
         TokenizationScreen(
             state = TokenizationUiState(
-                isInProgress = false
+                displayState = DisplayState.Content,
             ),
             onEmailChanged = {},
             onCardNameChanged = {},
             onCardFieldStateChanged = {},
             onSave = {},
-            onCancel = {}
+            onCancel = {},
+            onFailed = {},
+            onRetry = {}
         )
     }
 }
@@ -153,13 +172,36 @@ private fun TokenizationContentProgressPreview() {
     RozetkaPayTheme {
         TokenizationScreen(
             state = TokenizationUiState(
-                isInProgress = true
+                displayState = DisplayState.Loading,
             ),
             onEmailChanged = {},
             onCardNameChanged = {},
             onCardFieldStateChanged = {},
             onSave = {},
-            onCancel = {}
+            onCancel = {},
+            onFailed = {},
+            onRetry = {}
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun TokenizationContentFailedPreview() {
+    RozetkaPayTheme {
+        TokenizationScreen(
+            state = TokenizationUiState(
+                displayState = DisplayState.Error(
+                    message = stringResource(id = R.string.rozetka_pay_tokenization_error_common)
+                ),
+            ),
+            onEmailChanged = {},
+            onCardNameChanged = {},
+            onCardFieldStateChanged = {},
+            onSave = {},
+            onCancel = {},
+            onFailed = {},
+            onRetry = {}
         )
     }
 }

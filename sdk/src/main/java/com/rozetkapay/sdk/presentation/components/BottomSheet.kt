@@ -91,8 +91,8 @@ internal fun rememberRozetkaPayBottomSheetState() = rememberModalBottomSheetStat
 )
 
 private const val SHEET_PADDING_TOP_DP = 20
-private const val SHEET_PADDING_BOTTOM_DP = 42
-private const val SHEET_PADDING_HORIZONTAL_DP = 16
+private const val SHEET_PADDING_BOTTOM_DP = 32
+private const val SHEET_PADDING_HORIZONTAL_DP = 20
 
 @Composable
 internal fun Modifier.Companion.inSheetPaddings() = this

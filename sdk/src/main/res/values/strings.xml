@@ -2,9 +2,13 @@
 <resources>
 
     <string name="rozetka_pay_common_loading_message">Operation in progress…</string>
+    <string name="rozetka_pay_common_error_message">An unexpected error occurred</string>
+    <string name="rozetka_pay_common_button_cancel">Cancel</string>
+    <string name="rozetka_pay_common_button_retry">Try again</string>
 
     <string name="rozetka_pay_tokenization_title">Add your new card</string>
     <string name="rozetka_pay_tokenization_save_button">Save</string>
+    <string name="rozetka_pay_tokenization_error_common">Sorry… An error occurred during tokenization process</string>
 
     <string name="rozetka_pay_form_card_info_title">Card information</string>
     <string name="rozetka_pay_form_optional_card_name">Card name</string>
