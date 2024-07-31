@@ -22,6 +22,7 @@ import com.rozetkapay.sdk.presentation.components.CardField
 import com.rozetkapay.sdk.presentation.components.CardFieldState
 import com.rozetkapay.sdk.presentation.components.ErrorScreen
 import com.rozetkapay.sdk.presentation.components.FormTextField
+import com.rozetkapay.sdk.presentation.components.LegalBlock
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
 import com.rozetkapay.sdk.presentation.components.SheetCloseHeader
@@ -143,6 +144,11 @@ private fun TokenizationContent(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_tokenization_save_button),
             onClick = onSave
+        )
+        LegalBlock(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 28.dp)
         )
     }
 }
