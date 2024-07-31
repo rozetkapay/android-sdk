@@ -12,6 +12,7 @@ internal class ParseCardDataUseCase(
     private val cardNumberValidator: Validator<String>,
     private val cvvValidator: Validator<String>,
     private val expDateValidator: Validator<CardExpDate>,
+    private val cardholderNameValidator: Validator<String>,
     private val resourcesProvider: ResourcesProvider,
 ) {
 
@@ -19,6 +20,8 @@ internal class ParseCardDataUseCase(
         rawCardNumber: String,
         rawCvv: String,
         rawExpDate: String,
+        isCardholderNameRequired: Boolean,
+        rawCardholderName: String,
     ): CardParsingResult {
         // validate card number
         val cardNumberValidationResult = cardNumberValidator.validate(rawCardNumber.trim())
@@ -40,15 +43,24 @@ internal class ParseCardDataUseCase(
             null
         }
 
+        // validate cardholder name
+        val cardholderNameValidationResult = if (isCardholderNameRequired) {
+            cardholderNameValidator.validate(rawCardholderName.trim())
+        } else {
+            ValidationResult.Valid
+        }
+
         return if (cardNumberValidationResult.isValid
             && cvvValidationResult.isValid
             && expDateValidationResult.isValid
+            && cardholderNameValidationResult.isValid
         ) {
             CardParsingResult.Success(
                 CardData(
                     number = rawCardNumber.trim(),
                     cvv = rawCvv.trim(),
-                    expDate = expDate!!
+                    expDate = expDate!!,
+                    cardholderName = rawCardholderName.trim()
                 )
             )
         } else {
@@ -56,6 +68,7 @@ internal class ParseCardDataUseCase(
                 cardNumberError = (cardNumberValidationResult as? ValidationResult.Error)?.message,
                 cvvError = (cvvValidationResult as? ValidationResult.Error)?.message,
                 expDateError = (expDateValidationResult as? ValidationResult.Error)?.message,
+                cardholderNameError = (cardholderNameValidationResult as? ValidationResult.Error)?.message
             )
         }
     }
@@ -67,5 +80,6 @@ internal sealed class CardParsingResult {
         val cardNumberError: String? = null,
         val cvvError: String? = null,
         val expDateError: String? = null,
+        val cardholderNameError: String? = null,
     ) : CardParsingResult()
 }

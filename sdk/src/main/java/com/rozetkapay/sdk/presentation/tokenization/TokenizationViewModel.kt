@@ -7,13 +7,22 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
+import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.domain.usecases.TokenizeCardUseCase
+import com.rozetkapay.sdk.domain.validators.AlwaysValidValidator
+import com.rozetkapay.sdk.domain.validators.EmailValidator
+import com.rozetkapay.sdk.domain.validators.OptionalStringValidator
+import com.rozetkapay.sdk.domain.validators.RequiredFieldValidator
+import com.rozetkapay.sdk.domain.validators.ValidationResult
+import com.rozetkapay.sdk.domain.validators.validatorOf
 import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.presentation.util.isShow
 import com.rozetkapay.sdk.util.Logger
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +38,7 @@ internal class TokenizationViewModel(
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
     private val parseCardDataUseCase: ParseCardDataUseCase,
     private val tokenizeCardUseCase: TokenizeCardUseCase,
+    private val resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
     private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 1)
@@ -36,7 +46,10 @@ internal class TokenizationViewModel(
 
     private val _uiState = MutableStateFlow(
         TokenizationUiState(
-            withName = tokenizationParameters.withName
+            withCardName = tokenizationParameters.cardNameField.isShow(),
+            withEmail = tokenizationParameters.emailField.isShow(),
+            withCardholderName = tokenizationParameters.cardholderNameField.isShow(),
+            cardState = CardFieldState()
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -45,8 +58,9 @@ internal class TokenizationViewModel(
         when (action) {
             is TokenizationAction.Save -> save()
             is TokenizationAction.Cancel -> cancelled()
-            is TokenizationAction.UpdateName -> updateName(action.name)
+            is TokenizationAction.UpdateCardName -> updateCardName(action.name)
             is TokenizationAction.UpdateCard -> updateCard(action.state)
+            is TokenizationAction.UpdateEmail -> updateEmail(action.email)
         }
     }
 
@@ -65,9 +79,31 @@ internal class TokenizationViewModel(
         )
     }
 
-    private fun updateName(name: String) {
+    private fun updateCardName(name: String) {
+        val validationResult = if (_uiState.value.cardNameError != null) {
+            validateCardName(name)
+        } else {
+            null
+        }
         _uiState.tryEmit(
-            uiState.value.copy(cardName = name)
+            uiState.value.copy(
+                cardName = name,
+                cardNameError = (validationResult as? ValidationResult.Error)?.message
+            )
+        )
+    }
+
+    private fun updateEmail(email: String) {
+        val validationResult = if (_uiState.value.emailError != null) {
+            validateEmail(email)
+        } else {
+            null
+        }
+        _uiState.tryEmit(
+            uiState.value.copy(
+                email = email,
+                emailError = (validationResult as? ValidationResult.Error)?.message
+            )
         )
     }
 
@@ -77,37 +113,70 @@ internal class TokenizationViewModel(
         )
     }
 
+    private fun validateCardName(name: String): ValidationResult {
+        val validator = when (tokenizationParameters.cardNameField) {
+            FieldRequirement.Required -> RequiredFieldValidator(resourcesProvider)
+            else -> AlwaysValidValidator
+        }
+        return validator.validate(name.trim())
+    }
+
+    private fun validateEmail(email: String): ValidationResult {
+        val validator = when (tokenizationParameters.emailField) {
+            FieldRequirement.Required -> validatorOf(EmailValidator(resourcesProvider))
+            FieldRequirement.Optional -> OptionalStringValidator(EmailValidator(resourcesProvider))
+            FieldRequirement.None -> AlwaysValidValidator
+        }
+        return validator.validate(email.trim())
+    }
+
     private fun validateCardState(state: CardFieldState): CardFieldState {
         val result = parseCardDataUseCase(
             rawCardNumber = state.cardNumber,
             rawCvv = state.cvv,
-            rawExpDate = state.expDate
+            rawExpDate = state.expDate,
+            isCardholderNameRequired = tokenizationParameters.cardholderNameField == FieldRequirement.Required,
+            rawCardholderName = state.cardholderName
         )
         return if (result is CardParsingResult.Error) {
             return state.copy(
                 cardNumberError = result.cardNumberError,
                 cvvError = result.cvvError,
-                expDateError = result.expDateError
+                expDateError = result.expDateError,
+                cardholderNameError = result.cardholderNameError
             )
         } else {
             state.copy(
                 cardNumberError = null,
                 cvvError = null,
-                expDateError = null
+                expDateError = null,
+                cardholderNameError = null
             )
         }
     }
 
     private fun save() {
         val cardState = validateCardState(uiState.value.cardState)
-        if (cardState.hasErrors) {
+        val cardNameValue = uiState.value.cardName.trim()
+        val nameValidationResult = validateCardName(cardNameValue)
+        val emailValue = uiState.value.email.trim()
+        val emailValidationResult = validateEmail(emailValue)
+        if (cardState.hasErrors
+            || nameValidationResult is ValidationResult.Error
+            || emailValidationResult is ValidationResult.Error
+        ) {
             _uiState.tryEmit(
-                uiState.value.copy(cardState = cardState)
+                uiState.value.copy(
+                    cardNameError = (nameValidationResult as? ValidationResult.Error)?.message,
+                    emailError = (emailValidationResult as? ValidationResult.Error)?.message,
+                    cardState = cardState
+                )
             )
         } else {
             runTokenization(
                 cardState = cardState,
-                cardName = uiState.value.cardName
+                cardName = cardNameValue,
+                email = emailValue
             )
         }
     }
@@ -115,6 +184,7 @@ internal class TokenizationViewModel(
     private fun runTokenization(
         cardState: CardFieldState,
         cardName: String? = null,
+        email: String? = null,
     ) {
         _uiState.tryEmit(
             uiState.value.copy(
@@ -124,13 +194,16 @@ internal class TokenizationViewModel(
         val result = parseCardDataUseCase(
             rawCardNumber = cardState.cardNumber,
             rawCvv = cardState.cvv,
-            rawExpDate = cardState.expDate
+            rawExpDate = cardState.expDate,
+            isCardholderNameRequired = tokenizationParameters.cardholderNameField == FieldRequirement.Required,
+            rawCardholderName = cardState.cardholderName
         )
         if (result is CardParsingResult.Success) {
             tokenizeCardUseCase(
                 TokenizeCardUseCase.Parameters(
                     cardData = result.cardData,
                     cardName = cardName,
+                    email = email,
                     widgetKey = client.widgetKey,
                     secretKey = client.secretKey
                 )
@@ -167,7 +240,8 @@ internal class TokenizationViewModel(
                 tokenizationParameters = parametersSupplier().parameters,
                 provideCardPaymentSystemUseCase = RozetkaPayKoinContext.koin.get(),
                 parseCardDataUseCase = RozetkaPayKoinContext.koin.get(),
-                tokenizeCardUseCase = RozetkaPayKoinContext.koin.get()
+                tokenizeCardUseCase = RozetkaPayKoinContext.koin.get(),
+                resourcesProvider = RozetkaPayKoinContext.koin.get()
             ) as T
         }
     }

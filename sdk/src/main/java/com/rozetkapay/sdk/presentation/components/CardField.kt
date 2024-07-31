@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +38,7 @@ import com.rozetkapay.sdk.presentation.util.masks.ExpirationDateMask
 @Composable
 internal fun CardField(
     modifier: Modifier = Modifier,
+    showCardholderNameField: Boolean,
     state: CardFieldState,
     onStateChanged: (newState: CardFieldState) -> Unit,
 ) {
@@ -121,7 +124,7 @@ internal fun CardField(
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
                 ),
                 shape = RoundedCornerShape(
@@ -130,15 +133,34 @@ internal fun CardField(
             )
         }
 
-        if (state.errors.isNotEmpty()) {
+        if (state.isCardNumberError || state.isExpDateError || state.isCvvError) {
             Text(
                 modifier = Modifier.padding(
                     start = 14.dp,
                     top = 10.dp
                 ),
-                text = state.errors.first(),
+                text = state.cardNumberError ?: state.expDateError ?: state.cvvError ?: "",
                 color = DomainTheme.colors.error,
                 style = DomainTheme.typography.labelSmall,
+            )
+        }
+
+        if (showCardholderNameField) {
+            Spacer(modifier = Modifier.height(16.dp))
+            FormTextField(
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = stringResource(id = R.string.rozetka_pay_form_cardholder_name),
+                value = state.cardholderName,
+                onValueChange = {
+                    onStateChanged(state.copy(cardholderName = it))
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                isError = state.isCardholderNameError,
+                errorMessage = state.cardholderNameError
             )
         }
     }
@@ -151,13 +173,15 @@ internal data class CardFieldState(
     val cvvError: String? = null,
     val expDate: String = "",
     val expDateError: String? = null,
+    val cardholderName: String = "",
+    val cardholderNameError: String? = null,
     val paymentSystem: PaymentSystem? = null,
 ) {
     val isCardNumberError: Boolean = cardNumberError != null
     val isCvvError: Boolean = cvvError != null
     val isExpDateError: Boolean = expDateError != null
-    val errors: List<String> = listOfNotNull(cardNumberError, expDateError, cvvError)
-    val hasErrors: Boolean = errors.isNotEmpty()
+    val isCardholderNameError: Boolean = cardholderNameError != null
+    val hasErrors: Boolean = isCardNumberError || isCvvError || isExpDateError || isCardholderNameError
 }
 
 @DrawableRes
@@ -181,6 +205,7 @@ private fun CardFieldPreview() {
         ) {
             CardField(
                 state = CardFieldState(),
+                showCardholderNameField = true,
                 onStateChanged = { }
             )
             CardField(
@@ -189,6 +214,7 @@ private fun CardFieldPreview() {
                     cvv = "123",
                     expDate = "1234",
                 ),
+                showCardholderNameField = true,
                 onStateChanged = { }
             )
             CardField(
@@ -200,6 +226,7 @@ private fun CardFieldPreview() {
                     expDate = "1234",
                     cvvError = "Error message",
                 ),
+                showCardholderNameField = true,
                 onStateChanged = { }
             )
         }

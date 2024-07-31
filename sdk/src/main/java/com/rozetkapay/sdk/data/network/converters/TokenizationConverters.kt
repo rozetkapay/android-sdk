@@ -9,6 +9,7 @@ import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 internal fun TokenizationRequestDto(
     cardData: CardData,
     device: DeviceInfo,
+    email: String?,
 ): TokenizationRequestDto = TokenizationRequestDto(
     cardNumber = cardData.number,
     cardExpYear = cardData.expDate.year,
@@ -20,6 +21,7 @@ internal fun TokenizationRequestDto(
     osBuildVersion = device.osBuildVersion,
     osBuildNumber = device.osBuildNumber,
     deviceId = device.deviceId,
+    customerEmail = email
 )
 
 internal fun TokenizationResponseDto.toTokenizedCard(): TokenizedCard {

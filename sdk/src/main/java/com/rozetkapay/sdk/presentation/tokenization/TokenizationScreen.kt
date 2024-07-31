@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
@@ -31,7 +32,8 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 @Composable
 internal fun TokenizationScreen(
     state: TokenizationUiState,
-    onNameChanged: (String) -> Unit,
+    onCardNameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
     onCardFieldStateChanged: (CardFieldState) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
@@ -51,8 +53,9 @@ internal fun TokenizationScreen(
             TokenizationContent(
                 state = state,
                 onSave = onSave,
-                onNameChanged = onNameChanged,
-                onCardFieldStateChanged = onCardFieldStateChanged
+                onCardNameChanged = onCardNameChanged,
+                onCardFieldStateChanged = onCardFieldStateChanged,
+                onEmailChanged = onEmailChanged
             )
         }
     }
@@ -61,7 +64,8 @@ internal fun TokenizationScreen(
 @Composable
 private fun TokenizationContent(
     state: TokenizationUiState,
-    onNameChanged: (String) -> Unit,
+    onCardNameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
     onCardFieldStateChanged: (CardFieldState) -> Unit,
     onSave: () -> Unit,
 ) {
@@ -73,19 +77,21 @@ private fun TokenizationContent(
         Title(
             title = stringResource(id = R.string.rozetka_pay_tokenization_title)
         )
-        if (state.withName) {
+        if (state.withCardName) {
             Spacer(modifier = Modifier.height(16.dp))
             FormTextField(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_optional_card_name),
                 value = state.cardName,
                 onValueChange = {
-                    onNameChanged(it)
+                    onCardNameChanged(it)
                 },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     capitalization = KeyboardCapitalization.Sentences
                 ),
+                errorMessage = state.cardNameError,
+                isError = state.cardNameError != null
             )
         }
         Spacer(modifier = Modifier.height(28.dp))
@@ -93,8 +99,28 @@ private fun TokenizationContent(
         Spacer(modifier = Modifier.height(10.dp))
         CardField(
             state = state.cardState,
+            showCardholderNameField = state.withCardholderName,
             onStateChanged = { onCardFieldStateChanged(it) }
         )
+        if (state.withEmail) {
+            Spacer(modifier = Modifier.height(16.dp))
+            FormTextField(
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = stringResource(id = R.string.rozetka_pay_form_email),
+                value = state.email,
+                onValueChange = {
+                    onEmailChanged(it)
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email,
+                    capitalization = KeyboardCapitalization.None
+                ),
+                errorMessage = state.emailError,
+                isError = state.emailError != null
+            )
+        }
+
         Spacer(modifier = Modifier.height(40.dp))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
@@ -112,7 +138,8 @@ private fun TokenizationContentPreview() {
             state = TokenizationUiState(
                 isInProgress = false
             ),
-            onNameChanged = {},
+            onEmailChanged = {},
+            onCardNameChanged = {},
             onCardFieldStateChanged = {},
             onSave = {},
             onCancel = {}
@@ -128,7 +155,8 @@ private fun TokenizationContentProgressPreview() {
             state = TokenizationUiState(
                 isInProgress = true
             ),
-            onNameChanged = {},
+            onEmailChanged = {},
+            onCardNameChanged = {},
             onCardFieldStateChanged = {},
             onSave = {},
             onCancel = {}

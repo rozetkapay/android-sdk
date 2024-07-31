@@ -33,6 +33,7 @@ import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheet
 
@@ -53,7 +54,7 @@ class TokenizationSheetActivity : ComponentActivity() {
                         tokenizationSheet.show(
                             client = viewModel.clientParameters,
                             parameters = TokenizationParameters(
-                                withName = false
+                                cardNameField = FieldRequirement.None
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

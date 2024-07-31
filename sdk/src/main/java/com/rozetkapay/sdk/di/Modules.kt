@@ -1,7 +1,6 @@
 package com.rozetkapay.sdk.di
 
 import com.rozetkapay.sdk.RozetkaPaySdk
-import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import com.rozetkapay.sdk.data.android.AndroidResourcesProvider
 import com.rozetkapay.sdk.data.network.ApiProvider
 import com.rozetkapay.sdk.data.network.ApiProviderImpl
@@ -19,7 +18,9 @@ import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.domain.usecases.TokenizeCardUseCase
 import com.rozetkapay.sdk.domain.validators.CardExpDateValidator
 import com.rozetkapay.sdk.domain.validators.CardNumberValidator
+import com.rozetkapay.sdk.domain.validators.CardholderNameValidator
 import com.rozetkapay.sdk.domain.validators.CvvValidator
+import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.logging.LogLevel
 import org.koin.dsl.module
@@ -36,6 +37,7 @@ internal val useCaseModule = module {
                 resourcesProvider = resourcesProvider,
                 expirationValidationRule = RozetkaPaySdk.validationRules.cardExpirationDateValidationRule
             ),
+            cardholderNameValidator = CardholderNameValidator(resourcesProvider),
             resourcesProvider = resourcesProvider,
         )
     }

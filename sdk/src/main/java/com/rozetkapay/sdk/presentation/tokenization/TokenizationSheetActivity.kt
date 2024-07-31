@@ -68,8 +68,9 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
                         state = state.value,
                         onSave = { viewModel.onAction(TokenizationAction.Save) },
                         onCancel = { viewModel.onAction(TokenizationAction.Cancel) },
-                        onNameChanged = { viewModel.onAction(TokenizationAction.UpdateName(it)) },
-                        onCardFieldStateChanged = { viewModel.onAction(TokenizationAction.UpdateCard(it)) }
+                        onCardNameChanged = { viewModel.onAction(TokenizationAction.UpdateCardName(it)) },
+                        onCardFieldStateChanged = { viewModel.onAction(TokenizationAction.UpdateCard(it)) },
+                        onEmailChanged = { viewModel.onAction(TokenizationAction.UpdateEmail(it)) }
                     )
                 }
             }

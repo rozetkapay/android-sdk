@@ -36,12 +36,14 @@ internal class ApiTokenizationRepository(
         widgetKey: String,
         secretKey: String,
         cardData: CardData,
+        email: String?,
         device: DeviceInfo,
     ): TokenizedCard = withContext(Dispatchers.IO) {
         Logger.d { "Start tokenization process for card" }
         val body = TokenizationRequestDto(
             cardData = cardData,
-            device = device
+            device = device,
+            email = email
         )
         val signature = requestSigner.sign(
             key = widgetKey,

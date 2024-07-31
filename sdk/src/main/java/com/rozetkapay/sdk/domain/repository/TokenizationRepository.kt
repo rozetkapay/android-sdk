@@ -9,6 +9,7 @@ internal interface TokenizationRepository {
         widgetKey: String,
         secretKey: String,
         cardData: CardData,
+        email: String?,
         device: DeviceInfo,
     ): TokenizedCard
 }

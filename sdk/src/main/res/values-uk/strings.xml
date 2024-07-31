@@ -7,15 +7,19 @@
     <string name="rozetka_pay_tokenization_save_button">Зберегти</string>
 
     <string name="rozetka_pay_form_card_info_title">Інформація про картку</string>
-    <string name="rozetka_pay_form_optional_card_name">Назва (не обов\ʼязково)</string>
+    <string name="rozetka_pay_form_optional_card_name">Назва картки</string>
     <string name="rozetka_pay_form_card_number">Номер картки</string>
     <string name="rozetka_pay_form_cvv">CVV</string>
     <string name="rozetka_pay_form_exp_date">ММ/РР</string>
+    <string name="rozetka_pay_form_cardholder_name">Ім\ʼя на картці</string>
+    <string name="rozetka_pay_form_email">Email</string>
     <string name="rozetka_pay_form_validation_exp_date_invalid">Неправильне значення дати закінчення терміну дії</string>
     <string name="rozetka_pay_form_validation_exp_date_expired">Картка протермінована</string>
     <string name="rozetka_pay_form_validation_card_number_incorrect">Неправильний номер картки</string>
     <string name="rozetka_pay_form_validation_card_number_empty">Номер картки не може бути пустим</string>
     <string name="rozetka_pay_form_validation_cvv_incorrect">Неправильне значення CVV</string>
-
+    <string name="rozetka_pay_form_validation_cardholder_name_empty">Ім\ʼя не може бути пустим</string>
+    <string name="rozetka_pay_form_validation_field_empty">Поле не може бути пустим</string>
+    <string name="rozetka_pay_form_validation_email_incorrect">Неправильний email</string>
 
 </resources>

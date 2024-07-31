@@ -16,6 +16,7 @@ internal class TokenizeCardUseCase(
             widgetKey = params.widgetKey,
             secretKey = params.secretKey,
             cardData = params.cardData,
+            email = params.email,
             device = deviceInfo
         )
         val paymentSystem = provideCardPaymentSystemUseCase(params.cardData.number)
@@ -30,6 +31,7 @@ internal class TokenizeCardUseCase(
     data class Parameters(
         val cardData: CardData,
         val cardName: String? = null,
+        val email: String? = null,
         val widgetKey: String,
         val secretKey: String,
     )
