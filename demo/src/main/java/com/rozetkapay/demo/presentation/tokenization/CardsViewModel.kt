@@ -3,6 +3,7 @@ package com.rozetkapay.demo.presentation.tokenization
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.domain.models.parsePaymentSystem
@@ -24,32 +25,9 @@ class CardsViewModel : ViewModel() {
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
     val clientParameters = ClientParameters(
-        widgetKey = "VHma89CdSKyPnlovS73J9dIPgTJnI9Ny9f6t86v9xQm2hpSER+F29N9E9A6SsfdP",
-        secretKey = "akRwTFhqdEg1dTVBaEtxd0RoQTRoYnZ4"
+        widgetKey = Credentials.WIDGET_KEY,
+        secretKey = Credentials.SECRET_KEY
     )
-
-    companion object {
-        val mockedCards = listOf(
-            CardToken(
-                token = "token1",
-                name = "Mono Black",
-                maskedNumber = "**** **** **** 1234",
-                paymentSystem = PaymentSystem.Visa
-            ),
-            CardToken(
-                token = "token2",
-                name = "Mono White",
-                maskedNumber = "**** **** **** 5678",
-                paymentSystem = PaymentSystem.MasterCard
-            ),
-            CardToken(
-                token = "token3",
-                name = "Oschad Пенсійна",
-                maskedNumber = "**** **** **** 9012",
-                paymentSystem = PaymentSystem.Other("ПРОСТІР")
-            )
-        )
-    }
 
     fun tokenizationFinished(result: TokenizationResult) {
         when (result) {
@@ -84,5 +62,28 @@ class CardsViewModel : ViewModel() {
             )
         )
         _cards.value = newCards
+    }
+
+    companion object {
+        val mockedCards = listOf(
+            CardToken(
+                token = "token1",
+                name = "Mono Black",
+                maskedNumber = "**** **** **** 1234",
+                paymentSystem = PaymentSystem.Visa
+            ),
+            CardToken(
+                token = "token2",
+                name = "Mono White",
+                maskedNumber = "**** **** **** 5678",
+                paymentSystem = PaymentSystem.MasterCard
+            ),
+            CardToken(
+                token = "token3",
+                name = "Oschad Пенсійна",
+                maskedNumber = "**** **** **** 9012",
+                paymentSystem = PaymentSystem.Other("ПРОСТІР")
+            )
+        )
     }
 }

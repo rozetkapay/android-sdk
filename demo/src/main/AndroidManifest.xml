@@ -33,7 +33,11 @@
             android:exported="false"
             android:theme="@style/Theme.RozetkaPayDemo" />
         <activity
-            android:name="com.rozetkapay.demo.presentation.tokenization.TokenizationSheetActivity"
+            android:name="com.rozetkapay.demo.presentation.tokenization.TokenizationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RozetkaPayDemo" />
+        <activity
+            android:name="com.rozetkapay.demo.presentation.payment.PaymentActivity"
             android:exported="false"
             android:theme="@style/Theme.RozetkaPayDemo" />
     </application>

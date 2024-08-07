@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.presentation.components.Label
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
@@ -30,20 +31,47 @@ import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.rememberTokenizationSheet
+import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun TokenizationSeparateScreen(
+fun TokenizationScreen(
     onBack: () -> Unit,
 ) {
     val viewModel = viewModel<CardsViewModel>()
-    val snackbarHostState = remember { SnackbarHostState() }
-    HandleErrorsFlow(errorsFlow = viewModel.errorEventsFlow, snackbarHostState)
+    val cards by viewModel.cards.collectAsState()
 
     val tokenizationSheet = rememberTokenizationSheet(
         onResultCallback = { result ->
             viewModel.tokenizationFinished(result)
         }
     )
+
+    TokenizationScreenContent(
+        cards = cards,
+        errorsFlow = viewModel.errorEventsFlow,
+        onBack = onBack,
+        onTokenizeClick = {
+            tokenizationSheet.show(
+                client = viewModel.clientParameters,
+                parameters = TokenizationParameters(
+                    cardNameField = FieldRequirement.Optional,
+                    emailField = FieldRequirement.None,
+                    cardholderNameField = FieldRequirement.None,
+                ),
+            )
+        },
+    )
+}
+
+@Composable
+fun TokenizationScreenContent(
+    cards: List<CardToken>,
+    errorsFlow: Flow<String>,
+    onBack: () -> Unit,
+    onTokenizeClick: () -> Unit,
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    HandleErrorsFlow(errorsFlow = errorsFlow, snackbarHostState)
     Scaffold(
         topBar = {
             SimpleToolbar(
@@ -55,16 +83,7 @@ fun TokenizationSeparateScreen(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {
-                    tokenizationSheet.show(
-                        client = viewModel.clientParameters,
-                        parameters = TokenizationParameters(
-                            cardNameField = FieldRequirement.Optional,
-                            emailField = FieldRequirement.None,
-                            cardholderNameField = FieldRequirement.None,
-                        ),
-                    )
-                }
+                onClick = onTokenizeClick
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -83,7 +102,6 @@ fun TokenizationSeparateScreen(
                 .padding(innerPadding)
                 .padding(bottom = 80.dp)
         ) {
-            val cards by viewModel.cards.collectAsState()
             Label(
                 modifier = Modifier.padding(
                     top = 16.dp,
@@ -103,7 +121,7 @@ fun TokenizationSeparateScreen(
 @Preview
 private fun TokenizationBuiltInScreenPreview() {
     RozetkaPayDemoTheme {
-        TokenizationSeparateScreen(
+        TokenizationScreen(
             onBack = {}
         )
     }

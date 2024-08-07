@@ -70,14 +70,11 @@ fun MenuScreen(
             Spacer(modifier = Modifier.height(8.dp))
             MenuButton(
                 text = "Tokenize card",
-                onClick = { onNavigationEvent(Route.TokenizationSeparate) }
+                onClick = { onNavigationEvent(Route.Tokenization) }
             )
             MenuButton(
                 text = "Make a payment",
-                enabled = false,
-                onClick = {
-                    // TODO: will be implemented in future
-                }
+                onClick = { onNavigationEvent(Route.Payment) }
             )
         }
     }

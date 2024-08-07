@@ -10,10 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.rozetkapay.demo.presentation.payment.PaymentActivity
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
-import com.rozetkapay.demo.presentation.tokenization.TokenizationSheetActivity
+import com.rozetkapay.demo.presentation.tokenization.TokenizationActivity
 
 class ClassicMenuActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +32,12 @@ class ClassicMenuActivity : ComponentActivity() {
                                     // skip
                                 }
 
-                                Route.TokenizationSeparate -> {
-                                    startActivity(TokenizationSheetActivity.startIntent(this))
+                                Route.Tokenization -> {
+                                    startActivity(TokenizationActivity.startIntent(this))
+                                }
+
+                                Route.Payment -> {
+                                    startActivity(PaymentActivity.startIntent(this))
                                 }
                             }
                         }
