@@ -1,5 +1,6 @@
 package com.rozetkapay.demo.presentation.payment
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.presentation.payment.rememberPaymentSheet
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun PaymentScreen(
@@ -38,13 +41,20 @@ fun PaymentScreen(
     val cartItems by viewModel.cartItems.collectAsState()
     val total by viewModel.total.collectAsState()
 
+    val paymentSheet = rememberPaymentSheet(
+        onResultCallback = { result ->
+            viewModel.paymentFinished(result)
+        }
+    )
+
     PaymentSheetScreenContent(
         onBack = onBack,
         items = cartItems,
         total = total,
         onCheckout = {
-            // TODO:
-            // make payment
+            paymentSheet.show(
+                client = viewModel.clientParameters
+            )
         },
         errorsFlow = viewModel.errorEventsFlow,
     )
@@ -83,14 +93,18 @@ fun PaymentSheetScreenContent(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(vertical = 16.dp)
+                        .padding(
+                            vertical = 16.dp,
+                            horizontal = 8.dp
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items.forEach {
                         CartItem(item = it)
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier.padding(
@@ -156,8 +170,12 @@ fun PaymentSheetScreenContent(
 @Preview
 private fun PaymentSheetScreenPreview() {
     RozetkaPayDemoTheme {
-        PaymentScreen(
-            onBack = {}
+        PaymentSheetScreenContent(
+            items = PaymentViewModel.mockedCartItemData,
+            total = 1000,
+            errorsFlow = emptyFlow(),
+            onBack = {},
+            onCheckout = {}
         )
     }
 }

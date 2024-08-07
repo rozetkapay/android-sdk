@@ -10,13 +10,22 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
+import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
+import com.rozetkapay.sdk.presentation.payment.PaymentSheet
 
 class PaymentActivity : ComponentActivity() {
     private val viewModel: PaymentViewModel by viewModels()
+    private lateinit var paymentSheet: PaymentSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        paymentSheet = PaymentSheet(
+            activity = this,
+            callback = viewModel::paymentFinished
+        )
+
         setContent {
             RozetkaPayDemoClassicTheme {
                 val items by viewModel.cartItems.collectAsState()
@@ -27,7 +36,10 @@ class PaymentActivity : ComponentActivity() {
                     errorsFlow = viewModel.errorEventsFlow,
                     onBack = { finish() },
                     onCheckout = {
-                        // TODO: not supported yet
+                        paymentSheet.show(
+                            client = viewModel.clientParameters,
+                            themeConfigurator = classicRozetkaPaySdkThemeConfigurator
+                        )
                     }
                 )
             }

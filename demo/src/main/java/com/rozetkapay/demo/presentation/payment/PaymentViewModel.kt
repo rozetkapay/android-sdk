@@ -1,10 +1,12 @@
 package com.rozetkapay.demo.presentation.payment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.Product
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class PaymentViewModel : ViewModel() {
 
@@ -28,6 +31,28 @@ class PaymentViewModel : ViewModel() {
         widgetKey = Credentials.WIDGET_KEY,
         secretKey = Credentials.SECRET_KEY
     )
+
+    fun paymentFinished(result: PaymentResult) {
+        when (result) {
+            is PaymentResult.Complete -> {
+                Log.d("Payment", "Payment was successful")
+            }
+
+            is PaymentResult.Failed -> {
+                viewModelScope.launch {
+                    if (result.message.isNullOrBlank()) {
+                        errorEventsChannel.send("An error occurred during payment process. Please try again.")
+                    } else {
+                        errorEventsChannel.send("An error with message \"${result.message}\". Please try again.")
+                    }
+                }
+            }
+
+            PaymentResult.Cancelled -> {
+                Log.d("Payment", "Payment was cancelled")
+            }
+        }
+    }
 
     companion object {
         val mockedCartItemData = listOf(
