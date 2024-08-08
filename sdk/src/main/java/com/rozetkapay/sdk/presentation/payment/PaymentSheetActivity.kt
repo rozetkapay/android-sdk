@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,8 +69,15 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
                         finish()
                     }
                 ) {
+                    val state by viewModel.uiState.collectAsState()
                     PaymentScreen(
-                        onCancel = { viewModel.onAction(PaymentAction.Cancel) }
+                        state = state,
+                        onCardFieldStateChanged = { viewModel.onAction(PaymentAction.UpdateCard(it)) },
+                        onTokenizationChanged = { viewModel.onAction(PaymentAction.UpdateTokenization(it)) },
+                        onPay = { viewModel.onAction(PaymentAction.Pay) },
+                        onCancel = { viewModel.onAction(PaymentAction.Cancel) },
+                        onRetry = { viewModel.onAction(PaymentAction.Retry) },
+                        onFailed = { viewModel.onAction(PaymentAction.Failed(it)) }
                     )
                 }
             }

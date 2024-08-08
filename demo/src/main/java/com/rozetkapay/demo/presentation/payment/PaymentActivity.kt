@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
+import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.presentation.payment.PaymentSheet
 
 class PaymentActivity : ComponentActivity() {
@@ -38,6 +39,13 @@ class PaymentActivity : ComponentActivity() {
                     onCheckout = {
                         paymentSheet.show(
                             client = viewModel.clientParameters,
+                            parameters = PaymentParameters(
+                                allowTokenization = false,
+                                amountParameters = PaymentParameters.AmountParameters(
+                                    amount = total,
+                                    currencyCode = "EUR"
+                                )
+                            ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )
                     }

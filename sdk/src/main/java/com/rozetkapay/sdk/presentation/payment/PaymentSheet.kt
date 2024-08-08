@@ -56,7 +56,7 @@ class PaymentSheet internal constructor(
 
     fun show(
         client: ClientParameters,
-        parameters: PaymentParameters = PaymentParameters(),
+        parameters: PaymentParameters,
         themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) {
         launcher.present(

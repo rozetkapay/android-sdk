@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.presentation.payment.rememberPaymentSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -53,7 +54,14 @@ fun PaymentScreen(
         total = total,
         onCheckout = {
             paymentSheet.show(
-                client = viewModel.clientParameters
+                client = viewModel.clientParameters,
+                parameters = PaymentParameters(
+                    allowTokenization = true,
+                    amountParameters = PaymentParameters.AmountParameters(
+                        amount = total,
+                        currencyCode = "UAH"
+                    )
+                ),
             )
         },
         errorsFlow = viewModel.errorEventsFlow,

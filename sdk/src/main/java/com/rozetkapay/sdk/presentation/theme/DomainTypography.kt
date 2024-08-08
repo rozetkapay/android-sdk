@@ -12,6 +12,7 @@ internal interface DomainTypography {
     val labelSmall: TextStyle
     val labelLarge: TextStyle
     val input: TextStyle
+    val legalText: TextStyle
 }
 
 internal object DomainTypographyDefaults : DomainTypography {
@@ -47,6 +48,11 @@ internal object DomainTypographyDefaults : DomainTypography {
     override val input: TextStyle = defaultStyle.copy(
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        fontWeight = FontWeight.Normal
+    )
+    override val legalText: TextStyle = defaultStyle.copy(
+        fontSize = 9.sp,
+        lineHeight = 10.sp,
         fontWeight = FontWeight.Normal
     )
 }

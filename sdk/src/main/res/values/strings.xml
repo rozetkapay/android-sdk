@@ -10,6 +10,15 @@
     <string name="rozetka_pay_tokenization_save_button">Save</string>
     <string name="rozetka_pay_tokenization_error_common">Sorry… An error occurred during tokenization process</string>
 
+    <string name="rozetka_pay_payment_title">Pay</string>
+    <string name="rozetka_pay_payment_pay_button">Pay %s</string>
+    <string name="rozetka_pay_payment_error_unsupported">Sorry.. Payment with card is not supported yet, it will be available later</string>
+    <string name="rozetka_pay_payment_legal_text_part_1" translatable="false">Натискаючи кнопку «Оплатити», Ви підтверджуєте, що ознайомились з&#160;</string>
+    <string name="rozetka_pay_payment_legal_text_part_2" translatable="false">Публічним договором</string>
+    <string name="rozetka_pay_payment_legal_text_part_3" translatable="false">&#160;від&#160;</string>
+    <string name="rozetka_pay_payment_legal_text_part_4" translatable="false">ТОВ «ФК «ЕВО»</string>
+    <string name="rozetka_pay_payment_legal_text_part_5" translatable="false">&#160;та приймаєте його умови (приєднуєтеся до його умов), надаєте згоду на виконання разової платіжної операції та надаєте відмову від отримання повідомлення про здійснену операції з використанням платіжної картки.</string>
+
     <string name="rozetka_pay_form_card_info_title">Card information</string>
     <string name="rozetka_pay_form_optional_card_name">Card name</string>
     <string name="rozetka_pay_form_card_number">Card number</string>
@@ -17,6 +26,7 @@
     <string name="rozetka_pay_form_exp_date">MM/YY</string>
     <string name="rozetka_pay_form_cardholder_name">Cardholder name</string>
     <string name="rozetka_pay_form_email">Email</string>
+    <string name="rozetka_pay_form_save_card">Save card</string>
     <string name="rozetka_pay_form_validation_exp_date_invalid">Invalid expiration date value</string>
     <string name="rozetka_pay_form_validation_exp_date_expired">Card expired</string>
     <string name="rozetka_pay_form_validation_card_number_incorrect">Incorrect card number</string>

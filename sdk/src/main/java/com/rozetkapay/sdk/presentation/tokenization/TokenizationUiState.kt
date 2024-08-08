@@ -5,7 +5,7 @@ import com.rozetkapay.sdk.presentation.components.CardFieldState
 
 @Immutable
 internal data class TokenizationUiState(
-    val displayState: DisplayState = DisplayState.Content,
+    val displayState: TokenizationDisplayState = TokenizationDisplayState.Content,
     val withCardName: Boolean = false,
     val cardName: String = "",
     val cardNameError: String? = null,
@@ -16,13 +16,13 @@ internal data class TokenizationUiState(
     val cardState: CardFieldState = CardFieldState(),
 )
 
-internal sealed class DisplayState {
-    data object Loading : DisplayState()
-    data object Content : DisplayState()
+internal sealed class TokenizationDisplayState {
+    data object Loading : TokenizationDisplayState()
+    data object Content : TokenizationDisplayState()
     data class Error(
         val message: String,
         val reason: Throwable? = null,
-    ) : DisplayState()
+    ) : TokenizationDisplayState()
 }
 
 internal sealed interface TokenizationAction {

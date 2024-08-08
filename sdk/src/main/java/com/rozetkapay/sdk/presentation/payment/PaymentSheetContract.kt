@@ -30,7 +30,7 @@ class PaymentSheetContract :
     @Parcelize
     data class Parameters(
         val client: ClientParameters,
-        val parameters: PaymentParameters = PaymentParameters(),
+        val parameters: PaymentParameters,
         val themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) : Parcelable {
 

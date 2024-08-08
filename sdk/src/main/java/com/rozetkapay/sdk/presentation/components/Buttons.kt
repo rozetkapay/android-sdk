@@ -21,12 +21,14 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 internal fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         onClick = onClick,
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = DomainTheme.colors.primary,
             contentColor = DomainTheme.colors.onPrimary,
@@ -81,6 +83,13 @@ private fun ButtonsPreview() {
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = "Button",
+                onClick = {}
+            )
+            PrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Disabled button",
+                enabled = false,
                 onClick = {}
             )
             TextButton(

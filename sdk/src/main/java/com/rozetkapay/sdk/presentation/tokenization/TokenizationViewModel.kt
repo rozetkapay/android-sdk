@@ -113,7 +113,7 @@ internal class TokenizationViewModel(
     private fun retry() {
         _uiState.tryEmit(
             uiState.value.copy(
-                displayState = DisplayState.Content
+                displayState = TokenizationDisplayState.Content
             )
         )
     }
@@ -199,7 +199,7 @@ internal class TokenizationViewModel(
     ) {
         _uiState.tryEmit(
             uiState.value.copy(
-                displayState = DisplayState.Loading
+                displayState = TokenizationDisplayState.Loading
             )
         )
         val result = parseCardDataUseCase(
@@ -223,7 +223,7 @@ internal class TokenizationViewModel(
                     Logger.e(throwable = error) { "Tokenization error" }
                     _uiState.tryEmit(
                         uiState.value.copy(
-                            displayState = DisplayState.Error(
+                            displayState = TokenizationDisplayState.Error(
                                 message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common)
                             )
                         )

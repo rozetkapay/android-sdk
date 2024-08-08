@@ -7,6 +7,10 @@
     <string name="rozetka_pay_tokenization_title">Додайте Вашу нову картку</string>
     <string name="rozetka_pay_tokenization_save_button">Зберегти</string>
 
+    <string name="rozetka_pay_payment_title">Оплата</string>
+    <string name="rozetka_pay_payment_pay_button">Оплатити %s</string>
+    <string name="rozetka_pay_payment_error_unsupported">Вибачте… Оплата за допомогою картки поки що не підтримується, вона стане доступна пізніше</string>
+
     <string name="rozetka_pay_form_card_info_title">Інформація про картку</string>
     <string name="rozetka_pay_form_optional_card_name">Назва картки</string>
     <string name="rozetka_pay_form_card_number">Номер картки</string>
@@ -22,7 +26,7 @@
     <string name="rozetka_pay_form_validation_cardholder_name_empty">Ім\ʼя не може бути пустим</string>
     <string name="rozetka_pay_form_validation_field_empty">Поле не може бути пустим</string>
     <string name="rozetka_pay_form_validation_email_incorrect">Неправильний email</string>
-    <string name="rozetka_pay_tokenization_error_common">Вибачте... Сталась помилка в процесі токенізації картки</string>
+    <string name="rozetka_pay_tokenization_error_common">Вибачте… Сталась помилка в процесі токенізації картки</string>
     <string name="rozetka_pay_common_error_message">Сталась неочікувана помилка</string>
     <string name="rozetka_pay_common_button_retry">Спробувати ще раз</string>
 

@@ -22,7 +22,7 @@ import com.rozetkapay.sdk.presentation.components.CardField
 import com.rozetkapay.sdk.presentation.components.CardFieldState
 import com.rozetkapay.sdk.presentation.components.ErrorScreen
 import com.rozetkapay.sdk.presentation.components.FormTextField
-import com.rozetkapay.sdk.presentation.components.LegalBlock
+import com.rozetkapay.sdk.presentation.components.LegalIconsBlock
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
 import com.rozetkapay.sdk.presentation.components.SheetCloseHeader
@@ -49,7 +49,7 @@ internal fun TokenizationScreen(
             .inSheetPaddings()
     ) {
         when (state.displayState) {
-            DisplayState.Content -> {
+            TokenizationDisplayState.Content -> {
                 SheetCloseHeader(
                     onClose = onCancel
                 )
@@ -62,7 +62,7 @@ internal fun TokenizationScreen(
                 )
             }
 
-            is DisplayState.Error -> {
+            is TokenizationDisplayState.Error -> {
                 ErrorScreen(
                     message = state.displayState.message,
                     onRetry = onRetry,
@@ -72,7 +72,7 @@ internal fun TokenizationScreen(
                 )
             }
 
-            DisplayState.Loading -> {
+            TokenizationDisplayState.Loading -> {
                 LoadingScreen()
             }
         }
@@ -138,14 +138,13 @@ private fun TokenizationContent(
                 isError = state.emailError != null
             )
         }
-
         Spacer(modifier = Modifier.height(40.dp))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_tokenization_save_button),
             onClick = onSave
         )
-        LegalBlock(
+        LegalIconsBlock(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 28.dp)
@@ -159,7 +158,7 @@ private fun TokenizationContentPreview() {
     RozetkaPayTheme {
         TokenizationScreen(
             state = TokenizationUiState(
-                displayState = DisplayState.Content,
+                displayState = TokenizationDisplayState.Content,
             ),
             onEmailChanged = {},
             onCardNameChanged = {},
@@ -178,7 +177,7 @@ private fun TokenizationContentProgressPreview() {
     RozetkaPayTheme {
         TokenizationScreen(
             state = TokenizationUiState(
-                displayState = DisplayState.Loading,
+                displayState = TokenizationDisplayState.Loading,
             ),
             onEmailChanged = {},
             onCardNameChanged = {},
@@ -197,7 +196,7 @@ private fun TokenizationContentFailedPreview() {
     RozetkaPayTheme {
         TokenizationScreen(
             state = TokenizationUiState(
-                displayState = DisplayState.Error(
+                displayState = TokenizationDisplayState.Error(
                     message = stringResource(id = R.string.rozetka_pay_tokenization_error_common)
                 ),
             ),
