@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.koin.android.compose)
     implementation(libs.bundles.ktor)
     implementation(libs.kotlin.serialization)
+    implementation(libs.google.pay)
+    implementation(libs.google.pay.compose)
+    implementation(libs.kotlin.coroutines.play.services)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

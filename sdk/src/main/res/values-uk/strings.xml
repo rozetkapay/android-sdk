@@ -29,5 +29,8 @@
     <string name="rozetka_pay_tokenization_error_common">Вибачте… Сталась помилка в процесі токенізації картки</string>
     <string name="rozetka_pay_common_error_message">Сталась неочікувана помилка</string>
     <string name="rozetka_pay_common_button_retry">Спробувати ще раз</string>
+    <string name="rozetka_pay_payment_label_use_card">Або оплатіть карткою</string>
+    <string name="rozetka_pay_form_save_card">Зберегти картку</string>
+    <string name="rozetka_pay_payment_error_google_pay">Виникла помилка під час спроби оплатити за допомогою Google Pay. Будь ласка, спробуйте пізніше або зверніться до нашої служби підтримки</string>
 
 </resources>

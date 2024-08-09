@@ -13,6 +13,8 @@
     <string name="rozetka_pay_payment_title">Pay</string>
     <string name="rozetka_pay_payment_pay_button">Pay %s</string>
     <string name="rozetka_pay_payment_error_unsupported">Sorry.. Payment with card is not supported yet, it will be available later</string>
+    <string name="rozetka_pay_payment_error_google_pay">An error occurred while trying to pay using Google Pay. Please try again later or contact our support team</string>
+    <string name="rozetka_pay_payment_label_use_card">Or pay using card</string>
     <string name="rozetka_pay_payment_legal_text_part_1" translatable="false">Натискаючи кнопку «Оплатити», Ви підтверджуєте, що ознайомились з&#160;</string>
     <string name="rozetka_pay_payment_legal_text_part_2" translatable="false">Публічним договором</string>
     <string name="rozetka_pay_payment_legal_text_part_3" translatable="false">&#160;від&#160;</string>

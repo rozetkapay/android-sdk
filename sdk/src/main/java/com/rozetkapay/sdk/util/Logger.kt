@@ -8,7 +8,7 @@ internal object Logger {
     private val isLogEnabled: Boolean
         get() = RozetkaPaySdk.isLoggingEnabled
 
-    private const val DEFAULT_TAG = "RozetkaPaySdk"
+    const val DEFAULT_TAG = "RozetkaPaySdk"
 
     fun v(tag: String = DEFAULT_TAG, throwable: Throwable? = null, message: () -> String) {
         if (isLogEnabled) Log.v(tag, message(), throwable)

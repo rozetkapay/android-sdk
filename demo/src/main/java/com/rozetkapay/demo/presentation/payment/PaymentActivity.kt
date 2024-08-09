@@ -44,7 +44,8 @@ class PaymentActivity : ComponentActivity() {
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = total,
                                     currencyCode = "EUR"
-                                )
+                                ),
+                                googlePayConfig = viewModel.testGooglePayConfig,
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

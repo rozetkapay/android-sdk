@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
@@ -34,10 +35,13 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
 
     private val viewModel: PaymentViewModel by viewModels { viewModelFactory }
 
+    private val paymentDataLauncher = registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { result ->
+        viewModel.onAction(PaymentAction.GooglePayResult(result))
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         setContent {
             RozetkaPayTheme(
@@ -48,15 +52,23 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
                 val scope = rememberCoroutineScope()
 
                 LaunchedEffect(Unit) {
-                    viewModel.resultStateFlow.collect { result ->
-                        setActivityResult(result)
-                        scope.launch {
-                            modalBottomSheetState.hide()
-                        }.invokeOnCompletion {
-                            if (!modalBottomSheetState.isVisible) {
-                                showSheet.value = false
+                    viewModel.eventsFlow.collect { event ->
+                        when (event) {
+                            is PaymentEvent.Result -> {
+                                setActivityResult(event.result)
+                                scope.launch {
+                                    modalBottomSheetState.hide()
+                                }.invokeOnCompletion {
+                                    if (!modalBottomSheetState.isVisible) {
+                                        showSheet.value = false
+                                    }
+                                    finish()
+                                }
                             }
-                            finish()
+
+                            is PaymentEvent.StartGooglePayPayment -> {
+                                event.task.addOnCompleteListener(paymentDataLauncher::launch)
+                            }
                         }
                     }
                 }
@@ -72,12 +84,7 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
                     val state by viewModel.uiState.collectAsState()
                     PaymentScreen(
                         state = state,
-                        onCardFieldStateChanged = { viewModel.onAction(PaymentAction.UpdateCard(it)) },
-                        onTokenizationChanged = { viewModel.onAction(PaymentAction.UpdateTokenization(it)) },
-                        onPay = { viewModel.onAction(PaymentAction.Pay) },
-                        onCancel = { viewModel.onAction(PaymentAction.Cancel) },
-                        onRetry = { viewModel.onAction(PaymentAction.Retry) },
-                        onFailed = { viewModel.onAction(PaymentAction.Failed(it)) }
+                        onAction = { viewModel.onAction(it) },
                     )
                 }
             }

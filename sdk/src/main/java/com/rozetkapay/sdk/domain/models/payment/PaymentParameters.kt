@@ -7,8 +7,8 @@ import kotlinx.parcelize.Parcelize
 data class PaymentParameters(
     val amountParameters: AmountParameters,
     val allowTokenization: Boolean = true,
-) : Parcelable{
-
+    val googlePayConfig: GooglePayConfig? = null,
+) : Parcelable {
 
     @Parcelize
     data class AmountParameters(

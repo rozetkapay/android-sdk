@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.Product
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,11 @@ class PaymentViewModel : ViewModel() {
     val clientParameters = ClientParameters(
         widgetKey = Credentials.WIDGET_KEY,
         secretKey = Credentials.SECRET_KEY
+    )
+    val testGooglePayConfig = GooglePayConfig.Test
+    val prodGooglePayConfig = GooglePayConfig.Production(
+        merchantId = Credentials.GOOGLE_PAY_MERCHANT_ID,
+        merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
     )
 
     fun paymentFinished(result: PaymentResult) {

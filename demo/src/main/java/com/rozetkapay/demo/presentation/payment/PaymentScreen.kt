@@ -60,7 +60,8 @@ fun PaymentScreen(
                     amountParameters = PaymentParameters.AmountParameters(
                         amount = total,
                         currencyCode = "UAH"
-                    )
+                    ),
+                    googlePayConfig = viewModel.testGooglePayConfig
                 ),
             )
         },
