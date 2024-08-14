@@ -4,11 +4,16 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed class PaymentResult : Parcelable {
+
     @Parcelize
-    data object Complete : PaymentResult()
+    data class Complete(
+        val orderId: String,
+        val paymentId: String,
+    ) : PaymentResult()
 
     @Parcelize
     data class Failed(
+        val paymentId: String? = null,
         val message: String? = null,
         val error: Throwable? = null,
     ) : PaymentResult()

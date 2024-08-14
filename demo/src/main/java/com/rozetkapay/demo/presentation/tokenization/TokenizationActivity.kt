@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.sdk.domain.models.FieldRequirement
@@ -31,7 +32,7 @@ class TokenizationActivity : ComponentActivity() {
 
         setContent {
             RozetkaPayDemoClassicTheme {
-                val cards by viewModel.cards.collectAsState()
+                val cards by viewModel.cards.collectAsStateWithLifecycle()
                 TokenizationScreenContent(
                     cards = cards,
                     errorsFlow = viewModel.errorEventsFlow,

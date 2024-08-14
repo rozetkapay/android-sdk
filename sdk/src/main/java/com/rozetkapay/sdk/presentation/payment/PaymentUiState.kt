@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.contract.ApiTaskResult
+import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.components.CardFieldState
 
@@ -37,6 +38,7 @@ internal sealed interface PaymentAction {
     data class UpdateCard(val state: CardFieldState) : PaymentAction
     data class UpdateTokenization(val value: Boolean) : PaymentAction
     data class GooglePayResult(val result: ApiTaskResult<PaymentData>) : PaymentAction
+    data class PaymentConfirmed(val result: ConfirmPaymentResult) : PaymentAction
 }
 
 internal sealed interface PaymentEvent {
@@ -46,5 +48,10 @@ internal sealed interface PaymentEvent {
 
     data class StartGooglePayPayment(
         val task: Task<PaymentData>,
+    ) : PaymentEvent
+
+    data class Start3dsConfirmation(
+        val paymentId: String,
+        val url: String,
     ) : PaymentEvent
 }

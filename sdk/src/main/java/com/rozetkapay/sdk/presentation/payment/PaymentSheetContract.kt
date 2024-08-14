@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.os.bundleOf
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientPayParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
@@ -29,7 +30,7 @@ class PaymentSheetContract :
 
     @Parcelize
     data class Parameters(
-        val client: ClientParameters,
+        val client: ClientPayParameters,
         val parameters: PaymentParameters,
         val themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) : Parcelable {

@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.presentation.payment
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +14,18 @@ import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
-import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientPayParameters
 import com.rozetkapay.sdk.domain.models.Currency
+import com.rozetkapay.sdk.domain.models.payment.BasePaymentParameters
+import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
+import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
+import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.usecases.CardParsingResult
+import com.rozetkapay.sdk.domain.usecases.CreatePaymentUseCase
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.presentation.components.CardFieldState
@@ -29,16 +35,20 @@ import com.rozetkapay.sdk.util.MoneyFormatter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 internal class PaymentViewModel(
-    private val client: ClientParameters,
+    private val client: ClientPayParameters,
     private val parameters: PaymentParameters,
     private val resourcesProvider: ResourcesProvider,
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
     private val parseCardDataUseCase: ParseCardDataUseCase,
+    private val createPaymentUseCase: CreatePaymentUseCase,
     private val googlePayInteractor: GooglePayInteractor?,
 ) : ViewModel() {
 
@@ -94,6 +104,7 @@ internal class PaymentViewModel(
             is PaymentAction.UpdateTokenization -> updateTokenization(action.value)
             is PaymentAction.GooglePayResult -> handleGooglePayResult(action.result)
             PaymentAction.PayWithGooglePay -> payWithGooglePay()
+            is PaymentAction.PaymentConfirmed -> handlePaymentConfirmationResult(action.result)
         }
     }
 
@@ -102,6 +113,7 @@ internal class PaymentViewModel(
             priceCoins = parameters.amountParameters.amount,
             currencyCode = parameters.amountParameters.currencyCode,
         )?.let { task ->
+            loading()
             _eventsChannel.trySend(PaymentEvent.StartGooglePayPayment(task))
         }
     }
@@ -114,8 +126,8 @@ internal class PaymentViewModel(
                     Logger.d { "Google Pay result: ${result.toJson()}" }
                     val token = result.extractToken()
                     if (token != null) {
-                        // TODO: start payment google pay token
                         Logger.d { "Google Pay token: $token" }
+                        runPaymentWithGooglePay(token)
                     } else {
                         showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
                     }
@@ -127,11 +139,70 @@ internal class PaymentViewModel(
 
             CommonStatusCodes.CANCELED -> {
                 Logger.i { "GooglePay process was cancelled by user" }
+                retry()
             }
 
             AutoResolveHelper.RESULT_ERROR -> {
                 Logger.e { "GooglePay process failed with error, status message = ${taskResult.status.statusMessage}" }
                 showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+            }
+        }
+    }
+
+    private fun runPaymentWithGooglePay(token: String) {
+        loading()
+        val paymentRequest = GooglePayPaymentRequest(
+            clientParameters = client,
+            paymentParameters = basePaymentParameters(),
+            token = Base64.encode(token.toByteArray(), Base64.NO_PADDING).toString(Charsets.UTF_8)
+        )
+        createPaymentUseCase(paymentRequest)
+            .catch { error ->
+                Logger.e(throwable = error) { "Google pay payment error" }
+                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+            }
+            .onEach { result ->
+                Logger.d { "Payment result: $result" }
+                when (result) {
+                    is CreatePaymentResult.Confirmation3DsRequired -> start3ds(
+                        paymentId = result.paymentId,
+                        url = result.url
+                    )
+
+                    is CreatePaymentResult.Error -> showError(
+                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                    )
+
+                    is CreatePaymentResult.Success -> success(
+                        paymentId = result.paymentId,
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun start3ds(
+        paymentId: String,
+        url: String,
+    ) {
+        loading()
+        _eventsChannel.trySend(
+            PaymentEvent.Start3dsConfirmation(
+                paymentId = paymentId,
+                url = url
+            )
+        )
+    }
+
+    private fun handlePaymentConfirmationResult(result: ConfirmPaymentResult) {
+        Logger.d { "Payment confirmation result $result" }
+        when (result) {
+            is ConfirmPaymentResult.Success -> success(result.paymentId)
+
+            ConfirmPaymentResult.Cancelled -> retry()
+
+            is ConfirmPaymentResult.Error -> {
+                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
             }
         }
     }
@@ -168,6 +239,12 @@ internal class PaymentViewModel(
         // it will be implemented in the future releases
         showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_unsupported))
     }
+
+    private fun basePaymentParameters() = BasePaymentParameters(
+        amount = parameters.amountParameters.amount,
+        currencyCode = parameters.amountParameters.currencyCode,
+        orderId = parameters.orderId
+    )
 
     private fun updateCard(state: CardFieldState) {
         val newState = if (uiState.value.cardState.hasErrors) {
@@ -215,6 +292,27 @@ internal class PaymentViewModel(
                 cardholderNameError = null
             )
         }
+    }
+
+    private fun loading() {
+        _uiState.tryEmit(
+            uiState.value.copy(
+                displayState = PaymentDisplayState.Loading
+            )
+        )
+    }
+
+    private fun success(
+        paymentId: String,
+    ) {
+        _eventsChannel.trySend(
+            PaymentEvent.Result(
+                PaymentResult.Complete(
+                    paymentId = paymentId,
+                    orderId = parameters.orderId
+                )
+            )
+        )
     }
 
     private fun showError(
@@ -284,6 +382,7 @@ internal class PaymentViewModel(
             return PaymentViewModel(
                 client = parameters.client,
                 parameters = parameters.parameters,
+                createPaymentUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get(),
                 provideCardPaymentSystemUseCase = RozetkaPayKoinContext.koin.get(),
                 parseCardDataUseCase = RozetkaPayKoinContext.koin.get(),

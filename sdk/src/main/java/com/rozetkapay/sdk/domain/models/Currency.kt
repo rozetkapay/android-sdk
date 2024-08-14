@@ -1,6 +1,6 @@
 package com.rozetkapay.sdk.domain.models
 
-enum class Currency(
+internal enum class Currency(
     val codes: List<String>,
     val symbol: String,
 ) {

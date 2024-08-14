@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.rozetkapay.sdk.presentation.payment.googlepay
 
 import org.json.JSONArray
@@ -5,7 +7,7 @@ import org.json.JSONObject
 
 internal object GooglePayUtils {
 
-    val baseRequest = JSONObject()
+    val baseRequest: JSONObject = JSONObject()
         .put("apiVersion", 2)
         .put("apiVersionMinor", 0)
 
@@ -26,7 +28,7 @@ internal object GooglePayUtils {
         )
     )
 
-    val baseCardPaymentMethod = JSONObject()
+    val baseCardPaymentMethod: JSONObject = JSONObject()
         .put("type", "CARD")
         .put(
             "parameters", JSONObject()

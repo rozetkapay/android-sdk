@@ -5,46 +5,50 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.Product
-import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientPayParameters
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PaymentViewModel : ViewModel() {
 
-    private val _cartItems = MutableStateFlow(mockedCartItemData)
-    val cartItems = _cartItems.asStateFlow()
-    val total = _cartItems.map {
-        it.sumOf { item -> item.product.price * item.count }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
-
     private val errorEventsChannel = Channel<String>()
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
-    val clientParameters = ClientParameters(
-        widgetKey = Credentials.WIDGET_KEY,
-        secretKey = Credentials.SECRET_KEY
+    private val defaultState = PaymentScreenState(
+        items = mockedCartItemData,
+        total = mockedCartItemData.sumOf { it.product.price * it.count },
+        orderId = "demo_order_id"
     )
-    val testGooglePayConfig = GooglePayConfig.Test
-    val prodGooglePayConfig = GooglePayConfig.Production(
+    private val _state = MutableStateFlow(defaultState)
+    val state = _state.asStateFlow()
+
+    val clientParameters = ClientPayParameters(
+        token = Credentials.AUTH_TOKEN_1
+    )
+    val testGooglePayConfig = GooglePayConfig.Test(
         merchantId = Credentials.GOOGLE_PAY_MERCHANT_ID,
+        merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
+    )
+    val exampleGooglePayConfig = GooglePayConfig.Test(
+        gateway = "example",
+        merchantId = "exampleGatewayMerchantId",
         merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
     )
 
     fun paymentFinished(result: PaymentResult) {
         when (result) {
             is PaymentResult.Complete -> {
-                Log.d("Payment", "Payment was successful")
+                Log.d("Payment", "Payment ${result.paymentId} was successful")
+                _state.value = _state.value.copy(isCompleted = true)
             }
 
             is PaymentResult.Failed -> {
+                Log.e("Payment", "Payment ${result.paymentId} failed", result.error)
                 viewModelScope.launch {
                     if (result.message.isNullOrBlank()) {
                         errorEventsChannel.send("An error occurred during payment process. Please try again.")
@@ -55,9 +59,13 @@ class PaymentViewModel : ViewModel() {
             }
 
             PaymentResult.Cancelled -> {
-                Log.d("Payment", "Payment was cancelled")
+                Log.d("Payment", "Payment was cancelled manually by user")
             }
         }
+    }
+
+    fun reset() {
+        _state.tryEmit(defaultState)
     }
 
     companion object {
@@ -97,3 +105,10 @@ class PaymentViewModel : ViewModel() {
         )
     }
 }
+
+data class PaymentScreenState(
+    val items: List<CartItemData> = emptyList(),
+    val total: Long = 0L,
+    val orderId: String = "",
+    val isCompleted: Boolean = false,
+)

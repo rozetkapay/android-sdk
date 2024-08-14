@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.domain.usecases
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
 import com.rozetkapay.sdk.BuildConfig
@@ -9,6 +10,7 @@ internal class GetDeviceInfoUseCase(
     private val context: Context,
 ) {
 
+    @SuppressLint("HardwareIds")
     operator fun invoke(): DeviceInfo {
         return DeviceInfo(
             platform = "Android",

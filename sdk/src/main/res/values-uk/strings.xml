@@ -6,10 +6,13 @@
     <string name="rozetka_pay_common_button_cancel">Відмінити</string>
     <string name="rozetka_pay_tokenization_title">Додайте Вашу нову картку</string>
     <string name="rozetka_pay_tokenization_save_button">Зберегти</string>
+    <string name="rozetka_pay_tokenization_error_common">Вибачте… Сталась помилка в процесі токенізації картки</string>
 
     <string name="rozetka_pay_payment_title">Оплата</string>
     <string name="rozetka_pay_payment_pay_button">Оплатити %s</string>
     <string name="rozetka_pay_payment_error_unsupported">Вибачте… Оплата за допомогою картки поки що не підтримується, вона стане доступна пізніше</string>
+    <string name="rozetka_pay_payment_error_google_pay">Виникла помилка під час спроби оплатити за допомогою Google Pay. Будь ласка, спробуйте пізніше або зверніться до нашої служби підтримки</string>
+    <string name="rozetka_pay_payment_error_common">Вибачте… Сталась помилка в процесі обробки платежу</string>
 
     <string name="rozetka_pay_form_card_info_title">Інформація про картку</string>
     <string name="rozetka_pay_form_optional_card_name">Назва картки</string>
@@ -26,11 +29,9 @@
     <string name="rozetka_pay_form_validation_cardholder_name_empty">Ім\ʼя не може бути пустим</string>
     <string name="rozetka_pay_form_validation_field_empty">Поле не може бути пустим</string>
     <string name="rozetka_pay_form_validation_email_incorrect">Неправильний email</string>
-    <string name="rozetka_pay_tokenization_error_common">Вибачте… Сталась помилка в процесі токенізації картки</string>
     <string name="rozetka_pay_common_error_message">Сталась неочікувана помилка</string>
     <string name="rozetka_pay_common_button_retry">Спробувати ще раз</string>
     <string name="rozetka_pay_payment_label_use_card">Або оплатіть карткою</string>
     <string name="rozetka_pay_form_save_card">Зберегти картку</string>
-    <string name="rozetka_pay_payment_error_google_pay">Виникла помилка під час спроби оплатити за допомогою Google Pay. Будь ласка, спробуйте пізніше або зверніться до нашої служби підтримки</string>
-
+    <string name="rozetka_pay_payment_confirmation_3ds_loading">Зачекайте, будь ласка…</string>
 </resources>

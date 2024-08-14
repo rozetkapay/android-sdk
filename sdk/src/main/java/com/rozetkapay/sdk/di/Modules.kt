@@ -2,6 +2,7 @@ package com.rozetkapay.sdk.di
 
 import com.rozetkapay.sdk.RozetkaPaySdk
 import com.rozetkapay.sdk.data.android.AndroidResourcesProvider
+import com.rozetkapay.sdk.data.network.ApiPaymentsRepository
 import com.rozetkapay.sdk.data.network.ApiProvider
 import com.rozetkapay.sdk.data.network.ApiProviderImpl
 import com.rozetkapay.sdk.data.network.ApiTokenizationRepository
@@ -10,8 +11,10 @@ import com.rozetkapay.sdk.data.network.RequestSignerImpl
 import com.rozetkapay.sdk.data.network.ResponseDecryptor
 import com.rozetkapay.sdk.data.network.ResponseDecryptorImpl
 import com.rozetkapay.sdk.data.network.createHttpClient
+import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.repository.TokenizationRepository
+import com.rozetkapay.sdk.domain.usecases.CreatePaymentUseCase
 import com.rozetkapay.sdk.domain.usecases.GetDeviceInfoUseCase
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
@@ -48,6 +51,11 @@ internal val useCaseModule = module {
             provideCardPaymentSystemUseCase = get()
         )
     }
+    single<CreatePaymentUseCase> {
+        CreatePaymentUseCase(
+            paymentsRepository = get()
+        )
+    }
 }
 
 internal val repositoryModule = module {
@@ -60,12 +68,25 @@ internal val repositoryModule = module {
             responseDecryptor = get()
         )
     }
+    single<PaymentsRepository> {
+        ApiPaymentsRepository(
+            apiProvider = get(),
+            httpClient = get()
+        )
+    }
 }
 
 internal val networkModule = module {
     single<HttpClient> {
         createHttpClient(
-            logLevel = if (RozetkaPaySdk.mode == RozetkaPaySdkMode.Development) LogLevel.ALL else LogLevel.HEADERS
+            logLevel = if (RozetkaPaySdk.mode == RozetkaPaySdkMode.Development) {
+                LogLevel.ALL
+            } else {
+                // TODO: log level ALL temporarily enabled for development purposes
+                // should be replaced with HEADERS before release
+                LogLevel.ALL
+                // LogLevel.HEADERS
+            }
         )
     }
     single<ApiProvider> { ApiProviderImpl() }

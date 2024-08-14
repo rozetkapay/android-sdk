@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PaymentParameters(
     val amountParameters: AmountParameters,
+    val orderId: String,
     val allowTokenization: Boolean = true,
     val googlePayConfig: GooglePayConfig? = null,
 ) : Parcelable {
@@ -13,6 +14,6 @@ data class PaymentParameters(
     @Parcelize
     data class AmountParameters(
         val amount: Long,
-        val currencyCode: String,
+        val currencyCode: String, // ISO-4217
     ) : Parcelable
 }

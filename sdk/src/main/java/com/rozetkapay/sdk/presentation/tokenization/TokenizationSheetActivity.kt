@@ -7,11 +7,11 @@ import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
@@ -63,7 +63,7 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
                     modalBottomSheetState = modalBottomSheetState,
                     onDismiss = { viewModel.onAction(TokenizationAction.Cancel) }
                 ) {
-                    val state = viewModel.uiState.collectAsState()
+                    val state = viewModel.uiState.collectAsStateWithLifecycle()
                     TokenizationScreen(
                         state = state.value,
                         onSave = { viewModel.onAction(TokenizationAction.Save) },

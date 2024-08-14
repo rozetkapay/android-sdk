@@ -3,7 +3,7 @@ package com.rozetkapay.sdk.data.network
 import com.rozetkapay.sdk.data.network.converters.TokenizationRequestDto
 import com.rozetkapay.sdk.data.network.converters.toTokenizedCard
 import com.rozetkapay.sdk.data.network.models.EncryptedResponseDto
-import com.rozetkapay.sdk.data.network.models.ErrorDto
+import com.rozetkapay.sdk.data.network.models.TokenizationErrorDto
 import com.rozetkapay.sdk.data.network.models.TokenizationResponseDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
@@ -66,7 +66,7 @@ internal class ApiTokenizationRepository(
             responseDto.toTokenizedCard()
         } else {
             Logger.d { "Tokenization error" }
-            val errorData = response.body<ErrorDto?>()
+            val errorData = response.body<TokenizationErrorDto?>()
             if (errorData != null) {
                 throw RozetkaPayTokenizationException(
                     id = errorData.id,

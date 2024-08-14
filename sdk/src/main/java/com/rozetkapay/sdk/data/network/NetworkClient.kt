@@ -16,7 +16,6 @@ internal val jsonConverter = Json {
     ignoreUnknownKeys = true
     encodeDefaults = true
     explicitNulls = false
-
 }
 
 internal fun createHttpClient(
@@ -31,7 +30,9 @@ internal fun createHttpClient(
             level = logLevel
             logger = object : Logger {
                 override fun log(message: String) {
-                    com.rozetkapay.sdk.util.Logger.d(tag = "RozetkaPaySdk-Network") { message }
+                    com.rozetkapay.sdk.util.Logger.d(
+                        tag = "${com.rozetkapay.sdk.util.Logger.DEFAULT_TAG}-Network"
+                    ) { message }
                 }
             }
 

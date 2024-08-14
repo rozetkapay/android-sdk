@@ -1,6 +1,6 @@
 package com.rozetkapay.sdk.domain.models
 
-data class DeviceInfo(
+internal data class DeviceInfo(
     val platform: String,
     val sdkVersion: String,
     val osVersion: String,

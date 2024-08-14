@@ -7,8 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
@@ -29,23 +29,23 @@ class PaymentActivity : ComponentActivity() {
 
         setContent {
             RozetkaPayDemoClassicTheme {
-                val items by viewModel.cartItems.collectAsState()
-                val total by viewModel.total.collectAsState()
+                val state by viewModel.state.collectAsStateWithLifecycle()
                 PaymentSheetScreenContent(
-                    items = items,
-                    total = total,
+                    state = state,
                     errorsFlow = viewModel.errorEventsFlow,
                     onBack = { finish() },
+                    onReset = viewModel::reset,
                     onCheckout = {
                         paymentSheet.show(
                             client = viewModel.clientParameters,
                             parameters = PaymentParameters(
                                 allowTokenization = false,
                                 amountParameters = PaymentParameters.AmountParameters(
-                                    amount = total,
+                                    amount = state.total,
                                     currencyCode = "EUR"
                                 ),
-                                googlePayConfig = viewModel.testGooglePayConfig,
+                                googlePayConfig = viewModel.exampleGooglePayConfig,
+                                orderId = state.orderId,
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

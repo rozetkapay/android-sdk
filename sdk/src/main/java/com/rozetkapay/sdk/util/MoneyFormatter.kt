@@ -6,8 +6,8 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-object MoneyFormatter {
-    const val DECIMAL_SEPARATOR = '.'
+internal object MoneyFormatter {
+    private const val DECIMAL_SEPARATOR = '.'
     private const val DEFAULT_EXPONENT = 2
     private val symbols = DecimalFormatSymbols.getInstance().apply {
         groupingSeparator = ' '

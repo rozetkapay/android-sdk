@@ -9,8 +9,8 @@ plugins {
 buildscript {
     extra.apply {
         set("minSdk", 23)
-        set("targetSdk", 34)
-        set("compileSdk", 34)
+        set("targetSdk", 35)
+        set("compileSdk", 35)
 
         set("versionCode", 1)
         set("versionName", "0.1-alpha02")

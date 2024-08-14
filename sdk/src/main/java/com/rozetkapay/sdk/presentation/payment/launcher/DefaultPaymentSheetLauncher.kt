@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientPayParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.payment.PaymentSheetContract
@@ -42,7 +43,7 @@ internal class DefaultPaymentSheetLauncher(
     )
 
     override fun present(
-        client: ClientParameters,
+        client: ClientPayParameters,
         parameters: PaymentParameters,
         themeConfigurator: RozetkaPayThemeConfigurator,
     ) {

@@ -12,12 +12,14 @@ sealed class GooglePayConfig(
 ) : Parcelable {
 
     @Parcelize
-    data object Test : GooglePayConfig(
-        // predefined test parameters provided by Google
-        // https://developers.google.com/pay/api/android/guides/tutorial
-        gateway = "example",
-        merchantId = "exampleGatewayMerchantId",
-        merchantName = "RozetkaPay Test Merchant"
+    data class Test(
+        override val merchantId: String,
+        override val merchantName: String = "RozetkaPay Test Merchant",
+        override val gateway: String = RozetkaPayConfig.GOOGLE_PAY_GATEWAY,
+    ) : GooglePayConfig(
+        merchantId = merchantId,
+        merchantName = merchantName,
+        gateway = gateway
     )
 
     @Parcelize

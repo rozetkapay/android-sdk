@@ -27,8 +27,7 @@ internal fun ErrorScreen(
     message: String = stringResource(id = R.string.rozetka_pay_common_error_message),
     onRetry: () -> Unit,
     onCancel: () -> Unit,
-
-    ) {
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),

@@ -19,5 +19,11 @@
             android:exported="false"
             android:theme="@style/RozetkaPaySheetDefaultTheme"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".presentation.payment.confirmation.Confirmation3DsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false"
+            android:theme="@style/RozetkaPaySheetDefaultTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

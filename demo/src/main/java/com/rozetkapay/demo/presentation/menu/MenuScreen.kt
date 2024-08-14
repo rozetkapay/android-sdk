@@ -1,5 +1,6 @@
 package com.rozetkapay.demo.presentation.menu
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -137,6 +138,7 @@ private fun MenuButton(
 
 @Composable
 @Preview
+@Preview("Dark Theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun MenuScreenPreview() {
     RozetkaPayDemoTheme {
         MenuScreen(
