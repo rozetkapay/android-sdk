@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
@@ -39,7 +38,7 @@ class TokenizationActivity : ComponentActivity() {
                     onBack = { finish() },
                     onTokenizeClick = {
                         tokenizationSheet.show(
-                            client = viewModel.clientParameters,
+                            client = viewModel.clientWidgetParameters,
                             parameters = TokenizationParameters(
                                 cardNameField = FieldRequirement.None
                             ),

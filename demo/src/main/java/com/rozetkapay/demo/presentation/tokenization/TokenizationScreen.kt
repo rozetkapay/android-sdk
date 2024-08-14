@@ -52,7 +52,7 @@ fun TokenizationScreen(
         onBack = onBack,
         onTokenizeClick = {
             tokenizationSheet.show(
-                client = viewModel.clientParameters,
+                client = viewModel.clientWidgetParameters,
                 parameters = TokenizationParameters(
                     cardNameField = FieldRequirement.Optional,
                     emailField = FieldRequirement.None,

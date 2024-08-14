@@ -15,10 +15,11 @@ internal fun GooglePayPaymentRequest.toPaymentRequestDto(): PaymentRequestDto = 
     amount = this.paymentParameters.amount.toBigDecimal().divide(100.toBigDecimal()).toDouble(),
     currency = this.paymentParameters.currencyCode,
     externalId = this.paymentParameters.orderId,
+    callbackUrl = this.paymentParameters.callbackUrl,
     customer = CustomerDto(
         paymentMethod = PaymentMethodDto.googlePay(
             googlePay = GooglePayDto(
-                token = this.token
+                token = this.googlePayToken
             )
         )
     )

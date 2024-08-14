@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.Product
-import com.rozetkapay.sdk.domain.models.ClientPayParameters
+import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import kotlinx.coroutines.channels.Channel
@@ -27,13 +27,17 @@ class PaymentViewModel : ViewModel() {
     private val _state = MutableStateFlow(defaultState)
     val state = _state.asStateFlow()
 
-    val clientParameters = ClientPayParameters(
+    val clientParameters = ClientAuthParameters(
         token = Credentials.AUTH_TOKEN_1
     )
+
     val testGooglePayConfig = GooglePayConfig.Test(
         merchantId = Credentials.GOOGLE_PAY_MERCHANT_ID,
         merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
     )
+
+    // this is Google Pay configuration for testing purposes
+    // proposed to use in tutorial https://developers.google.com/pay/api/android/guides/tutorial
     val exampleGooglePayConfig = GooglePayConfig.Test(
         gateway = "example",
         merchantId = "exampleGatewayMerchantId",

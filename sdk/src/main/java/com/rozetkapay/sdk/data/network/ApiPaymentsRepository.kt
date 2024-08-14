@@ -6,7 +6,7 @@ import com.rozetkapay.sdk.data.network.models.PaymentErrorDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
-import com.rozetkapay.sdk.domain.models.ClientPayParameters
+import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
@@ -42,19 +42,19 @@ internal class ApiPaymentsRepository(
     private suspend fun createGooglePayPayment(paymentRequest: GooglePayPaymentRequest): CreatePaymentData {
         return createPayment(
             body = paymentRequest.toPaymentRequestDto(),
-            client = paymentRequest.clientParameters
+            authParameters = paymentRequest.authParameters
         )
     }
 
     private suspend fun createPayment(
-        client: ClientPayParameters,
+        authParameters: ClientAuthParameters,
         body: Any,
     ): CreatePaymentData {
         Logger.d { "Create payment API request start" }
         val response = httpClient.post(
             urlString = apiProvider.createPaymentUrl
         ) {
-            header("Authorization", "Basic ${client.token}")
+            header("Authorization", "Basic ${authParameters.token}")
             contentType(ContentType.Application.Json)
             setBody(body)
         }

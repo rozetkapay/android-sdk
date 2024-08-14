@@ -63,7 +63,7 @@ fun PaymentScreen(
         state = state,
         onCheckout = {
             paymentSheet.show(
-                client = viewModel.clientParameters,
+                clientAuthParameters = viewModel.clientParameters,
                 parameters = PaymentParameters(
                     allowTokenization = true,
                     amountParameters = PaymentParameters.AmountParameters(
@@ -71,7 +71,8 @@ fun PaymentScreen(
                         currencyCode = "UAH"
                     ),
                     orderId = state.orderId,
-                    googlePayConfig = viewModel.exampleGooglePayConfig
+                    callbackUrl = "https://example.com/callback",
+                    googlePayConfig = viewModel.testGooglePayConfig
                 ),
             )
         },

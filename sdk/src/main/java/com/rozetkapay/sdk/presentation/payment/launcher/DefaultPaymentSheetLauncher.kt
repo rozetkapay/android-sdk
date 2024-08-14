@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
-import com.rozetkapay.sdk.domain.models.ClientParameters
-import com.rozetkapay.sdk.domain.models.ClientPayParameters
+import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.payment.PaymentSheetContract
@@ -43,12 +42,12 @@ internal class DefaultPaymentSheetLauncher(
     )
 
     override fun present(
-        client: ClientPayParameters,
+        clientAuthParameters: ClientAuthParameters,
         parameters: PaymentParameters,
         themeConfigurator: RozetkaPayThemeConfigurator,
     ) {
         val contractParameters = PaymentSheetContract.Parameters(
-            client = client,
+            clientAuthParameters = clientAuthParameters,
             parameters = parameters,
             themeConfigurator = themeConfigurator,
         )

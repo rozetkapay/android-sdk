@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
-import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientWidgetParameters
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 internal class TokenizationViewModel(
-    private val client: ClientParameters,
+    private val client: ClientWidgetParameters,
     private val tokenizationParameters: TokenizationParameters,
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
     private val parseCardDataUseCase: ParseCardDataUseCase,

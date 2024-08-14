@@ -19,6 +19,8 @@ internal data class PaymentRequestDto(
     val currency: String,
     @SerialName("external_id")
     val externalId: String,
+    @SerialName("callback_url")
+    val callbackUrl: String? = null,
     @SerialName("mode")
     val mode: String = PaymentApiConstants.MODE_DIRECT,
     @SerialName("customer")

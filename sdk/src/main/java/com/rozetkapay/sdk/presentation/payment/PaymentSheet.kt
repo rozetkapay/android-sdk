@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.Fragment
-import com.rozetkapay.sdk.domain.models.ClientPayParameters
+import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.presentation.payment.launcher.DefaultPaymentSheetLauncher
 import com.rozetkapay.sdk.presentation.payment.launcher.PaymentSheetLauncher
@@ -55,12 +55,12 @@ class PaymentSheet internal constructor(
     )
 
     fun show(
-        client: ClientPayParameters,
+        clientAuthParameters: ClientAuthParameters,
         parameters: PaymentParameters,
         themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) {
         launcher.present(
-            client = client,
+            clientAuthParameters = clientAuthParameters,
             parameters = parameters,
             themeConfigurator = themeConfigurator,
         )

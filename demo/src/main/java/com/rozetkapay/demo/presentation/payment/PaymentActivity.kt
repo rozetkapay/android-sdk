@@ -37,14 +37,14 @@ class PaymentActivity : ComponentActivity() {
                     onReset = viewModel::reset,
                     onCheckout = {
                         paymentSheet.show(
-                            client = viewModel.clientParameters,
+                            clientAuthParameters = viewModel.clientParameters,
                             parameters = PaymentParameters(
                                 allowTokenization = false,
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,
                                     currencyCode = "EUR"
                                 ),
-                                googlePayConfig = viewModel.exampleGooglePayConfig,
+                                googlePayConfig = viewModel.testGooglePayConfig,
                                 orderId = state.orderId,
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator

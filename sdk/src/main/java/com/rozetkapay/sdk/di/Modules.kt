@@ -82,10 +82,7 @@ internal val networkModule = module {
             logLevel = if (RozetkaPaySdk.mode == RozetkaPaySdkMode.Development) {
                 LogLevel.ALL
             } else {
-                // TODO: log level ALL temporarily enabled for development purposes
-                // should be replaced with HEADERS before release
-                LogLevel.ALL
-                // LogLevel.HEADERS
+                LogLevel.HEADERS
             }
         )
     }

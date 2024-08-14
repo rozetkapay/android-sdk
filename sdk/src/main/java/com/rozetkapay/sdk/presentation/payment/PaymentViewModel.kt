@@ -14,7 +14,7 @@ import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
-import com.rozetkapay.sdk.domain.models.ClientPayParameters
+import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.Currency
 import com.rozetkapay.sdk.domain.models.payment.BasePaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 internal class PaymentViewModel(
-    private val client: ClientPayParameters,
+    private val clientAuthParameters: ClientAuthParameters,
     private val parameters: PaymentParameters,
     private val resourcesProvider: ResourcesProvider,
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
@@ -152,9 +152,9 @@ internal class PaymentViewModel(
     private fun runPaymentWithGooglePay(token: String) {
         loading()
         val paymentRequest = GooglePayPaymentRequest(
-            clientParameters = client,
+            authParameters = clientAuthParameters,
             paymentParameters = basePaymentParameters(),
-            token = Base64.encode(token.toByteArray(), Base64.NO_PADDING).toString(Charsets.UTF_8)
+            googlePayToken = Base64.encode(token.toByteArray(), Base64.NO_WRAP).toString(Charsets.UTF_8)
         )
         createPaymentUseCase(paymentRequest)
             .catch { error ->
@@ -243,7 +243,8 @@ internal class PaymentViewModel(
     private fun basePaymentParameters() = BasePaymentParameters(
         amount = parameters.amountParameters.amount,
         currencyCode = parameters.amountParameters.currencyCode,
-        orderId = parameters.orderId
+        orderId = parameters.orderId,
+        callbackUrl = parameters.callbackUrl
     )
 
     private fun updateCard(state: CardFieldState) {
@@ -380,7 +381,7 @@ internal class PaymentViewModel(
         ): T {
             val parameters = parametersSupplier()
             return PaymentViewModel(
-                client = parameters.client,
+                clientAuthParameters = parameters.clientAuthParameters,
                 parameters = parameters.parameters,
                 createPaymentUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get(),

@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -175,6 +176,7 @@ private fun WebView(
     onUnexpectedUrlError: (String) -> Unit,
 ) {
     val localContext = LocalContext.current
+    val isInInspector = LocalInspectionMode.current
     AndroidView(
         factory = { context ->
             WebView(context).apply {
@@ -182,46 +184,48 @@ private fun WebView(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                clearCache(true)
-                clearHistory()
-                settings.javaScriptEnabled = true
-                settings.javaScriptCanOpenWindowsAutomatically = true
-                settings.allowContentAccess = true
-                settings.mediaPlaybackRequiresUserGesture = true
-                settings.domStorageEnabled = true
-                settings.loadWithOverviewMode = true
-                settings.useWideViewPort = true
-                settings.setSupportZoom(false)
+                if (!isInInspector) {
+                    clearCache(true)
+                    clearHistory()
+                    settings.javaScriptEnabled = true
+                    settings.javaScriptCanOpenWindowsAutomatically = true
+                    settings.allowContentAccess = true
+                    settings.mediaPlaybackRequiresUserGesture = true
+                    settings.domStorageEnabled = true
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                    settings.setSupportZoom(false)
 
-                webChromeClient = object : WebChromeClient() {
-                    override fun onPermissionRequest(request: PermissionRequest) {
-                        request.grant(request.resources)
-                    }
-                }
-
-                webViewClient = object : WebViewClient() {
-                    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                        onPageLoadingStarted()
-                        super.onPageStarted(view, url, favicon)
+                    webChromeClient = object : WebChromeClient() {
+                        override fun onPermissionRequest(request: PermissionRequest) {
+                            request.grant(request.resources)
+                        }
                     }
 
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        super.onPageFinished(view, url)
-                        onPageLoadingFinished()
-                    }
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                            onPageLoadingStarted()
+                            super.onPageStarted(view, url, favicon)
+                        }
 
-                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                        Logger.d { "Override url loading ${request.url}" }
-                        return when {
-                            URLUtil.isNetworkUrl(request.url.toString()) -> {
-                                onRequestUrlChange(request.url.toString())
-                                true
-                            }
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            super.onPageFinished(view, url)
+                            onPageLoadingFinished()
+                        }
 
-                            else -> {
-                                onUnexpectedUrlError(request.url.toString())
-                                Logger.e { "Cancelled url ${request.url}" }
-                                return false
+                        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                            Logger.d { "Override url loading ${request.url}" }
+                            return when {
+                                URLUtil.isNetworkUrl(request.url.toString()) -> {
+                                    onRequestUrlChange(request.url.toString())
+                                    true
+                                }
+
+                                else -> {
+                                    onUnexpectedUrlError(request.url.toString())
+                                    Logger.e { "Cancelled url ${request.url}" }
+                                    return false
+                                }
                             }
                         }
                     }

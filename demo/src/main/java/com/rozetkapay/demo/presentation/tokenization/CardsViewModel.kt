@@ -7,7 +7,7 @@ import com.rozetkapay.demo.config.Credentials
 import com.rozetkapay.demo.domain.models.CardToken
 import com.rozetkapay.demo.domain.models.PaymentSystem
 import com.rozetkapay.demo.domain.models.parsePaymentSystem
-import com.rozetkapay.sdk.domain.models.ClientParameters
+import com.rozetkapay.sdk.domain.models.ClientWidgetParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +24,7 @@ class CardsViewModel : ViewModel() {
     private val errorEventsChannel = Channel<String>()
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
-    val clientParameters = ClientParameters(
+    val clientWidgetParameters = ClientWidgetParameters(
         widgetKey = Credentials.WIDGET_KEY,
         secretKey = Credentials.SECRET_KEY
     )
