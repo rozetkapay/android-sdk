@@ -3,20 +3,28 @@ package com.rozetkapay.sdk.domain.models.payment
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-internal sealed class ConfirmPaymentResult : Parcelable {
+internal sealed interface ConfirmPaymentResult : Parcelable {
 
     @Parcelize
     data class Error(
-        val paymentId: String,
         val message: String? = null,
         val error: Throwable? = null,
-    ) : ConfirmPaymentResult()
+    ) : ConfirmPaymentResult
 
     @Parcelize
     data class Success(
         val paymentId: String,
-    ) : ConfirmPaymentResult()
+    ) : ConfirmPaymentResult
+
+    // used when confirmation completed bu status is unknown
+    // real payment sta should be handled by client
+    @Parcelize
+    data class Completed(
+        val paymentId: String,
+    ) : ConfirmPaymentResult
 
     @Parcelize
-    data object Cancelled : ConfirmPaymentResult()
+    data class Cancelled(
+        val paymentId: String,
+    ) : ConfirmPaymentResult
 }

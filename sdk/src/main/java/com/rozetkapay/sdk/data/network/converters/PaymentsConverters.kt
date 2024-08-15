@@ -7,8 +7,10 @@ import com.rozetkapay.sdk.data.network.models.PaymentRequestDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultActionDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDetailsDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
+import com.rozetkapay.sdk.domain.models.payment.CheckPaymentData
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
+import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
 import com.rozetkapay.sdk.util.Logger
 
 internal fun GooglePayPaymentRequest.toPaymentRequestDto(): PaymentRequestDto = PaymentRequestDto(
@@ -33,15 +35,22 @@ internal fun PaymentResultDto.toCreatePaymentData(): CreatePaymentData = CreateP
     statusDescription = this.details.statusDescription,
 )
 
-private fun PaymentResultDetailsDto.toStatus(): CreatePaymentData.Status {
+internal fun PaymentResultDetailsDto.toCheckPaymentData(): CheckPaymentData = CheckPaymentData(
+    paymentId = this.paymentId,
+    status = this.toStatus(),
+    statusCode = this.statusCode,
+    statusDescription = this.statusDescription,
+)
+
+private fun PaymentResultDetailsDto.toStatus(): PaymentStatus {
     return when (this.status) {
-        "init" -> CreatePaymentData.Status.Init
-        "pending" -> CreatePaymentData.Status.Pending
-        "success" -> CreatePaymentData.Status.Success
-        "failure" -> CreatePaymentData.Status.Failure
+        "init" -> PaymentStatus.Init
+        "pending" -> PaymentStatus.Pending
+        "success" -> PaymentStatus.Success
+        "failure" -> PaymentStatus.Failure
         else -> {
             Logger.e { "Unknown payment status: $this" }
-            CreatePaymentData.Status.Failure
+            PaymentStatus.Failure
         }
     }
 }

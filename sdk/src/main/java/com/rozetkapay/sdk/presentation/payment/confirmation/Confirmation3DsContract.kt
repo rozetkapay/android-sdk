@@ -20,7 +20,7 @@ internal class Confirmation3DsContract :
     override fun parseResult(resultCode: Int, intent: Intent?): ConfirmPaymentResult {
         @Suppress("DEPRECATION")
         val result = intent?.getParcelableExtra<Result>(EXTRA_RESULT)?.confirmResult
-        return result ?: ConfirmPaymentResult.Cancelled
+        return result ?: ConfirmPaymentResult.Error("Unexpected confirmation result, ConfirmPaymentResult not found")
     }
 
     @Parcelize

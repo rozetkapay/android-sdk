@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.rozetkapay.sdk.domain.RozetkaPayConfig
+import com.rozetkapay.sdk.di.RozetkaPayKoinContext
+import com.rozetkapay.sdk.domain.models.RozetkaPayEnvironment
 import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
 import com.rozetkapay.sdk.util.Logger
 import kotlinx.coroutines.channels.Channel
@@ -17,6 +18,7 @@ import java.net.URI
 internal class Confirmation3DsViewModel(
     private val url: String,
     private val paymentId: String,
+    private val environment: RozetkaPayEnvironment,
 ) : ViewModel() {
 
     private var isFirstPageLoaded: Boolean = false
@@ -39,7 +41,11 @@ internal class Confirmation3DsViewModel(
             Confirmation3DsAction.ManuallyClosed -> {
                 viewModelScope.launch {
                     _eventsChannel.send(
-                        Confirmation3DsEvent.Result(ConfirmPaymentResult.Cancelled)
+                        Confirmation3DsEvent.Result(
+                            ConfirmPaymentResult.Cancelled(
+                                paymentId = paymentId
+                            )
+                        )
                     )
                 }
             }
@@ -69,7 +75,6 @@ internal class Confirmation3DsViewModel(
                     _eventsChannel.send(
                         Confirmation3DsEvent.Result(
                             ConfirmPaymentResult.Error(
-                                paymentId = paymentId,
                                 message = "Unexpected URL: ${action.url} on 3DS, only network URLs allowed",
                             )
                         )
@@ -80,41 +85,24 @@ internal class Confirmation3DsViewModel(
     }
 
     private fun handleNewUrl(newUrl: String) {
-        val uri = URI(newUrl)
-        when {
-            uri.path.equals(
-                URI(RozetkaPayConfig.PAYMENT_3DS_CALLBACK_URL_ERROR).path,
-                ignoreCase = true
-            ) -> viewModelScope.launch {
+        val uri = URI(newUrl).normalize()
+        val callbackUri = URI(environment.paymentsConfirmation3DsCallbackUrl).normalize()
+        if (uri.toString().startsWith(callbackUri.toString())) {
+            viewModelScope.launch {
                 _eventsChannel.send(
                     Confirmation3DsEvent.Result(
-                        ConfirmPaymentResult.Error(
+                        ConfirmPaymentResult.Completed(
                             paymentId = paymentId,
                         )
                     )
                 )
             }
-
-            uri.path.equals(
-                URI(RozetkaPayConfig.PAYMENT_3DS_CALLBACK_URL_SUCCESS).path,
-                ignoreCase = true
-            ) -> viewModelScope.launch {
-                _eventsChannel.send(
-                    Confirmation3DsEvent.Result(
-                        ConfirmPaymentResult.Success(
-                            paymentId = paymentId,
-                        )
-                    )
+        } else {
+            _uiState.tryEmit(
+                _uiState.value.copy(
+                    url = newUrl,
                 )
-            }
-
-            else -> {
-                _uiState.tryEmit(
-                    _uiState.value.copy(
-                        url = newUrl,
-                    )
-                )
-            }
+            )
         }
     }
 
@@ -130,7 +118,8 @@ internal class Confirmation3DsViewModel(
             val parameters = parametersSupplier()
             return Confirmation3DsViewModel(
                 url = parameters.url,
-                paymentId = parameters.url,
+                paymentId = parameters.paymentId,
+                environment = RozetkaPayKoinContext.koin.get(),
             ) as T
         }
     }

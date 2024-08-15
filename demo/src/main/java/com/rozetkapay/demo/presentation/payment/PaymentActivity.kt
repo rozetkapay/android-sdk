@@ -45,7 +45,7 @@ class PaymentActivity : ComponentActivity() {
                                     currencyCode = "EUR"
                                 ),
                                 googlePayConfig = viewModel.testGooglePayConfig,
-                                orderId = state.orderId,
+                                orderId = viewModel.generateOrderId(),
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

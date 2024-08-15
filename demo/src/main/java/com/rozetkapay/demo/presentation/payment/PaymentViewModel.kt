@@ -22,13 +22,13 @@ class PaymentViewModel : ViewModel() {
     private val defaultState = PaymentScreenState(
         items = mockedCartItemData,
         total = mockedCartItemData.sumOf { it.product.price * it.count },
-        orderId = "demo_order_id"
+        status = PaymentScreenState.Status.Ready
     )
     private val _state = MutableStateFlow(defaultState)
     val state = _state.asStateFlow()
 
     val clientParameters = ClientAuthParameters(
-        token = Credentials.AUTH_TOKEN_1
+        token = Credentials.DEV_AUTH_TOKEN
     )
 
     val testGooglePayConfig = GooglePayConfig.Test(
@@ -48,7 +48,9 @@ class PaymentViewModel : ViewModel() {
         when (result) {
             is PaymentResult.Complete -> {
                 Log.d("Payment", "Payment ${result.paymentId} was successful")
-                _state.value = _state.value.copy(isCompleted = true)
+                _state.value = _state.value.copy(
+                    status = PaymentScreenState.Status.Completed
+                )
             }
 
             is PaymentResult.Failed -> {
@@ -65,11 +67,22 @@ class PaymentViewModel : ViewModel() {
             PaymentResult.Cancelled -> {
                 Log.d("Payment", "Payment was cancelled manually by user")
             }
+
+            is PaymentResult.Pending -> {
+                Log.d("Payment", "Payment ${result.paymentId} is pending")
+                _state.value = _state.value.copy(
+                    status = PaymentScreenState.Status.PaymentPending
+                )
+            }
         }
     }
 
     fun reset() {
         _state.tryEmit(defaultState)
+    }
+
+    fun generateOrderId(): String {
+        return "order-${System.currentTimeMillis()}"
     }
 
     companion object {
@@ -113,6 +126,11 @@ class PaymentViewModel : ViewModel() {
 data class PaymentScreenState(
     val items: List<CartItemData> = emptyList(),
     val total: Long = 0L,
-    val orderId: String = "",
-    val isCompleted: Boolean = false,
-)
+    val status: Status = Status.Ready,
+) {
+    enum class Status {
+        Ready,
+        Completed,
+        PaymentPending
+    }
+}

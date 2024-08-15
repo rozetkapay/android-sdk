@@ -8,6 +8,7 @@ internal object RozetkaPayKoinContext {
     private val koinApp = koinApplication {
         androidContext(RozetkaPaySdk.appContext)
         modules(
+            commonModule,
             useCaseModule,
             repositoryModule,
             networkModule

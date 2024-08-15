@@ -6,6 +6,12 @@ import kotlinx.parcelize.Parcelize
 sealed class PaymentResult : Parcelable {
 
     @Parcelize
+    data class Pending(
+        val orderId: String,
+        val paymentId: String,
+    ) : PaymentResult()
+
+    @Parcelize
     data class Complete(
         val orderId: String,
         val paymentId: String,

@@ -4,6 +4,7 @@ import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
+import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 
 internal class CreatePaymentUseCase(
@@ -16,13 +17,13 @@ internal class CreatePaymentUseCase(
         return try {
             val data = paymentsRepository.createPayment(params)
             when (data.status) {
-                CreatePaymentData.Status.Success -> {
+                PaymentStatus.Success -> {
                     CreatePaymentResult.Success(
                         paymentId = data.paymentId,
                     )
                 }
 
-                CreatePaymentData.Status.Failure -> {
+                PaymentStatus.Failure -> {
                     CreatePaymentResult.Error(
                         message = data.statusDescription,
                         error = RozetkaPayPaymentException(
@@ -33,8 +34,8 @@ internal class CreatePaymentUseCase(
                     )
                 }
 
-                CreatePaymentData.Status.Init,
-                CreatePaymentData.Status.Pending,
+                PaymentStatus.Init,
+                PaymentStatus.Pending,
                 -> {
                     if (data.action is CreatePaymentData.Action.Confirm3Ds) {
                         CreatePaymentResult.Confirmation3DsRequired(

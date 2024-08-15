@@ -4,7 +4,6 @@ import com.rozetkapay.sdk.RozetkaPaySdk
 import com.rozetkapay.sdk.data.android.AndroidResourcesProvider
 import com.rozetkapay.sdk.data.network.ApiPaymentsRepository
 import com.rozetkapay.sdk.data.network.ApiProvider
-import com.rozetkapay.sdk.data.network.ApiProviderImpl
 import com.rozetkapay.sdk.data.network.ApiTokenizationRepository
 import com.rozetkapay.sdk.data.network.RequestSigner
 import com.rozetkapay.sdk.data.network.RequestSignerImpl
@@ -14,7 +13,10 @@ import com.rozetkapay.sdk.data.network.createHttpClient
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.repository.TokenizationRepository
+import com.rozetkapay.sdk.domain.usecases.CheckPaymentStatusUseCase
 import com.rozetkapay.sdk.domain.usecases.CreatePaymentUseCase
+import com.rozetkapay.sdk.domain.usecases.EnvironmentProvider
+import com.rozetkapay.sdk.domain.usecases.EnvironmentProviderImpl
 import com.rozetkapay.sdk.domain.usecases.GetDeviceInfoUseCase
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
 import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
@@ -56,6 +58,11 @@ internal val useCaseModule = module {
             paymentsRepository = get()
         )
     }
+    single<CheckPaymentStatusUseCase> {
+        CheckPaymentStatusUseCase(
+            paymentsRepository = get()
+        )
+    }
 }
 
 internal val repositoryModule = module {
@@ -76,6 +83,14 @@ internal val repositoryModule = module {
     }
 }
 
+internal val commonModule = module {
+    single<EnvironmentProvider> { EnvironmentProviderImpl }
+    factory {
+        val environmentProvider = get<EnvironmentProvider>()
+        environmentProvider.environment
+    }
+}
+
 internal val networkModule = module {
     single<HttpClient> {
         createHttpClient(
@@ -86,7 +101,11 @@ internal val networkModule = module {
             }
         )
     }
-    single<ApiProvider> { ApiProviderImpl() }
+    single<ApiProvider> {
+        ApiProvider(
+            environment = get()
+        )
+    }
     single<RequestSigner> { RequestSignerImpl() }
     single<ResponseDecryptor> { ResponseDecryptorImpl() }
 }

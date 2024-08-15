@@ -12,12 +12,9 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,8 +67,7 @@ fun TokenizationScreenContent(
     onBack: () -> Unit,
     onTokenizeClick: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    HandleErrorsFlow(errorsFlow = errorsFlow, snackbarHostState)
+    HandleErrorsFlow(errorsFlow = errorsFlow)
     Scaffold(
         topBar = {
             SimpleToolbar(
@@ -79,7 +75,6 @@ fun TokenizationScreenContent(
                 onBack = onBack
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(

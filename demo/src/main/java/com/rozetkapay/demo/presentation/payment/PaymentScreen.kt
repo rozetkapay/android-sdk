@@ -20,12 +20,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -70,7 +67,7 @@ fun PaymentScreen(
                         amount = state.total,
                         currencyCode = "UAH"
                     ),
-                    orderId = state.orderId,
+                    orderId = viewModel.generateOrderId(),
                     callbackUrl = "https://example.com/callback",
                     googlePayConfig = viewModel.testGooglePayConfig
                 ),
@@ -89,9 +86,7 @@ fun PaymentSheetScreenContent(
     onReset: () -> Unit,
     errorsFlow: Flow<String>,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    HandleErrorsFlow(errorsFlow = errorsFlow, snackbarHostState)
-
+    HandleErrorsFlow(errorsFlow = errorsFlow)
     Scaffold(
         topBar = {
             SimpleToolbar(
@@ -99,23 +94,36 @@ fun PaymentSheetScreenContent(
                 onBack = onBack
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         AnimatedContent(
-            targetState = state.isCompleted,
+            targetState = state.status,
             label = ""
-        ) { isCompleted ->
-            if (isCompleted) {
-                PaymentSuccessScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onReset = onReset
-                )
-            } else {
-                PaymentCartScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    state = state,
-                    onCheckout = onCheckout
-                )
+        ) { status ->
+            when (status) {
+                PaymentScreenState.Status.Ready -> {
+                    PaymentCartScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        state = state,
+                        onCheckout = onCheckout
+                    )
+                }
+
+                PaymentScreenState.Status.Completed -> {
+                    PaymentMessageScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        message = "Payment successfully completed!",
+                        onReset = onReset
+                    )
+                }
+
+                PaymentScreenState.Status.PaymentPending -> {
+                    PaymentMessageScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        message = "Your payment is currently pending. Please check back later for an update. " +
+                            "We'll process your order as soon as the payment is successful. ",
+                        onReset = onReset
+                    )
+                }
             }
         }
     }
@@ -212,8 +220,9 @@ private fun PaymentCartScreen(
 }
 
 @Composable
-private fun PaymentSuccessScreen(
+private fun PaymentMessageScreen(
     modifier: Modifier = Modifier,
+    message: String,
     onReset: () -> Unit,
 ) {
     Column(
@@ -227,6 +236,7 @@ private fun PaymentSuccessScreen(
             modifier = Modifier
                 .padding(
                     vertical = 24.dp,
+                    horizontal = 16.dp
                 )
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -240,7 +250,7 @@ private fun PaymentSuccessScreen(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Payment successfully completed!",
+                text = message,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center
             )
@@ -266,8 +276,7 @@ private fun PaymentSheetScreenPreview() {
             state = PaymentScreenState(
                 items = PaymentViewModel.mockedCartItemData,
                 total = 1000,
-                orderId = "demo_order_id",
-                isCompleted = false
+                status = PaymentScreenState.Status.Ready
             ),
             errorsFlow = emptyFlow(),
             onBack = {},
@@ -280,14 +289,13 @@ private fun PaymentSheetScreenPreview() {
 @Composable
 @Preview
 @Preview(name = "Dark Theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun PaymentSheetScreenCompletedPreview() {
+private fun PaymentSheetScreenMessagePreview() {
     RozetkaPayDemoTheme {
         PaymentSheetScreenContent(
             state = PaymentScreenState(
                 items = PaymentViewModel.mockedCartItemData,
                 total = 1000,
-                orderId = "demo_order_id",
-                isCompleted = true
+                status = PaymentScreenState.Status.PaymentPending
             ),
             errorsFlow = emptyFlow(),
             onBack = {},

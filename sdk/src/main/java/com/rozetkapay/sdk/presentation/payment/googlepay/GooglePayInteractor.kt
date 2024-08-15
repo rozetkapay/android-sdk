@@ -8,6 +8,7 @@ import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
 import com.google.android.gms.wallet.Wallet
 import com.google.android.gms.wallet.WalletConstants
+import com.rozetkapay.sdk.util.Logger
 import kotlinx.coroutines.tasks.await
 import org.json.JSONArray
 import org.json.JSONException
@@ -107,4 +108,16 @@ internal class GooglePayInteractor(
         .divide(BigDecimal(100))
         .setScale(2, RoundingMode.HALF_EVEN)
         .toString()
+
+    fun extractToken(paymentData: PaymentData): String? {
+        return try {
+            JSONObject(paymentData.toJson())
+                .getJSONObject("paymentMethodData")
+                .getJSONObject("tokenizationData")
+                .getString("token")
+        } catch (e: Exception) {
+            Logger.e(throwable = e) { "Failed to extract token from Google Pay result" }
+            null
+        }
+    }
 }
