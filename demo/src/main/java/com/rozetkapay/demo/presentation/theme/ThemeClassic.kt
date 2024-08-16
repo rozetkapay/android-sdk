@@ -110,7 +110,7 @@ val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
         componentDivider = lightScheme.primaryContainer,
         subtitle = lightScheme.secondary,
         componentSurface = lightScheme.surfaceContainerLow,
-        onComponent = darkScheme.onSurface
+        onComponent = lightScheme.onSurface
     ),
     darkColorScheme = RozetkaPayDomainThemeDefaults.darkColors(
         surface = darkScheme.primaryContainer,

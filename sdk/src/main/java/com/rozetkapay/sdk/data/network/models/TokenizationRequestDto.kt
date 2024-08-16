@@ -13,6 +13,8 @@ internal data class TokenizationRequestDto(
     val cardExpYear: Int,
     @SerialName("card_cvv")
     val cardCvv: String,
+    @SerialName("card_holder_name")
+    val cardholderName: String? = null,
     @SerialName("platform")
     val platform: String,
     @SerialName("sdk_version")

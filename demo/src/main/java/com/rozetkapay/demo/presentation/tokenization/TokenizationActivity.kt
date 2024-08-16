@@ -16,7 +16,7 @@ import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheet
 
 class TokenizationActivity : ComponentActivity() {
-    
+
     private val viewModel: CardsViewModel by viewModels()
     private lateinit var tokenizationSheet: TokenizationSheet
 
@@ -40,7 +40,8 @@ class TokenizationActivity : ComponentActivity() {
                         tokenizationSheet.show(
                             client = viewModel.clientWidgetParameters,
                             parameters = TokenizationParameters(
-                                cardNameField = FieldRequirement.None
+                                cardNameField = FieldRequirement.None,
+                                cardholderNameField = FieldRequirement.Optional
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

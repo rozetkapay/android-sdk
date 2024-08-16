@@ -15,6 +15,7 @@ internal fun TokenizationRequestDto(
     cardExpYear = cardData.expDate.year,
     cardExpMonth = cardData.expDate.month,
     cardCvv = cardData.cvv,
+    cardholderName = cardData.cardholderName,
     platform = device.platform,
     sdkVersion = device.sdkVersion,
     osVersion = device.osVersion,
