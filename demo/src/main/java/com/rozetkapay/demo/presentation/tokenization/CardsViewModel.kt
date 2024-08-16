@@ -26,7 +26,6 @@ class CardsViewModel : ViewModel() {
 
     val clientWidgetParameters = ClientWidgetParameters(
         widgetKey = Credentials.WIDGET_KEY,
-        secretKey = Credentials.SECRET_KEY
     )
 
     fun tokenizationFinished(result: TokenizationResult) {

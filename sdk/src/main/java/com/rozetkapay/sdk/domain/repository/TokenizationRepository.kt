@@ -7,7 +7,6 @@ import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 internal interface TokenizationRepository {
     suspend fun tokenizeCard(
         widgetKey: String,
-        secretKey: String,
         cardData: CardData,
         email: String?,
         device: DeviceInfo,

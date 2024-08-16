@@ -2,7 +2,6 @@ package com.rozetkapay.demo.config
 
 object Credentials {
     const val WIDGET_KEY = "GmX1ig/xQraUC9BAxQVIQ6Cc/me9lWbDWw5R8gYpXdaPem1389Lm57rYGymKJG+N"
-    const val SECRET_KEY = "STVEREdDbzVGMFp1RFpuTnZINlprbzFx"
 
     // login=1a65f58a-0ff1-42b6-940b-d040c5054843
     // password=STVEREdDbzVGMFp1RFpuTnZINlprbzFx

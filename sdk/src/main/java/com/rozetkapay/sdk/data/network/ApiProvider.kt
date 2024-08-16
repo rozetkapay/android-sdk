@@ -6,7 +6,7 @@ internal class ApiProvider(
     private val environment: RozetkaPayEnvironment,
 ) {
     val tokenizationUrl: String
-        get() = environment.tokenizationApiProviderUrl.afterApiUrl("/api/v1/sdk/tokenize")
+        get() = environment.tokenizationApiProviderUrl.afterApiUrl("/api/v2/sdk/tokenize")
 
     val createPaymentUrl: String
         get() = environment.paymentsApiProviderUrl.afterApiUrl("/api/payments/v1/new")

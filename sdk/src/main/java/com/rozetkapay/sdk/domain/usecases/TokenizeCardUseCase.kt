@@ -14,7 +14,6 @@ internal class TokenizeCardUseCase(
         val deviceInfo = getDeviceInfoUseCase()
         val tokenizeCard = tokenizationRepository.tokenizeCard(
             widgetKey = params.widgetKey,
-            secretKey = params.secretKey,
             cardData = params.cardData,
             email = params.email,
             device = deviceInfo
@@ -33,6 +32,5 @@ internal class TokenizeCardUseCase(
         val cardName: String? = null,
         val email: String? = null,
         val widgetKey: String,
-        val secretKey: String,
     )
 }

@@ -2,7 +2,6 @@ package com.rozetkapay.sdk.data.network
 
 import com.rozetkapay.sdk.data.network.converters.TokenizationRequestDto
 import com.rozetkapay.sdk.data.network.converters.toTokenizedCard
-import com.rozetkapay.sdk.data.network.models.EncryptedResponseDto
 import com.rozetkapay.sdk.data.network.models.TokenizationErrorDto
 import com.rozetkapay.sdk.data.network.models.TokenizationResponseDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
@@ -29,12 +28,10 @@ internal class ApiTokenizationRepository(
     private val apiProvider: ApiProvider,
     private val httpClient: HttpClient,
     private val requestSigner: RequestSigner,
-    private val responseDecryptor: ResponseDecryptor,
 ) : TokenizationRepository {
 
     override suspend fun tokenizeCard(
         widgetKey: String,
-        secretKey: String,
         cardData: CardData,
         email: String?,
         device: DeviceInfo,
@@ -59,9 +56,7 @@ internal class ApiTokenizationRepository(
         }
         if (response.status.isSuccess()) {
             Logger.d { "Tokenization success" }
-            val result = response.body<EncryptedResponseDto>()
-            val decryptedJsonString = responseDecryptor.decrypt(secretKey, result.data)
-            val responseDto = jsonConverter.decodeFromString<TokenizationResponseDto>(decryptedJsonString)
+            val responseDto = response.body<TokenizationResponseDto>()
             Logger.d { "Decrypted tokenization response: $responseDto" }
             responseDto.toTokenizedCard()
         } else {

@@ -216,7 +216,6 @@ internal class TokenizationViewModel(
                     cardName = cardName,
                     email = email,
                     widgetKey = client.widgetKey,
-                    secretKey = client.secretKey
                 )
             )
                 .catch { error ->

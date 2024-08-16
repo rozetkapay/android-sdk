@@ -7,8 +7,6 @@ import com.rozetkapay.sdk.data.network.ApiProvider
 import com.rozetkapay.sdk.data.network.ApiTokenizationRepository
 import com.rozetkapay.sdk.data.network.RequestSigner
 import com.rozetkapay.sdk.data.network.RequestSignerImpl
-import com.rozetkapay.sdk.data.network.ResponseDecryptor
-import com.rozetkapay.sdk.data.network.ResponseDecryptorImpl
 import com.rozetkapay.sdk.data.network.createHttpClient
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
@@ -71,8 +69,7 @@ internal val repositoryModule = module {
         ApiTokenizationRepository(
             apiProvider = get(),
             httpClient = get(),
-            requestSigner = get(),
-            responseDecryptor = get()
+            requestSigner = get()
         )
     }
     single<PaymentsRepository> {
@@ -107,5 +104,4 @@ internal val networkModule = module {
         )
     }
     single<RequestSigner> { RequestSignerImpl() }
-    single<ResponseDecryptor> { ResponseDecryptorImpl() }
 }
