@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -113,11 +114,19 @@ private fun Screen3Ds(
     onAction: (Confirmation3DsAction) -> Unit,
 ) {
     Scaffold(
+        containerColor = DomainTheme.colors.surface,
+        contentColor = DomainTheme.colors.onSurface,
         topBar = {
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = DomainTheme.colors.surface,
+                        navigationIconContentColor = DomainTheme.colors.appBarIcon,
+                        actionIconContentColor = DomainTheme.colors.appBarIcon,
+                        titleContentColor = DomainTheme.colors.title
+                    ),
                     navigationIcon = {
                         Icon(
                             modifier = Modifier

@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.domain.validators
 
+@Suppress("unused")
 abstract class Validator<in T> {
 
     abstract fun validate(value: T): ValidationResult
@@ -18,6 +19,7 @@ sealed class ValidationResult(
     ) : ValidationResult(false)
 }
 
+@Suppress("unused")
 open class ValidatorsComposer<T>(validators: List<Validator<T>>? = null) : Validator<T>() {
     private val allValidators: MutableList<Validator<T>> = validators?.toMutableList() ?: ArrayList()
 

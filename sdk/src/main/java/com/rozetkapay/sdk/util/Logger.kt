@@ -3,6 +3,7 @@ package com.rozetkapay.sdk.util
 import android.util.Log
 import com.rozetkapay.sdk.RozetkaPaySdk
 
+@Suppress("unused")
 internal object Logger {
 
     private val isLogEnabled: Boolean

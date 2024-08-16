@@ -42,7 +42,7 @@ class PaymentActivity : ComponentActivity() {
                                 allowTokenization = false,
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,
-                                    currencyCode = "EUR"
+                                    currencyCode = "UAH"
                                 ),
                                 googlePayConfig = viewModel.testGooglePayConfig,
                                 orderId = viewModel.generateOrderId(),

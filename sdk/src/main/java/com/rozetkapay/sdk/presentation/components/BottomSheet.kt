@@ -95,15 +95,6 @@ private const val SHEET_PADDING_BOTTOM_DP = 32
 private const val SHEET_PADDING_HORIZONTAL_DP = 20
 
 @Composable
-internal fun Modifier.Companion.inSheetPaddings() = this
-    .padding(
-        top = SHEET_PADDING_TOP_DP.dp,
-        start = SHEET_PADDING_HORIZONTAL_DP.dp,
-        end = SHEET_PADDING_HORIZONTAL_DP.dp,
-        bottom = SHEET_PADDING_BOTTOM_DP.dp,
-    )
-
-@Composable
 internal fun Modifier.inSheetPaddings() = this
     .padding(
         top = SHEET_PADDING_TOP_DP.dp,

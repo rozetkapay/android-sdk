@@ -37,6 +37,7 @@ fun rememberTokenizationSheet(
     }
 }
 
+@Suppress("unused")
 class TokenizationSheet internal constructor(
     private val launcher: TokenizationSheetLauncher,
 ) {

@@ -65,8 +65,8 @@ internal class ApiPaymentsRepository(
                     paymentMethod = PaymentMethodDto.cardToken(
                         cardToken = CardTokenDto(
                             token = "NmYzMTBmMzE2NDhhNDM0Mjg4YjY1MTJmYTlmOTg3MjE6SjVFZGd0THFmYjZBODdKdzBJ"  // 3ds + success
-                            //  token = "N2NlYzI5NTQwYWJkNGU2ZGI2MzRkZWQ1ZjgxYjBjZTg6cGRTM2d4bDkxbWI1bHBLeTdS"  // no 3ds + success
-                            //  token = "Mzg0ZmVmMTM1OGJhNGI0NjkzZTFjYzg1NzJiNWU4MTI6UWVOeFd5bzZlZjhnQjFEU21H" // 3ds + error
+                            // token = "N2NlYzI5NTQwYWJkNGU2ZGI2MzRkZWQ1ZjgxYjBjZTg6cGRTM2d4bDkxbWI1bHBLeTdS"  // no 3ds + success
+                            // token = "Mzg0ZmVmMTM1OGJhNGI0NjkzZTFjYzg1NzJiNWU4MTI6UWVOeFd5bzZlZjhnQjFEU21H" // 3ds + error
                             // token = "M2I2NzIyNWZhMGQ0NDVjMmFjZGFhZTg1NmNmMjkwZDE6cEpmTHJ2N2k4RW9WNWdlMGN2" // no 3ds + error
                         )
                     )

@@ -37,6 +37,7 @@ fun rememberPaymentSheet(
     }
 }
 
+@Suppress("unused")
 class PaymentSheet internal constructor(
     private val launcher: PaymentSheetLauncher,
 ) {

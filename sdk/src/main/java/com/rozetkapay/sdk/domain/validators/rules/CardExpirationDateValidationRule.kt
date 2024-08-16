@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.rozetkapay.sdk.domain.validators.rules
 
 import kotlinx.datetime.LocalDate

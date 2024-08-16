@@ -3,6 +3,7 @@ package com.rozetkapay.sdk.domain.usecases
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+@Suppress("unused")
 abstract class ResultUseCase<in P, R> {
 
     operator fun invoke(params: P): Flow<R> = flow {
