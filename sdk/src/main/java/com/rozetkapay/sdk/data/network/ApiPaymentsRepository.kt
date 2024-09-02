@@ -3,9 +3,7 @@ package com.rozetkapay.sdk.data.network
 import com.rozetkapay.sdk.data.network.converters.toCheckPaymentData
 import com.rozetkapay.sdk.data.network.converters.toCreatePaymentData
 import com.rozetkapay.sdk.data.network.converters.toPaymentRequestDto
-import com.rozetkapay.sdk.data.network.models.CardTokenDto
 import com.rozetkapay.sdk.data.network.models.PaymentErrorDto
-import com.rozetkapay.sdk.data.network.models.PaymentMethodDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
 import com.rozetkapay.sdk.data.network.models.PurchaseDetailsDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
@@ -48,30 +46,9 @@ internal class ApiPaymentsRepository(
     }
 
     private suspend fun createGooglePayPayment(paymentRequest: GooglePayPaymentRequest): CreatePaymentData {
-        // TODO: restore real implementation
-        return createFakeGooglePayRequest(paymentRequest)
-        // return createPayment(
-        //     body = paymentRequest.toPaymentRequestDto(),
-        //     authParameters = paymentRequest.authParameters
-        // )
-    }
-
-    private suspend fun createFakeGooglePayRequest(paymentRequest: GooglePayPaymentRequest): CreatePaymentData {
-        val gPayBody = paymentRequest.toPaymentRequestDto()
         return createPayment(
-            authParameters = paymentRequest.authParameters,
-            body = gPayBody.copy(
-                customer = gPayBody.customer.copy(
-                    paymentMethod = PaymentMethodDto.cardToken(
-                        cardToken = CardTokenDto(
-                            token = "NmYzMTBmMzE2NDhhNDM0Mjg4YjY1MTJmYTlmOTg3MjE6SjVFZGd0THFmYjZBODdKdzBJ"  // 3ds + success
-                            // token = "N2NlYzI5NTQwYWJkNGU2ZGI2MzRkZWQ1ZjgxYjBjZTg6cGRTM2d4bDkxbWI1bHBLeTdS"  // no 3ds + success
-                            // token = "Mzg0ZmVmMTM1OGJhNGI0NjkzZTFjYzg1NzJiNWU4MTI6UWVOeFd5bzZlZjhnQjFEU21H" // 3ds + error
-                            // token = "M2I2NzIyNWZhMGQ0NDVjMmFjZGFhZTg1NmNmMjkwZDE6cEpmTHJ2N2k4RW9WNWdlMGN2" // no 3ds + error
-                        )
-                    )
-                )
-            )
+            body = paymentRequest.toPaymentRequestDto(),
+            authParameters = paymentRequest.authParameters
         )
     }
 

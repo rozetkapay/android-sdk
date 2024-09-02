@@ -59,7 +59,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat)
     implementation(libs.kotlin.datetime)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
