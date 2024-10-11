@@ -13,6 +13,6 @@ buildscript {
         set("compileSdk", 35)
 
         set("versionCode", 1)
-        set("versionName", "0.1-alpha02")
+        set("versionName", "0.1-alpha03")
     }
 }
