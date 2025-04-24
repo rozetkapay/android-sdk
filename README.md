@@ -5,7 +5,7 @@
 
 > The RozetkaPay SDK makes adding a smooth payment experience to your mobile application easy. Our SDK offers customizable UI components for securely collecting card details and supports complete payment flows, including Google Pay/Apple Pay, for seamless transactions.
 
-You can find all documentation here [RozetkaPay Android SDK Documentation](https://responsible-jupiter-c73.notion.site/Android-SDK-Documentation-108d2e0ae34280669532fa19eee2fe03)
+You can find all documentation here [RozetkaPay Android SDK Documentation](https://github.com/rozetkapay/android-sdk/wiki)
 
 ## Installation
 To integrate the RozetkaPay SDK into your Android app, follow the steps below. Ensure your project meets the minimum requirements and add the necessary dependencies to your project.
