@@ -11,7 +11,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-@OptIn(ExperimentalSerializationApi::class)
 internal val jsonConverter = Json {
     ignoreUnknownKeys = true
     encodeDefaults = true

@@ -38,6 +38,7 @@ class PaymentViewModel : ViewModel() {
 
     // this is Google Pay configuration for testing purposes
     // proposed to use in tutorial https://developers.google.com/pay/api/android/guides/tutorial
+    @Suppress("unused")
     val exampleGooglePayConfig = GooglePayConfig.Test(
         gateway = "example",
         merchantId = "exampleGatewayMerchantId",
