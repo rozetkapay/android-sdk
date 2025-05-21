@@ -9,6 +9,7 @@ import com.rozetkapay.sdk.data.network.models.PurchaseDetailsDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
+import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.CheckPaymentData
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
@@ -42,10 +43,21 @@ internal class ApiPaymentsRepository(
             is GooglePayPaymentRequest -> {
                 createGooglePayPayment(paymentRequest)
             }
+
+            is CardTokenPaymentRequest -> {
+                createCardTokenPayment(paymentRequest)
+            }
         }
     }
 
     private suspend fun createGooglePayPayment(paymentRequest: GooglePayPaymentRequest): CreatePaymentData {
+        return createPayment(
+            body = paymentRequest.toPaymentRequestDto(),
+            authParameters = paymentRequest.authParameters
+        )
+    }
+
+    private suspend fun createCardTokenPayment(paymentRequest: CardTokenPaymentRequest): CreatePaymentData {
         return createPayment(
             body = paymentRequest.toPaymentRequestDto(),
             authParameters = paymentRequest.authParameters

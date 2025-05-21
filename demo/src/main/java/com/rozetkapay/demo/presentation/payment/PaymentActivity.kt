@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.presentation.payment.PaymentSheet
 
@@ -40,6 +41,7 @@ class PaymentActivity : ComponentActivity() {
                             clientAuthParameters = viewModel.clientParameters,
                             parameters = PaymentParameters(
                                 allowTokenization = false,
+                                cardFieldsParameters = CardFieldsParameters(),
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,
                                     currencyCode = "UAH"

@@ -18,6 +18,7 @@ import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
 import com.rozetkapay.sdk.presentation.components.rememberRozetkaPayBottomSheetState
+import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.payment.confirmation.Confirmation3DsContract
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
@@ -35,6 +36,13 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
     }
 
     private val viewModel: PaymentViewModel by viewModels { viewModelFactory }
+
+    @VisibleForTesting
+    internal var cardFormViewModelFactory: ViewModelProvider.Factory = CardFormViewModel.Factory {
+        requireNotNull(parameters).parameters.cardFieldsParameters
+    }
+
+    private val cardFormViewModel: CardFormViewModel by viewModels { cardFormViewModelFactory }
 
     private val googlePayDataLauncher =
         registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { result ->
@@ -100,6 +108,7 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
                     val state by viewModel.uiState.collectAsStateWithLifecycle()
                     PaymentScreen(
                         state = state,
+                        cardFormViewModel = cardFormViewModel,
                         onAction = { viewModel.onAction(it) },
                     )
                 }

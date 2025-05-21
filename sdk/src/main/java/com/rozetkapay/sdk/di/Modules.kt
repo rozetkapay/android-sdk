@@ -23,6 +23,8 @@ import com.rozetkapay.sdk.domain.validators.CardExpDateValidator
 import com.rozetkapay.sdk.domain.validators.CardNumberValidator
 import com.rozetkapay.sdk.domain.validators.CardholderNameValidator
 import com.rozetkapay.sdk.domain.validators.CvvValidator
+import com.rozetkapay.sdk.domain.validators.EmailValidator
+import com.rozetkapay.sdk.domain.validators.RequiredFieldValidator
 import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.logging.LogLevel
@@ -41,6 +43,8 @@ internal val useCaseModule = module {
                 expirationValidationRule = RozetkaPaySdk.validationRules.cardExpirationDateValidationRule
             ),
             cardholderNameValidator = CardholderNameValidator(resourcesProvider),
+            emailValidator = EmailValidator(resourcesProvider),
+            cardNameValidator = RequiredFieldValidator(resourcesProvider),
             resourcesProvider = resourcesProvider,
         )
     }

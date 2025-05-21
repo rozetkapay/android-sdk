@@ -37,6 +37,8 @@ import com.rozetkapay.demo.R
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
+import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.presentation.payment.rememberPaymentSheet
 import kotlinx.coroutines.flow.Flow
@@ -63,6 +65,11 @@ fun PaymentScreen(
                 clientAuthParameters = viewModel.clientParameters,
                 parameters = PaymentParameters(
                     allowTokenization = true,
+                    cardFieldsParameters = CardFieldsParameters(
+                        cardNameField = FieldRequirement.Optional,
+                        emailField = FieldRequirement.Optional,
+                        cardholderNameField = FieldRequirement.Optional,
+                    ),
                     amountParameters = PaymentParameters.AmountParameters(
                         amount = state.total,
                         currencyCode = "UAH"
@@ -261,7 +268,6 @@ private fun PaymentMessageScreen(
         ) {
             Text(
                 text = "OK",
-                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

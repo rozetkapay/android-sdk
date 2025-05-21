@@ -4,7 +4,9 @@ internal data class CardData(
     val number: String,
     val cvv: String,
     val expDate: CardExpDate,
-    val cardholderName: String?
+    val cardholderName: String?,
+    val cardholderEmail: String?,
+    val cardName: String?,
 )
 
 internal data class CardExpDate(

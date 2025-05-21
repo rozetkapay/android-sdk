@@ -28,7 +28,8 @@ class PaymentViewModel : ViewModel() {
     val state = _state.asStateFlow()
 
     val clientParameters = ClientAuthParameters(
-        token = Credentials.DEV_AUTH_TOKEN
+        token = Credentials.DEV_AUTH_TOKEN,
+        widgetKey = Credentials.WIDGET_KEY
     )
 
     val testGooglePayConfig = GooglePayConfig.Test(
@@ -48,7 +49,7 @@ class PaymentViewModel : ViewModel() {
     fun paymentFinished(result: PaymentResult) {
         when (result) {
             is PaymentResult.Complete -> {
-                Log.d("Payment", "Payment ${result.paymentId} was successful")
+                Log.d("Payment", "Payment ${result.paymentId} was successful, tokenized card: ${result.tokenizedCard}")
                 _state.value = _state.value.copy(
                     status = PaymentScreenState.Status.Completed
                 )

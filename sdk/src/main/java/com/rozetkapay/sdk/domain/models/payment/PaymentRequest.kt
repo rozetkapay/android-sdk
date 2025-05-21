@@ -19,3 +19,9 @@ internal data class GooglePayPaymentRequest(
     override val paymentParameters: BasePaymentParameters,
     val googlePayToken: String,
 ) : PaymentRequest
+
+internal data class CardTokenPaymentRequest(
+    override val authParameters: ClientAuthParameters,
+    override val paymentParameters: BasePaymentParameters,
+    val cardToken: String,
+) : PaymentRequest

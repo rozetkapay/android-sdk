@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.data.network.converters
 
+import com.rozetkapay.sdk.data.network.models.CardTokenDto
 import com.rozetkapay.sdk.data.network.models.CustomerDto
 import com.rozetkapay.sdk.data.network.models.GooglePayDto
 import com.rozetkapay.sdk.data.network.models.PaymentMethodDto
@@ -7,6 +8,7 @@ import com.rozetkapay.sdk.data.network.models.PaymentRequestDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultActionDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDetailsDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
+import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.CheckPaymentData
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
@@ -22,6 +24,20 @@ internal fun GooglePayPaymentRequest.toPaymentRequestDto(): PaymentRequestDto = 
         paymentMethod = PaymentMethodDto.googlePay(
             googlePay = GooglePayDto(
                 token = this.googlePayToken
+            )
+        )
+    )
+)
+
+internal fun CardTokenPaymentRequest.toPaymentRequestDto(): PaymentRequestDto = PaymentRequestDto(
+    amount = this.paymentParameters.amount.toBigDecimal().divide(100.toBigDecimal()).toDouble(),
+    currency = this.paymentParameters.currencyCode,
+    externalId = this.paymentParameters.orderId,
+    callbackUrl = this.paymentParameters.callbackUrl,
+    customer = CustomerDto(
+        paymentMethod = PaymentMethodDto.cardToken(
+            cardToken = CardTokenDto(
+                token = this.cardToken
             )
         )
     )
