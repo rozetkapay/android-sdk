@@ -27,6 +27,8 @@ import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
 import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
+import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.usecases.CheckPaymentStatusUseCase
@@ -59,6 +61,7 @@ internal class PaymentViewModel(
 
     private val _uiState = MutableStateFlow(
         PaymentUiState(
+            displayState = PaymentDisplayState.Empty,
             amountWithCurrency = MoneyFormatter.formatCoinsToMoney(
                 coins = parameters.amountParameters.amount,
                 currency = Currency.getSymbol(parameters.amountParameters.currencyCode)
@@ -73,9 +76,12 @@ internal class PaymentViewModel(
     private val tokensStorage = HashMap<String, TokenizedCard>()
 
     init {
-        checkGooglePayParameters()
-        viewModelScope.launch {
-            verifyGooglePayReadiness()
+        retry()
+        if (parameters.paymentType is RegularPayment) {
+            checkGooglePayParameters()
+            viewModelScope.launch {
+                verifyGooglePayReadiness()
+            }
         }
     }
 
@@ -320,11 +326,7 @@ internal class PaymentViewModel(
     private fun success(
         paymentId: String,
     ) {
-        val tokenizedCard = if (parameters.allowTokenization) {
-            tokensStorage[paymentId]
-        } else {
-            null
-        }
+        val tokenizedCard = if (isTokenizationAllowed()) tokensStorage[paymentId] else null
         _eventsChannel.trySend(
             PaymentEvent.Result(
                 PaymentResult.Complete(
@@ -334,6 +336,10 @@ internal class PaymentViewModel(
                 )
             )
         )
+    }
+
+    private fun isTokenizationAllowed(): Boolean {
+        return (parameters.paymentType as? RegularPayment)?.allowTokenization ?: false
     }
 
     private fun showError(
@@ -350,11 +356,23 @@ internal class PaymentViewModel(
 
     private fun retry() {
         tokensStorage.clear()
-        _uiState.tryEmit(
-            uiState.value.copy(
-                displayState = PaymentDisplayState.Content
-            )
-        )
+        when (parameters.paymentType) {
+            is RegularPayment -> {
+                _uiState.tryEmit(
+                    uiState.value.copy(
+                        displayState = PaymentDisplayState.Content,
+                    )
+                )
+            }
+
+            is SingleTokenPayment -> {
+                payWithCardToken(
+                    tokenizedCard = TokenizedCard(
+                        token = parameters.paymentType.token
+                    )
+                )
+            }
+        }
     }
 
     private fun completedPending(
@@ -408,15 +426,16 @@ internal class PaymentViewModel(
     }
 
     private fun checkGooglePayParameters() {
-        if (parameters.googlePayConfig is GooglePayConfig.Test) {
+        val googlePayConfig = (parameters.paymentType as? RegularPayment)?.googlePayConfig
+        if (googlePayConfig is GooglePayConfig.Test) {
             Log.w(
                 Logger.DEFAULT_TAG,
                 """
                 ⚠️ WARNING: GOOGLE PAY IS CONFIGURED IN TEST MODE! ⚠️
                 ⚠️ THIS IS A DEVELOPMENT CONFIGURATION AND SHOULD NOT BE USED IN PRODUCTION. ⚠️
                 DETAILS:
-                - Gateway: ${parameters.googlePayConfig.gateway}
-                - Merchant ID: ${parameters.googlePayConfig.merchantId}
+                - Gateway: ${googlePayConfig.gateway}
+                - Merchant ID: ${googlePayConfig.merchantId}
                 
                 Please ensure this configuration is switched to Production mode before releasing the app.
                 """.trimIndent()
@@ -434,14 +453,15 @@ internal class PaymentViewModel(
             extras: CreationExtras,
         ): T {
             val parameters = parametersSupplier()
+            val paymentParameters = parameters.parameters
             return PaymentViewModel(
                 clientAuthParameters = parameters.clientAuthParameters,
-                parameters = parameters.parameters,
+                parameters = paymentParameters,
                 createPaymentUseCase = RozetkaPayKoinContext.koin.get(),
                 checkPaymentStatusUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get(),
                 tokenizeCardUseCase = RozetkaPayKoinContext.koin.get(),
-                googlePayInteractor = parameters.parameters.googlePayConfig?.let { googlePayConfig ->
+                googlePayInteractor = (paymentParameters.paymentType as? RegularPayment)?.googlePayConfig?.let { googlePayConfig ->
                     GooglePayInteractor(
                         applicationContext = RozetkaPayKoinContext.koin.get(),
                         gateway = googlePayConfig.gateway,

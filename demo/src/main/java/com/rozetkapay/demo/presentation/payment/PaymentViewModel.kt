@@ -37,6 +37,9 @@ class PaymentViewModel : ViewModel() {
         merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
     )
 
+    val testCardToken = Credentials.TEST_CARD_TOKEN_1
+    val errorCardToken = Credentials.ERROR_CARD_TOKEN_1
+
     // this is Google Pay configuration for testing purposes
     // proposed to use in tutorial https://developers.google.com/pay/api/android/guides/tutorial
     @Suppress("unused")

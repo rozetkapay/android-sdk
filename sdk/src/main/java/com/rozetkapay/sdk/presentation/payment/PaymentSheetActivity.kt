@@ -14,7 +14,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.wallet.contract.TaskResultContracts
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
 import com.rozetkapay.sdk.presentation.components.rememberRozetkaPayBottomSheetState
@@ -39,7 +41,7 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
 
     @VisibleForTesting
     internal var cardFormViewModelFactory: ViewModelProvider.Factory = CardFormViewModel.Factory {
-        requireNotNull(parameters).parameters.cardFieldsParameters
+        (parameters?.parameters?.paymentType as? RegularPayment)?.cardFieldsParameters ?: CardFieldsParameters()
     }
 
     private val cardFormViewModel: CardFormViewModel by viewModels { cardFormViewModelFactory }

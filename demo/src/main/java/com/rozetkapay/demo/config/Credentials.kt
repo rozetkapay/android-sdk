@@ -10,4 +10,7 @@ object Credentials {
 
     const val GOOGLE_PAY_MERCHANT_ID = "f4e62d2b-39f1-4c98-82cc-9aebdd88b579"
     const val GOOGLE_PAY_MERCHANT_NAME = "Rozetka Pay Demo Merchant"
+
+    const val TEST_CARD_TOKEN_1 = "MzAwN2I0OWRhMjk5NDU2ZWFlMDljM2IxNDlhODcyMTQ6Uk92YkU2UXZJWE05MnBJTk9P"
+    const val ERROR_CARD_TOKEN_1 = "ZGVkMTAxOGRlMGEzNDAxMjk4YTA1MjIzNzFiMDMyZGY6N2F1QTczU0NzZFRMQm85N0Mw"
 }

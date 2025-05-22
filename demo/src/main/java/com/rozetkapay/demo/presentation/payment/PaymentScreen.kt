@@ -18,11 +18,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -38,8 +41,9 @@ import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
-import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
+import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
 import com.rozetkapay.sdk.presentation.payment.rememberPaymentSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -60,23 +64,27 @@ fun PaymentScreen(
     PaymentSheetScreenContent(
         onBack = onBack,
         state = state,
-        onCheckout = {
+        onCheckout = { useToken ->
             paymentSheet.show(
                 clientAuthParameters = viewModel.clientParameters,
                 parameters = PaymentParameters(
-                    allowTokenization = true,
-                    cardFieldsParameters = CardFieldsParameters(
-                        cardNameField = FieldRequirement.Optional,
-                        emailField = FieldRequirement.Optional,
-                        cardholderNameField = FieldRequirement.Optional,
-                    ),
                     amountParameters = PaymentParameters.AmountParameters(
                         amount = state.total,
                         currencyCode = "UAH"
                     ),
                     orderId = viewModel.generateOrderId(),
                     callbackUrl = "https://example.com/callback",
-                    googlePayConfig = viewModel.testGooglePayConfig
+                    paymentType = if (useToken) {
+                        SingleTokenPayment(
+                            token = viewModel.testCardToken,
+                        )
+                    } else {
+                        RegularPayment(
+                            allowTokenization = false,
+                            cardFieldsParameters = CardFieldsParameters(),
+                            googlePayConfig = viewModel.testGooglePayConfig,
+                        )
+                    }
                 ),
             )
         },
@@ -89,7 +97,7 @@ fun PaymentScreen(
 fun PaymentSheetScreenContent(
     state: PaymentScreenState,
     onBack: () -> Unit,
-    onCheckout: () -> Unit,
+    onCheckout: (useToken: Boolean) -> Unit,
     onReset: () -> Unit,
     errorsFlow: Flow<String>,
 ) {
@@ -140,7 +148,7 @@ fun PaymentSheetScreenContent(
 private fun PaymentCartScreen(
     modifier: Modifier,
     state: PaymentScreenState,
-    onCheckout: () -> Unit,
+    onCheckout: (useToken: Boolean) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -211,17 +219,47 @@ private fun PaymentCartScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        Card(
             modifier = Modifier
-                .height(82.dp)
+                .fillMaxWidth()
                 .padding(
                     vertical = 16.dp,
                     horizontal = 16.dp
-                )
-                .fillMaxWidth(),
-            onClick = onCheckout
+                ),
         ) {
-            Text(text = "Checkout")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                val useToken = remember { mutableStateOf(false) }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = CenterVertically,
+                ) {
+                    Checkbox(
+                        checked = useToken.value,
+                        onCheckedChange = { useToken.value = it },
+                    )
+                    Text(
+                        text = "Use tokenized card",
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                    onClick = {
+                        onCheckout(
+                            useToken.value
+                        )
+                    }
+                ) {
+                    Text(text = "Checkout")
+                }
+            }
         }
     }
 }

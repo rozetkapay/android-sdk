@@ -84,6 +84,7 @@ private fun TokenizationContent(
         Title(
             title = stringResource(id = R.string.rozetka_pay_tokenization_title)
         )
+        Spacer(modifier = Modifier.height(28.dp))
         CardFormScreen(
             viewModel = cardFormViewModel
         )

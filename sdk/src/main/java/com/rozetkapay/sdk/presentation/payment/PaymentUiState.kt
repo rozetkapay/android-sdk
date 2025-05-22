@@ -19,6 +19,7 @@ internal data class PaymentUiState(
 internal sealed class PaymentDisplayState {
     data object Loading : PaymentDisplayState()
     data object Content : PaymentDisplayState()
+    data object Empty : PaymentDisplayState()
     data class Error(
         val message: String,
         val reason: Throwable? = null,

@@ -13,6 +13,8 @@ import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
+import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
 import com.rozetkapay.sdk.presentation.payment.PaymentSheet
 
 class PaymentActivity : ComponentActivity() {
@@ -36,18 +38,26 @@ class PaymentActivity : ComponentActivity() {
                     errorsFlow = viewModel.errorEventsFlow,
                     onBack = { finish() },
                     onReset = viewModel::reset,
-                    onCheckout = {
+                    onCheckout = { useToken ->
                         paymentSheet.show(
                             clientAuthParameters = viewModel.clientParameters,
                             parameters = PaymentParameters(
-                                allowTokenization = false,
-                                cardFieldsParameters = CardFieldsParameters(),
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,
                                     currencyCode = "UAH"
                                 ),
-                                googlePayConfig = viewModel.testGooglePayConfig,
                                 orderId = viewModel.generateOrderId(),
+                                paymentType = if (useToken) {
+                                    SingleTokenPayment(
+                                        token = viewModel.testCardToken,
+                                    )
+                                } else {
+                                    RegularPayment(
+                                        allowTokenization = false,
+                                        cardFieldsParameters = CardFieldsParameters(),
+                                        googlePayConfig = viewModel.testGooglePayConfig,
+                                    )
+                                }
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

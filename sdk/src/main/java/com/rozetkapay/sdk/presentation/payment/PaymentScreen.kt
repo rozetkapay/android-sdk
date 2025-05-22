@@ -83,6 +83,10 @@ internal fun PaymentScreen(
             PaymentDisplayState.Loading -> {
                 LoadingScreen()
             }
+
+            PaymentDisplayState.Empty -> {
+                // show empty state
+            }
         }
     }
 }
@@ -138,6 +142,7 @@ private fun PaymentContent(
                     color = DomainTheme.colors.componentDivider
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
         CardFormScreen(
             viewModel = cardFormViewModel
@@ -178,6 +183,25 @@ private fun PaymentScreenPreview() {
             state = PaymentUiState(
                 displayState = PaymentDisplayState.Content,
                 allowGooglePay = true
+            ),
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
+            onAction = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(
+    backgroundColor = 0xFF000000,
+    showBackground = true, uiMode = UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PaymentScreenSmallPreview() {
+    RozetkaPayTheme {
+        PaymentScreen(
+            state = PaymentUiState(
+                displayState = PaymentDisplayState.Content,
+                allowGooglePay = false
             ),
             cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
             onAction = {}
