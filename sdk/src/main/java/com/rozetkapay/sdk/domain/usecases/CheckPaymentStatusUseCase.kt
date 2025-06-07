@@ -26,11 +26,18 @@ internal class CheckPaymentStatusUseCase(
     }
 
     private suspend fun checkPaymentData(params: Parameters): CheckPaymentData {
-        return paymentsRepository.checkPayment(
-            authParameters = params.authParameters,
-            paymentId = params.paymentId,
-            orderId = params.orderId
-        )
+        return if (params.isBatch) {
+            paymentsRepository.checkBatchPayment(
+                authParameters = params.authParameters,
+                externalId = params.externalId
+            )
+        } else {
+            paymentsRepository.checkPayment(
+                authParameters = params.authParameters,
+                paymentId = params.paymentId,
+                externalId = params.externalId
+            )
+        }
     }
 
     private fun CheckPaymentData.isTerminatedStatus(): Boolean {
@@ -39,8 +46,9 @@ internal class CheckPaymentStatusUseCase(
 
     data class Parameters(
         val authParameters: ClientAuthParameters,
-        val paymentId: String,
-        val orderId: String,
+        val paymentId: String?,
+        val externalId: String,
+        val isBatch: Boolean,
     )
 
     companion object {

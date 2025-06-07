@@ -1,18 +1,19 @@
 package com.rozetkapay.sdk.domain.usecases
 
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
-import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
+import com.rozetkapay.sdk.domain.models.payment.CreatePaymentAction
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
+import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 
 internal class CreatePaymentUseCase(
     private val paymentsRepository: PaymentsRepository,
-) : ResultUseCase<PaymentRequest, CreatePaymentResult>() {
+) : ResultUseCase<PaymentRequest<PaymentDetails>, CreatePaymentResult>() {
 
     override suspend fun doWork(
-        params: PaymentRequest,
+        params: PaymentRequest<PaymentDetails>,
     ): CreatePaymentResult {
         return try {
             val data = paymentsRepository.createPayment(params)
@@ -36,8 +37,8 @@ internal class CreatePaymentUseCase(
 
                 PaymentStatus.Init,
                 PaymentStatus.Pending,
-                -> {
-                    if (data.action is CreatePaymentData.Action.Confirm3Ds) {
+                    -> {
+                    if (data.action is CreatePaymentAction.Confirm3Ds) {
                         CreatePaymentResult.Confirmation3DsRequired(
                             paymentId = data.paymentId,
                             url = data.action.url,

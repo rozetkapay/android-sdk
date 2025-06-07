@@ -12,19 +12,13 @@ internal sealed interface ConfirmPaymentResult : Parcelable {
     ) : ConfirmPaymentResult
 
     @Parcelize
-    data class Success(
-        val paymentId: String,
-    ) : ConfirmPaymentResult
+    data object Success : ConfirmPaymentResult
 
-    // used when confirmation completed bu status is unknown
-    // real payment sta should be handled by client
+    // used when confirmation completed but status is unknown
+    // real payment status should be handled by client
     @Parcelize
-    data class Completed(
-        val paymentId: String,
-    ) : ConfirmPaymentResult
+    data object Completed : ConfirmPaymentResult
 
     @Parcelize
-    data class Cancelled(
-        val paymentId: String,
-    ) : ConfirmPaymentResult
+    data object Cancelled: ConfirmPaymentResult
 }

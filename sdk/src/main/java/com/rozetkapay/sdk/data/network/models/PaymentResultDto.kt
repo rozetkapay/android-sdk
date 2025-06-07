@@ -14,14 +14,6 @@ internal data class PaymentResultDto(
 )
 
 @Serializable
-internal data class PaymentResultActionDto(
-    @SerialName("type")
-    val type: String?,
-    @SerialName("value")
-    val value: String?,
-)
-
-@Serializable
 internal data class PaymentResultDetailsDto(
     @SerialName("payment_id")
     val paymentId: String,

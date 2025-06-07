@@ -17,7 +17,6 @@ import java.net.URI
 
 internal class Confirmation3DsViewModel(
     private val url: String,
-    private val paymentId: String,
     private val environment: RozetkaPayEnvironment,
 ) : ViewModel() {
 
@@ -42,9 +41,7 @@ internal class Confirmation3DsViewModel(
                 viewModelScope.launch {
                     _eventsChannel.send(
                         Confirmation3DsEvent.Result(
-                            ConfirmPaymentResult.Cancelled(
-                                paymentId = paymentId
-                            )
+                            ConfirmPaymentResult.Cancelled
                         )
                     )
                 }
@@ -91,9 +88,7 @@ internal class Confirmation3DsViewModel(
             viewModelScope.launch {
                 _eventsChannel.send(
                     Confirmation3DsEvent.Result(
-                        ConfirmPaymentResult.Completed(
-                            paymentId = paymentId,
-                        )
+                        ConfirmPaymentResult.Completed
                     )
                 )
             }
@@ -118,7 +113,6 @@ internal class Confirmation3DsViewModel(
             val parameters = parametersSupplier()
             return Confirmation3DsViewModel(
                 url = parameters.url,
-                paymentId = parameters.paymentId,
                 environment = RozetkaPayKoinContext.koin.get(),
             ) as T
         }

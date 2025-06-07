@@ -8,13 +8,13 @@ sealed class PaymentResult : Parcelable {
 
     @Parcelize
     data class Pending(
-        val orderId: String,
+        val externalId: String,
         val paymentId: String,
     ) : PaymentResult()
 
     @Parcelize
     data class Complete(
-        val orderId: String,
+        val externalId: String,
         val paymentId: String,
         val tokenizedCard: TokenizedCard?,
     ) : PaymentResult()

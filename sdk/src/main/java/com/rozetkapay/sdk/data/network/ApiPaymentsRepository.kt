@@ -1,19 +1,27 @@
 package com.rozetkapay.sdk.data.network
 
+import com.rozetkapay.sdk.data.network.converters.toBatchPaymentRequestDto
 import com.rozetkapay.sdk.data.network.converters.toCheckPaymentData
+import com.rozetkapay.sdk.data.network.converters.toCreateBatchPaymentData
 import com.rozetkapay.sdk.data.network.converters.toCreatePaymentData
+import com.rozetkapay.sdk.data.network.converters.toCustomerDto
 import com.rozetkapay.sdk.data.network.converters.toPaymentRequestDto
+import com.rozetkapay.sdk.data.network.models.BatchPaymentResultDto
 import com.rozetkapay.sdk.data.network.models.PaymentErrorDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
 import com.rozetkapay.sdk.data.network.models.PurchaseDetailsDto
 import com.rozetkapay.sdk.domain.errors.RozetkaPayNetworkException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
+import com.rozetkapay.sdk.domain.models.payment.BatchPaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.CheckPaymentData
+import com.rozetkapay.sdk.domain.models.payment.CreateBatchPaymentData
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
+import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
+import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 import com.rozetkapay.sdk.util.Logger
 import io.ktor.client.HttpClient
@@ -29,6 +37,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 internal class ApiPaymentsRepository(
@@ -36,30 +45,19 @@ internal class ApiPaymentsRepository(
     private val httpClient: HttpClient,
 ) : PaymentsRepository {
 
+    // regular payments
+
     override suspend fun createPayment(
-        paymentRequest: PaymentRequest,
+        paymentRequest: PaymentRequest<PaymentDetails>,
     ): CreatePaymentData = withContext(Dispatchers.IO) {
-        when (paymentRequest) {
-            is GooglePayPaymentRequest -> {
-                createGooglePayPayment(paymentRequest)
-            }
-
-            is CardTokenPaymentRequest -> {
-                createCardTokenPayment(paymentRequest)
-            }
+        val customer = when (paymentRequest) {
+            is GooglePayPaymentRequest -> paymentRequest.toCustomerDto()
+            is CardTokenPaymentRequest -> paymentRequest.toCustomerDto()
         }
-    }
-
-    private suspend fun createGooglePayPayment(paymentRequest: GooglePayPaymentRequest): CreatePaymentData {
-        return createPayment(
-            body = paymentRequest.toPaymentRequestDto(),
-            authParameters = paymentRequest.authParameters
-        )
-    }
-
-    private suspend fun createCardTokenPayment(paymentRequest: CardTokenPaymentRequest): CreatePaymentData {
-        return createPayment(
-            body = paymentRequest.toPaymentRequestDto(),
+        createPayment(
+            body = paymentRequest.paymentDetails.toPaymentRequestDto(
+                customer = customer
+            ),
             authParameters = paymentRequest.authParameters
         )
     }
@@ -68,7 +66,7 @@ internal class ApiPaymentsRepository(
         authParameters: ClientAuthParameters,
         body: Any,
     ): CreatePaymentData {
-        Logger.d { "Create payment API request start" }
+        Logger.d { "Create payment - API request - start" }
         val response = httpClient.post(
             urlString = apiProvider.createPaymentUrl
         ) {
@@ -77,41 +75,102 @@ internal class ApiPaymentsRepository(
             setBody(body)
         }
         return if (response.status.isSuccess()) {
-            Logger.d { "Create payment API request success" }
+            Logger.d { "Create payment - API request - success" }
             val result = response.body<PaymentResultDto>()
             result.toCreatePaymentData()
         } else {
-            Logger.d { "Create payment API request error" }
+            Logger.d { "Create payment - API request - error" }
             response.handlePaymentApiError()
         }
     }
 
+    // batch payments
+
+    override suspend fun createBatchPayment(
+        paymentRequest: PaymentRequest<BatchPaymentDetails>,
+    ): CreateBatchPaymentData = withContext(Dispatchers.IO) {
+        val customer = when (paymentRequest) {
+            is GooglePayPaymentRequest -> paymentRequest.toCustomerDto()
+            is CardTokenPaymentRequest -> paymentRequest.toCustomerDto()
+        }
+        createBatchPayment(
+            body = paymentRequest.paymentDetails.toBatchPaymentRequestDto(
+                customer = customer
+            ),
+            authParameters = paymentRequest.authParameters
+        )
+    }
+
+    private suspend fun createBatchPayment(
+        authParameters: ClientAuthParameters,
+        body: Any,
+    ): CreateBatchPaymentData {
+        Logger.d { "Create batch payment - API request - start" }
+        val response = httpClient.post(
+            urlString = apiProvider.createBatchPaymentUrl
+        ) {
+            header("Authorization", "Basic ${authParameters.token}")
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        }
+        return if (response.status.isSuccess()) {
+            Logger.d { "Create batch payment - API request - success" }
+            val result = response.body<BatchPaymentResultDto>()
+            result.toCreateBatchPaymentData()
+        } else {
+            Logger.d { "Create batch payment - API request - error" }
+            response.handlePaymentApiError()
+        }
+    }
+
+    // check payment
+
     override suspend fun checkPayment(
         authParameters: ClientAuthParameters,
-        paymentId: String,
-        orderId: String,
+        paymentId: String?,
+        externalId: String,
     ): CheckPaymentData {
-        Logger.d { "Check payment with external id (orderI)=$orderId status start" }
+        Logger.d { "Check payment with external id (orderI)=$externalId status start" }
         val response: HttpResponse = httpClient.get(
             urlString = apiProvider.paymentInfoUrl
         ) {
             header("Authorization", "Basic ${authParameters.token}")
             contentType(ContentType.Application.Json)
-            parameter("external_id", orderId)
+            parameter("external_id", externalId)
         }
         return if (response.status.isSuccess()) {
             Logger.d { "Check payment API request success" }
             val result = response.body<PurchaseDetailsDto>()
-            val details = result.details.firstOrNull { it.paymentId == paymentId }
+            val details = if (paymentId == null) {
+                result.details.firstOrNull()
+            } else {
+                result.details.firstOrNull { it.paymentId == paymentId }
+            }
             details?.toCheckPaymentData() ?: throw RozetkaPayPaymentException(
                 code = "failure",
-                errorMessage = "Payment with id $paymentId not found in purchase details of order $orderId",
+                errorMessage = "Payment with id $paymentId not found in purchase details of order $externalId",
             )
         } else {
             Logger.d { "Check payment API request error" }
             response.handlePaymentApiError()
         }
     }
+
+    override suspend fun checkBatchPayment(
+        authParameters: ClientAuthParameters,
+        externalId: String,
+    ): CheckPaymentData {
+        // TODO: this API is not available yet, so this method is not implemented
+        // temporary implementation for testing purposes
+        delay(1000)
+        return CheckPaymentData(
+            status = PaymentStatus.Success,
+            statusCode = null,
+            statusDescription = null,
+        )
+    }
+
+    // common
 
     private suspend fun HttpResponse.handlePaymentApiError(): Nothing {
         val errorData = this.body<PaymentErrorDto?>()

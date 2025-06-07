@@ -1,4 +1,4 @@
-package com.rozetkapay.demo.presentation.payment
+package com.rozetkapay.demo.presentation.payment.regular
 
 import android.content.Context
 import android.content.Intent
@@ -9,13 +9,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rozetkapay.demo.presentation.payment.PaymentCredentials
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.RegularPayment
 import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
-import com.rozetkapay.sdk.presentation.payment.PaymentSheet
+import com.rozetkapay.sdk.presentation.payment.regular.PaymentSheet
 
 class PaymentActivity : ComponentActivity() {
     private val viewModel: PaymentViewModel by viewModels()
@@ -33,29 +34,29 @@ class PaymentActivity : ComponentActivity() {
         setContent {
             RozetkaPayDemoClassicTheme {
                 val state by viewModel.state.collectAsStateWithLifecycle()
-                PaymentSheetScreenContent(
+                PaymentScreenContent(
                     state = state,
                     errorsFlow = viewModel.errorEventsFlow,
                     onBack = { finish() },
                     onReset = viewModel::reset,
                     onCheckout = { useToken ->
                         paymentSheet.show(
-                            clientAuthParameters = viewModel.clientParameters,
+                            clientAuthParameters = PaymentCredentials.clientParametersProd,
                             parameters = PaymentParameters(
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,
                                     currencyCode = "UAH"
                                 ),
-                                orderId = viewModel.generateOrderId(),
+                                externalId = viewModel.generateOrderId(),
                                 paymentType = if (useToken) {
                                     SingleTokenPayment(
-                                        token = viewModel.testCardToken,
+                                        token = PaymentCredentials.testCardToken,
                                     )
                                 } else {
                                     RegularPayment(
                                         allowTokenization = false,
                                         cardFieldsParameters = CardFieldsParameters(),
-                                        googlePayConfig = viewModel.testGooglePayConfig,
+                                        googlePayConfig = PaymentCredentials.testGooglePayConfig,
                                     )
                                 }
                             ),

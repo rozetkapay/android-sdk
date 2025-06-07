@@ -25,7 +25,6 @@ internal class Confirmation3DsContract :
 
     @Parcelize
     data class Parameters(
-        val paymentId: String,
         val url: String,
         val themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     ) : Parcelable {
