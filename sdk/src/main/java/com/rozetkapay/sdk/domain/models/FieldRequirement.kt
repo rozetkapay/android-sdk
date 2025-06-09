@@ -5,3 +5,5 @@ enum class FieldRequirement {
     Optional,
     Required
 }
+
+fun FieldRequirement.required(): Boolean = this == FieldRequirement.Required

@@ -15,7 +15,12 @@
             android:theme="@style/RozetkaPaySheetDefaultTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".presentation.payment.PaymentSheetActivity"
+            android:name=".presentation.payment.regular.PaymentSheetActivity"
+            android:exported="false"
+            android:theme="@style/RozetkaPaySheetDefaultTheme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".presentation.payment.batch.BatchPaymentSheetActivity"
             android:exported="false"
             android:theme="@style/RozetkaPaySheetDefaultTheme"
             android:windowSoftInputMode="adjustResize" />

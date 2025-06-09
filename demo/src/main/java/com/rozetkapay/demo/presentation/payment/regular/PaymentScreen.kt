@@ -1,44 +1,47 @@
-package com.rozetkapay.demo.presentation.payment
+package com.rozetkapay.demo.presentation.payment.regular
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rozetkapay.demo.R
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
+import com.rozetkapay.demo.presentation.payment.CartItem
+import com.rozetkapay.demo.presentation.payment.PaymentCredentials
+import com.rozetkapay.demo.presentation.payment.PaymentDataProvider
+import com.rozetkapay.demo.presentation.payment.PaymentMessageScreen
+import com.rozetkapay.demo.presentation.payment.amount
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
-import com.rozetkapay.sdk.presentation.payment.rememberPaymentSheet
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
+import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
+import com.rozetkapay.sdk.presentation.payment.regular.rememberPaymentSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -55,21 +58,30 @@ fun PaymentScreen(
         }
     )
 
-    PaymentSheetScreenContent(
+    PaymentScreenContent(
         onBack = onBack,
         state = state,
-        onCheckout = {
+        onCheckout = { useToken ->
             paymentSheet.show(
-                clientAuthParameters = viewModel.clientParameters,
+                clientAuthParameters = PaymentCredentials.clientParametersProd,
                 parameters = PaymentParameters(
-                    allowTokenization = true,
                     amountParameters = PaymentParameters.AmountParameters(
                         amount = state.total,
                         currencyCode = "UAH"
                     ),
-                    orderId = viewModel.generateOrderId(),
+                    externalId = viewModel.generateOrderId(),
                     callbackUrl = "https://example.com/callback",
-                    googlePayConfig = viewModel.testGooglePayConfig
+                    paymentType = if (useToken) {
+                        SingleTokenPayment(
+                            token = PaymentCredentials.testCardToken,
+                        )
+                    } else {
+                        RegularPayment(
+                            allowTokenization = true,
+                            cardFieldsParameters = CardFieldsParameters(),
+                            googlePayConfig = PaymentCredentials.testGooglePayConfig,
+                        )
+                    }
                 ),
             )
         },
@@ -79,10 +91,10 @@ fun PaymentScreen(
 }
 
 @Composable
-fun PaymentSheetScreenContent(
+fun PaymentScreenContent(
     state: PaymentScreenState,
     onBack: () -> Unit,
-    onCheckout: () -> Unit,
+    onCheckout: (useToken: Boolean) -> Unit,
     onReset: () -> Unit,
     errorsFlow: Flow<String>,
 ) {
@@ -133,7 +145,7 @@ fun PaymentSheetScreenContent(
 private fun PaymentCartScreen(
     modifier: Modifier,
     state: PaymentScreenState,
-    onCheckout: () -> Unit,
+    onCheckout: (useToken: Boolean) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -204,65 +216,47 @@ private fun PaymentCartScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        Card(
             modifier = Modifier
-                .height(82.dp)
+                .fillMaxWidth()
                 .padding(
                     vertical = 16.dp,
                     horizontal = 16.dp
-                )
-                .fillMaxWidth(),
-            onClick = onCheckout
+                ),
         ) {
-            Text(text = "Checkout")
-        }
-    }
-}
-
-@Composable
-private fun PaymentMessageScreen(
-    modifier: Modifier = Modifier,
-    message: String,
-    onReset: () -> Unit,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp, CenterVertically)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(
-                    vertical = 24.dp,
-                    horizontal = 16.dp
-                )
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp, CenterVertically)
-        ) {
-            Image(
+            Column(
                 modifier = Modifier
-                    .size(200.dp),
-                painter = painterResource(id = R.drawable.img_success),
-                contentDescription = "success-image"
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = message,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-        Button(
-            modifier = Modifier.widthIn(min = 200.dp),
-            onClick = onReset
-        ) {
-            Text(
-                text = "OK",
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                val useToken = remember { mutableStateOf(false) }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = CenterVertically,
+                ) {
+                    Checkbox(
+                        checked = useToken.value,
+                        onCheckedChange = { useToken.value = it },
+                    )
+                    Text(
+                        text = "Use tokenized card",
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                    onClick = {
+                        onCheckout(
+                            useToken.value
+                        )
+                    }
+                ) {
+                    Text(text = "Checkout")
+                }
+            }
         }
     }
 }
@@ -270,11 +264,11 @@ private fun PaymentMessageScreen(
 @Composable
 @Preview
 @Preview(name = "Dark Theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun PaymentSheetScreenPreview() {
+private fun PaymentScreenContentPreview() {
     RozetkaPayDemoTheme {
-        PaymentSheetScreenContent(
+        PaymentScreenContent(
             state = PaymentScreenState(
-                items = PaymentViewModel.mockedCartItemData,
+                items = PaymentDataProvider.cartItems,
                 total = 1000,
                 status = PaymentScreenState.Status.Ready
             ),
@@ -289,11 +283,11 @@ private fun PaymentSheetScreenPreview() {
 @Composable
 @Preview
 @Preview(name = "Dark Theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun PaymentSheetScreenMessagePreview() {
+private fun PaymentScreenContentMessagePreview() {
     RozetkaPayDemoTheme {
-        PaymentSheetScreenContent(
+        PaymentScreenContent(
             state = PaymentScreenState(
-                items = PaymentViewModel.mockedCartItemData,
+                items = PaymentDataProvider.cartItems,
                 total = 1000,
                 status = PaymentScreenState.Status.PaymentPending
             ),

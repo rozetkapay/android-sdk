@@ -1,4 +1,4 @@
-package com.rozetkapay.sdk.presentation.components
+package com.rozetkapay.sdk.presentation.forms.card
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.domain.models.PaymentSystem
+import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.util.masks.CardNumberMask

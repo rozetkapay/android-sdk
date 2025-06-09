@@ -8,7 +8,6 @@ internal interface TokenizationRepository {
     suspend fun tokenizeCard(
         widgetKey: String,
         cardData: CardData,
-        email: String?,
         device: DeviceInfo,
     ): TokenizedCard
 }

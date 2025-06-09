@@ -15,12 +15,11 @@ internal class TokenizeCardUseCase(
         val tokenizeCard = tokenizationRepository.tokenizeCard(
             widgetKey = params.widgetKey,
             cardData = params.cardData,
-            email = params.email,
             device = deviceInfo
         )
         val paymentSystem = provideCardPaymentSystemUseCase(params.cardData.number)
         return tokenizeCard.copy(
-            name = params.cardName,
+            name = params.cardData.cardName,
             cardInfo = tokenizeCard.cardInfo?.copy(
                 paymentSystem = paymentSystem?.alias
             )
@@ -29,8 +28,6 @@ internal class TokenizeCardUseCase(
 
     data class Parameters(
         val cardData: CardData,
-        val cardName: String? = null,
-        val email: String? = null,
         val widgetKey: String,
     )
 }

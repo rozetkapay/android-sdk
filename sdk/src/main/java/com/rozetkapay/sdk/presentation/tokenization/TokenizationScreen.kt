@@ -7,37 +7,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
-import com.rozetkapay.sdk.presentation.components.CardField
-import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.domain.models.CardData
+import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.presentation.components.ErrorScreen
-import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.LegalIconsBlock
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
 import com.rozetkapay.sdk.presentation.components.SheetCloseHeader
-import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.components.Title
 import com.rozetkapay.sdk.presentation.components.inSheetPaddings
+import com.rozetkapay.sdk.presentation.forms.card.CardFormScreen
+import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
+import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 
 @Composable
 internal fun TokenizationScreen(
     state: TokenizationUiState,
-    onCardNameChanged: (String) -> Unit,
-    onEmailChanged: (String) -> Unit,
-    onCardFieldStateChanged: (CardFieldState) -> Unit,
-    onSave: () -> Unit,
+    cardFormViewModel: CardFormViewModel,
+    onSave: (CardData) -> Unit,
     onCancel: () -> Unit,
     onFailed: (reason: Throwable?) -> Unit,
     onRetry: () -> Unit,
@@ -54,11 +49,8 @@ internal fun TokenizationScreen(
                     onClose = onCancel
                 )
                 TokenizationContent(
-                    state = state,
+                    cardFormViewModel = cardFormViewModel,
                     onSave = onSave,
-                    onCardNameChanged = onCardNameChanged,
-                    onCardFieldStateChanged = onCardFieldStateChanged,
-                    onEmailChanged = onEmailChanged
                 )
             }
 
@@ -81,11 +73,8 @@ internal fun TokenizationScreen(
 
 @Composable
 private fun TokenizationContent(
-    state: TokenizationUiState,
-    onCardNameChanged: (String) -> Unit,
-    onEmailChanged: (String) -> Unit,
-    onCardFieldStateChanged: (CardFieldState) -> Unit,
-    onSave: () -> Unit,
+    cardFormViewModel: CardFormViewModel,
+    onSave: (CardData) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -95,54 +84,20 @@ private fun TokenizationContent(
         Title(
             title = stringResource(id = R.string.rozetka_pay_tokenization_title)
         )
-        if (state.withCardName) {
-            Spacer(modifier = Modifier.height(16.dp))
-            FormTextField(
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = stringResource(id = R.string.rozetka_pay_form_optional_card_name),
-                value = state.cardName,
-                onValueChange = {
-                    onCardNameChanged(it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                errorMessage = state.cardNameError,
-                isError = state.cardNameError != null
-            )
-        }
         Spacer(modifier = Modifier.height(28.dp))
-        Subtitle(title = stringResource(id = R.string.rozetka_pay_form_card_info_title))
-        Spacer(modifier = Modifier.height(10.dp))
-        CardField(
-            state = state.cardState,
-            showCardholderNameField = state.withCardholderName,
-            onStateChanged = { onCardFieldStateChanged(it) }
+        CardFormScreen(
+            viewModel = cardFormViewModel
         )
-        if (state.withEmail) {
-            Spacer(modifier = Modifier.height(16.dp))
-            FormTextField(
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = stringResource(id = R.string.rozetka_pay_form_email),
-                value = state.email,
-                onValueChange = {
-                    onEmailChanged(it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Email,
-                    capitalization = KeyboardCapitalization.None
-                ),
-                errorMessage = state.emailError,
-                isError = state.emailError != null
-            )
-        }
         Spacer(modifier = Modifier.height(40.dp))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_tokenization_save_button),
-            onClick = onSave
+            onClick = {
+                val result = cardFormViewModel.parseCardData()
+                if (result is CardParsingResult.Success) {
+                    onSave(result.cardData)
+                }
+            }
         )
         LegalIconsBlock(
             modifier = Modifier
@@ -160,9 +115,7 @@ private fun TokenizationContentPreview() {
             state = TokenizationUiState(
                 displayState = TokenizationDisplayState.Content,
             ),
-            onEmailChanged = {},
-            onCardNameChanged = {},
-            onCardFieldStateChanged = {},
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
             onSave = {},
             onCancel = {},
             onFailed = {},
@@ -179,9 +132,7 @@ private fun TokenizationContentProgressPreview() {
             state = TokenizationUiState(
                 displayState = TokenizationDisplayState.Loading,
             ),
-            onEmailChanged = {},
-            onCardNameChanged = {},
-            onCardFieldStateChanged = {},
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
             onSave = {},
             onCancel = {},
             onFailed = {},
@@ -200,9 +151,7 @@ private fun TokenizationContentFailedPreview() {
                     message = stringResource(id = R.string.rozetka_pay_tokenization_error_common)
                 ),
             ),
-            onEmailChanged = {},
-            onCardNameChanged = {},
-            onCardFieldStateChanged = {},
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
             onSave = {},
             onCancel = {},
             onFailed = {},

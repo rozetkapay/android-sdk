@@ -77,6 +77,10 @@ fun MenuScreen(
                 text = "Make a payment",
                 onClick = { onNavigationEvent(Route.Payment) }
             )
+            MenuButton(
+                text = "Make a batch payment",
+                onClick = { onNavigationEvent(Route.BatchPayment) }
+            )
         }
     }
 }

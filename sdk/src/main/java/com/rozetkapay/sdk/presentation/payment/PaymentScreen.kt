@@ -2,8 +2,6 @@ package com.rozetkapay.sdk.presentation.payment
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -28,24 +25,26 @@ import com.google.pay.button.ButtonTheme
 import com.google.pay.button.ButtonType
 import com.google.pay.button.PayButton
 import com.rozetkapay.sdk.R
-import com.rozetkapay.sdk.presentation.components.CardField
-import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.domain.models.CardData
+import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.presentation.components.ErrorScreen
 import com.rozetkapay.sdk.presentation.components.LegalIconsBlock
 import com.rozetkapay.sdk.presentation.components.LegalTextBlock
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.components.PrimaryButton
-import com.rozetkapay.sdk.presentation.components.PrimaryCheckbox
 import com.rozetkapay.sdk.presentation.components.SheetCloseHeader
-import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.components.Title
 import com.rozetkapay.sdk.presentation.components.inSheetPaddings
+import com.rozetkapay.sdk.presentation.forms.card.CardFormScreen
+import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
+import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 
 @Composable
 internal fun PaymentScreen(
     state: PaymentUiState,
+    cardFormViewModel: CardFormViewModel,
     onAction: (PaymentAction) -> Unit,
 ) {
     Column(
@@ -61,10 +60,9 @@ internal fun PaymentScreen(
                 )
                 PaymentContent(
                     state = state,
-                    onPayWithCard = { onAction(PaymentAction.PayWithCard) },
+                    cardFormViewModel = cardFormViewModel,
+                    onPayWithCard = { onAction(PaymentAction.PayWithCard(cardData = it)) },
                     onGooglePay = { onAction(PaymentAction.PayWithGooglePay) },
-                    onTokenizationChanged = { onAction(PaymentAction.UpdateTokenization(it)) },
-                    onCardFieldStateChanged = { onAction(PaymentAction.UpdateCard(it)) }
                 )
             }
 
@@ -85,6 +83,10 @@ internal fun PaymentScreen(
             PaymentDisplayState.Loading -> {
                 LoadingScreen()
             }
+
+            PaymentDisplayState.Empty -> {
+                // show empty state
+            }
         }
     }
 }
@@ -92,10 +94,9 @@ internal fun PaymentScreen(
 @Composable
 private fun PaymentContent(
     state: PaymentUiState,
-    onPayWithCard: () -> Unit,
+    cardFormViewModel: CardFormViewModel,
+    onPayWithCard: (CardData) -> Unit,
     onGooglePay: () -> Unit,
-    onCardFieldStateChanged: (CardFieldState) -> Unit,
-    onTokenizationChanged: (Boolean) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -143,41 +144,19 @@ private fun PaymentContent(
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-        Subtitle(title = stringResource(id = R.string.rozetka_pay_form_card_info_title))
-        Spacer(modifier = Modifier.height(10.dp))
-        CardField(
-            state = state.cardState,
-            showCardholderNameField = state.withCardholderName,
-            onStateChanged = { onCardFieldStateChanged(it) }
+        CardFormScreen(
+            viewModel = cardFormViewModel
         )
-        if (state.allowTokenization) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { onTokenizationChanged(!state.tokenize) },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                PrimaryCheckbox(
-                    checked = state.tokenize,
-                    onCheckedChange = onTokenizationChanged
-                )
-                Text(
-                    text = stringResource(id = R.string.rozetka_pay_form_save_card),
-                    style = DomainTheme.typography.labelSmall,
-                    color = DomainTheme.colors.onSurface
-                )
-            }
-        }
         Spacer(modifier = Modifier.height(40.dp))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_payment_pay_button, state.amountWithCurrency),
-            onClick = onPayWithCard
+            onClick = {
+                val result = cardFormViewModel.parseCardData()
+                if (result is CardParsingResult.Success) {
+                    onPayWithCard(result.cardData)
+                }
+            }
         )
         LegalIconsBlock(
             modifier = Modifier
@@ -203,9 +182,28 @@ private fun PaymentScreenPreview() {
         PaymentScreen(
             state = PaymentUiState(
                 displayState = PaymentDisplayState.Content,
-                allowTokenization = true,
                 allowGooglePay = true
             ),
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
+            onAction = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(
+    backgroundColor = 0xFF000000,
+    showBackground = true, uiMode = UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PaymentScreenSmallPreview() {
+    RozetkaPayTheme {
+        PaymentScreen(
+            state = PaymentUiState(
+                displayState = PaymentDisplayState.Content,
+                allowGooglePay = false
+            ),
+            cardFormViewModel = MOCK_CARD_FORM_VIEWMODEL,
             onAction = {}
         )
     }

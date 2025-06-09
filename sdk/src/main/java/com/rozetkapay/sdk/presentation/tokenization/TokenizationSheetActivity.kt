@@ -16,6 +16,7 @@ import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.RozetkaPayBottomSheet
 import com.rozetkapay.sdk.presentation.components.rememberRozetkaPayBottomSheetState
+import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import kotlinx.coroutines.launch
@@ -32,6 +33,13 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
     }
 
     private val viewModel: TokenizationViewModel by viewModels { viewModelFactory }
+
+    @VisibleForTesting
+    internal var cardFormViewModelFactory: ViewModelProvider.Factory = CardFormViewModel.Factory {
+        requireNotNull(parameters).parameters.cardFieldsParameters
+    }
+
+    private val cardFormViewModel: CardFormViewModel by viewModels { cardFormViewModelFactory }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,11 +74,9 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
                     val state = viewModel.uiState.collectAsStateWithLifecycle()
                     TokenizationScreen(
                         state = state.value,
-                        onSave = { viewModel.onAction(TokenizationAction.Save) },
+                        cardFormViewModel = cardFormViewModel,
+                        onSave = { cardData -> viewModel.onAction(TokenizationAction.Save(cardData = cardData)) },
                         onCancel = { viewModel.onAction(TokenizationAction.Cancel) },
-                        onCardNameChanged = { viewModel.onAction(TokenizationAction.UpdateCardName(it)) },
-                        onCardFieldStateChanged = { viewModel.onAction(TokenizationAction.UpdateCard(it)) },
-                        onEmailChanged = { viewModel.onAction(TokenizationAction.UpdateEmail(it)) },
                         onRetry = { viewModel.onAction(TokenizationAction.Retry) },
                         onFailed = { viewModel.onAction(TokenizationAction.Failed(it)) }
                     )

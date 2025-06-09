@@ -1,7 +1,6 @@
-package com.rozetkapay.sdk.presentation.payment
+package com.rozetkapay.sdk.presentation.payment.regular
 
 import android.util.Base64
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,28 +12,38 @@ import com.google.android.gms.wallet.contract.ApiTaskResult
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
+import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
+import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.Currency
-import com.rozetkapay.sdk.domain.models.payment.BasePaymentParameters
+import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
+import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
+import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
+import com.rozetkapay.sdk.domain.models.payment.RegularPayment
+import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
-import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.domain.usecases.CheckPaymentStatusUseCase
 import com.rozetkapay.sdk.domain.usecases.CreatePaymentUseCase
-import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
-import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
-import com.rozetkapay.sdk.presentation.components.CardFieldState
+import com.rozetkapay.sdk.domain.usecases.TokenizeCardUseCase
+import com.rozetkapay.sdk.presentation.payment.PaymentAction
+import com.rozetkapay.sdk.presentation.payment.PaymentBottomSheetViewModel
+import com.rozetkapay.sdk.presentation.payment.PaymentDisplayState
+import com.rozetkapay.sdk.presentation.payment.PaymentUiState
 import com.rozetkapay.sdk.presentation.payment.googlepay.GooglePayInteractor
 import com.rozetkapay.sdk.util.Logger
 import com.rozetkapay.sdk.util.MoneyFormatter
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -46,19 +55,20 @@ internal class PaymentViewModel(
     private val clientAuthParameters: ClientAuthParameters,
     private val parameters: PaymentParameters,
     private val resourcesProvider: ResourcesProvider,
-    private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
-    private val parseCardDataUseCase: ParseCardDataUseCase,
     private val createPaymentUseCase: CreatePaymentUseCase,
     private val checkPaymentStatusUseCase: CheckPaymentStatusUseCase,
-    private val googlePayInteractor: GooglePayInteractor?,
-) : ViewModel() {
+    googlePayInteractor: GooglePayInteractor?,
+    private val tokenizeCardUseCase: TokenizeCardUseCase,
+) : PaymentBottomSheetViewModel(
+    googlePayInteractor = googlePayInteractor,
+) {
 
     private val _eventsChannel = Channel<PaymentEvent>()
-    val eventsFlow = _eventsChannel.receiveAsFlow()
+    val eventsFlow: Flow<PaymentEvent> = _eventsChannel.receiveAsFlow()
 
-    private val _uiState = MutableStateFlow(
+    override val _uiState = MutableStateFlow(
         PaymentUiState(
-            allowTokenization = parameters.allowTokenization,
+            displayState = PaymentDisplayState.Empty,
             amountWithCurrency = MoneyFormatter.formatCoinsToMoney(
                 coins = parameters.amountParameters.amount,
                 currency = Currency.getSymbol(parameters.amountParameters.currencyCode)
@@ -67,42 +77,32 @@ internal class PaymentViewModel(
             googlePayAllowedPaymentMethods = googlePayInteractor?.getAllowedPaymentMethods()?.toString() ?: ""
         )
     )
-    val uiState = _uiState.asStateFlow()
+    override val uiState: StateFlow<PaymentUiState> = _uiState.asStateFlow()
+
+    private var lastPaymentTokenizedCard: TokenizedCard? = null
+    private var lastPaymentId: String? = null
 
     init {
-        checkGooglePayParameters()
-        viewModelScope.launch {
-            verifyGooglePayReadiness()
+        retry()
+        if (parameters.paymentType is RegularPayment) {
+            checkGooglePayParameters(parameters.paymentType.googlePayConfig)
+            viewModelScope.launch {
+                verifyGooglePayReadiness()
+            }
         }
     }
 
-    private suspend fun verifyGooglePayReadiness() {
-        if (googlePayInteractor?.fetchCanUseGooglePay() == true) {
-            _uiState.tryEmit(
-                uiState.value.copy(
-                    allowGooglePay = true,
-                    googlePayAllowedPaymentMethods = googlePayInteractor.getAllowedPaymentMethods().toString()
-                )
-            )
-        } else {
-            Logger.d { "Google Pay is not available for this device" }
-            _uiState.tryEmit(
-                uiState.value.copy(
-                    allowGooglePay = false,
-                    googlePayAllowedPaymentMethods = ""
-                )
-            )
-        }
+    private fun clearLastPaymentData() {
+        lastPaymentTokenizedCard = null
+        lastPaymentId = null
     }
 
-    fun onAction(action: PaymentAction) {
+    override fun onAction(action: PaymentAction) {
         when (action) {
             PaymentAction.Cancel -> cancelled()
             PaymentAction.Retry -> retry()
-            is PaymentAction.UpdateCard -> updateCard(action.state)
             is PaymentAction.Failed -> failedDueToError(action.reason)
-            PaymentAction.PayWithCard -> payWithCard()
-            is PaymentAction.UpdateTokenization -> updateTokenization(action.value)
+            is PaymentAction.PayWithCard -> payWithCard(action.cardData)
             is PaymentAction.GooglePayResult -> handleGooglePayResult(action.result)
             PaymentAction.PayWithGooglePay -> payWithGooglePay()
             is PaymentAction.PaymentConfirmed -> handlePaymentConfirmationResult(action.result)
@@ -154,7 +154,7 @@ internal class PaymentViewModel(
         loading()
         val paymentRequest = GooglePayPaymentRequest(
             authParameters = clientAuthParameters,
-            paymentParameters = basePaymentParameters(),
+            paymentDetails = basePaymentParameters(),
             googlePayToken = Base64.encode(token.toByteArray(), Base64.NO_WRAP).toString(Charsets.UTF_8)
         )
         createPaymentUseCase(paymentRequest)
@@ -162,34 +162,33 @@ internal class PaymentViewModel(
                 Logger.e(throwable = error) { "Google pay payment error" }
                 showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
             }
-            .onEach { result ->
+            .onEach { result: CreatePaymentResult ->
                 Logger.d { "Payment result: $result" }
                 when (result) {
-                    is CreatePaymentResult.Confirmation3DsRequired -> start3ds(
-                        paymentId = result.paymentId,
-                        url = result.url
-                    )
+                    is CreatePaymentResult.Confirmation3DsRequired -> {
+                        lastPaymentId = result.paymentId
+                        start3ds(url = result.url)
+                    }
 
                     is CreatePaymentResult.Error -> showError(
                         message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
                     )
 
-                    is CreatePaymentResult.Success -> success(
-                        paymentId = result.paymentId,
-                    )
+                    is CreatePaymentResult.Success -> {
+                        lastPaymentId = result.paymentId
+                        success()
+                    }
                 }
             }
             .launchIn(viewModelScope)
     }
 
     private fun start3ds(
-        paymentId: String,
         url: String,
     ) {
         loading()
         _eventsChannel.trySend(
             PaymentEvent.Start3dsConfirmation(
-                paymentId = paymentId,
                 url = url
             )
         )
@@ -199,17 +198,17 @@ internal class PaymentViewModel(
         Logger.d { "Payment confirmation result $result" }
         when (result) {
             is ConfirmPaymentResult.Completed -> {
-                recheckPaymentStatus(result.paymentId)
+                recheckPaymentStatus()
             }
 
             // payment status should be recheck in case of cancellation
             // because this cancellation can be caused by user action
             // on the moment when payment confirmation request already sent
             is ConfirmPaymentResult.Cancelled -> {
-                recheckPaymentStatus(result.paymentId)
+                recheckPaymentStatus()
             }
 
-            is ConfirmPaymentResult.Success -> success(result.paymentId)
+            is ConfirmPaymentResult.Success -> success()
 
             is ConfirmPaymentResult.Error -> {
                 showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
@@ -217,130 +216,125 @@ internal class PaymentViewModel(
         }
     }
 
-    private fun payWithCard() {
-        val cardState = validateCardState(uiState.value.cardState)
-        if (cardState.hasErrors) {
-            _uiState.tryEmit(
-                uiState.value.copy(
-                    cardState = cardState
+    private fun payWithCard(cardData: CardData) {
+        loading()
+        tokenizeCardUseCase(
+            TokenizeCardUseCase.Parameters(
+                cardData = cardData,
+                widgetKey = clientAuthParameters.widgetKey,
+            )
+        ).catch { error ->
+            Logger.e(throwable = error) { "Tokenization error, cant tokenize card for payment" }
+            showError(
+                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+            )
+        }.onEach { tokenizedCard ->
+            payWithCardToken(
+                tokenizedCard = tokenizedCard
+            )
+        }.launchIn(viewModelScope)
+    }
+
+    private fun payWithCardToken(tokenizedCard: TokenizedCard) {
+        loading()
+        val paymentRequest = CardTokenPaymentRequest(
+            authParameters = clientAuthParameters,
+            paymentDetails = basePaymentParameters(),
+            cardToken = tokenizedCard.token
+        )
+        createPaymentUseCase(
+            params = paymentRequest
+        ).catch { error ->
+            Logger.e(throwable = error) { "Card token payment error" }
+            showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+        }.onEach { result: CreatePaymentResult ->
+            Logger.d { "Payment result: $result" }
+            when (result) {
+                is CreatePaymentResult.Confirmation3DsRequired -> {
+                    lastPaymentTokenizedCard = tokenizedCard
+                    lastPaymentId = result.paymentId
+                    start3ds(url = result.url)
+                }
+
+                is CreatePaymentResult.Error -> showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
                 )
-            )
-        } else {
-            runPaymentWithCard(
-                cardState = cardState,
-            )
-        }
+
+                is CreatePaymentResult.Success -> {
+                    lastPaymentTokenizedCard = tokenizedCard
+                    lastPaymentId = result.paymentId
+                    success()
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
-    private fun runPaymentWithCard(cardState: CardFieldState) {
-        // payment with card data not supported yet
-        // it will be implemented in the future releases
-        showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_unsupported))
-    }
-
-    private fun basePaymentParameters() = BasePaymentParameters(
+    private fun basePaymentParameters() = PaymentDetails(
         amount = parameters.amountParameters.amount,
         currencyCode = parameters.amountParameters.currencyCode,
-        orderId = parameters.orderId,
+        externalId = parameters.externalId,
         callbackUrl = parameters.callbackUrl
     )
 
-    private fun recheckPaymentStatus(paymentId: String) {
+    private fun recheckPaymentStatus() {
+        val paymentId = requireNotNull(lastPaymentId)
         checkPaymentStatusUseCase(
             CheckPaymentStatusUseCase.Parameters(
                 paymentId = paymentId,
-                orderId = parameters.orderId,
-                authParameters = clientAuthParameters
+                externalId = parameters.externalId,
+                authParameters = clientAuthParameters,
+                isBatch = false
             )
         ).catch { error ->
             Logger.e(throwable = error) { "Check payment status error" }
-            completedPending(paymentId = paymentId)
-        }
-            .onEach { result ->
-                Logger.d { "Check payment result: $result" }
-                _eventsChannel.trySend(
-                    PaymentEvent.Result(
-                        result = result
-                    )
+            completedPending()
+        }.onEach { paymentData ->
+            Logger.d { "Recheck payment data: $paymentData" }
+            when (paymentData.status) {
+                PaymentStatus.Success -> success()
+
+                PaymentStatus.Failure -> failed(
+                    message = paymentData.statusDescription,
+                    type = paymentData.statusCode
                 )
+
+                PaymentStatus.Init,
+                PaymentStatus.Pending,
+                    -> completedPending()
             }
-            .launchIn(viewModelScope)
-    }
-
-    private fun updateCard(state: CardFieldState) {
-        val newState = if (uiState.value.cardState.hasErrors) {
-            validateCardState(state)
-        } else {
-            state
-        }
-        _uiState.tryEmit(
-            uiState.value.copy(
-                cardState = newState.copy(
-                    paymentSystem = provideCardPaymentSystemUseCase.invoke(state.cardNumber)
-                )
-            )
-        )
-    }
-
-    private fun updateTokenization(value: Boolean) {
-        _uiState.tryEmit(
-            uiState.value.copy(
-                tokenize = value
-            )
-        )
-    }
-
-    private fun validateCardState(state: CardFieldState): CardFieldState {
-        val result = parseCardDataUseCase(
-            rawCardNumber = state.cardNumber,
-            rawCvv = state.cvv,
-            rawExpDate = state.expDate,
-            isCardholderNameRequired = false,
-            rawCardholderName = state.cardholderName
-        )
-        return if (result is CardParsingResult.Error) {
-            return state.copy(
-                cardNumberError = result.cardNumberError,
-                cvvError = result.cvvError,
-                expDateError = result.expDateError,
-                cardholderNameError = result.cardholderNameError
-            )
-        } else {
-            state.copy(
-                cardNumberError = null,
-                cvvError = null,
-                expDateError = null,
-                cardholderNameError = null
-            )
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun loading() {
         _uiState.tryEmit(
-            uiState.value.copy(
+            _uiState.value.copy(
                 displayState = PaymentDisplayState.Loading
             )
         )
     }
 
-    private fun success(
-        paymentId: String,
-    ) {
+    private fun success() {
+        val tokenizedCard = if (isTokenizationAllowed()) lastPaymentTokenizedCard else null
         _eventsChannel.trySend(
             PaymentEvent.Result(
                 PaymentResult.Complete(
-                    paymentId = paymentId,
-                    orderId = parameters.orderId
+                    paymentId = requireNotNull(lastPaymentId),
+                    externalId = parameters.externalId,
+                    tokenizedCard = tokenizedCard
                 )
             )
         )
+    }
+
+    private fun isTokenizationAllowed(): Boolean {
+        return (parameters.paymentType as? RegularPayment)?.allowTokenization ?: false
     }
 
     private fun showError(
         message: String,
     ) {
         _uiState.tryEmit(
-            uiState.value.copy(
+            _uiState.value.copy(
                 displayState = PaymentDisplayState.Error(
                     message = message
                 )
@@ -349,21 +343,32 @@ internal class PaymentViewModel(
     }
 
     private fun retry() {
-        _uiState.tryEmit(
-            uiState.value.copy(
-                displayState = PaymentDisplayState.Content
-            )
-        )
+        clearLastPaymentData()
+        when (parameters.paymentType) {
+            is RegularPayment -> {
+                _uiState.tryEmit(
+                    _uiState.value.copy(
+                        displayState = PaymentDisplayState.Content,
+                    )
+                )
+            }
+
+            is SingleTokenPayment -> {
+                payWithCardToken(
+                    tokenizedCard = TokenizedCard(
+                        token = parameters.paymentType.token
+                    )
+                )
+            }
+        }
     }
 
-    private fun completedPending(
-        paymentId: String,
-    ) {
+    private fun completedPending() {
         _eventsChannel.trySend(
             PaymentEvent.Result(
                 PaymentResult.Pending(
-                    orderId = parameters.orderId,
-                    paymentId = paymentId
+                    externalId = parameters.externalId,
+                    paymentId = requireNotNull(lastPaymentId)
                 )
             )
         )
@@ -386,21 +391,23 @@ internal class PaymentViewModel(
         )
     }
 
-    private fun checkGooglePayParameters() {
-        if (parameters.googlePayConfig is GooglePayConfig.Test) {
-            Log.w(
-                Logger.DEFAULT_TAG,
-                """
-                ⚠️ WARNING: GOOGLE PAY IS CONFIGURED IN TEST MODE! ⚠️
-                ⚠️ THIS IS A DEVELOPMENT CONFIGURATION AND SHOULD NOT BE USED IN PRODUCTION. ⚠️
-                DETAILS:
-                - Gateway: ${parameters.googlePayConfig.gateway}
-                - Merchant ID: ${parameters.googlePayConfig.merchantId}
-                
-                Please ensure this configuration is switched to Production mode before releasing the app.
-                """.trimIndent()
+    private fun failed(
+        message: String?,
+        type: String?,
+    ) {
+        _eventsChannel.trySend(
+            PaymentEvent.Result(
+                PaymentResult.Failed(
+                    paymentId = lastPaymentId,
+                    message = message,
+                    error = RozetkaPayPaymentException(
+                        code = "failure",
+                        type = type,
+                        errorMessage = message ?: ""
+                    )
+                )
             )
-        }
+        )
     }
 
     internal class Factory(
@@ -413,15 +420,15 @@ internal class PaymentViewModel(
             extras: CreationExtras,
         ): T {
             val parameters = parametersSupplier()
+            val paymentParameters = parameters.parameters
             return PaymentViewModel(
                 clientAuthParameters = parameters.clientAuthParameters,
-                parameters = parameters.parameters,
+                parameters = paymentParameters,
                 createPaymentUseCase = RozetkaPayKoinContext.koin.get(),
                 checkPaymentStatusUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get(),
-                provideCardPaymentSystemUseCase = RozetkaPayKoinContext.koin.get(),
-                parseCardDataUseCase = RozetkaPayKoinContext.koin.get(),
-                googlePayInteractor = parameters.parameters.googlePayConfig?.let { googlePayConfig ->
+                tokenizeCardUseCase = RozetkaPayKoinContext.koin.get(),
+                googlePayInteractor = (paymentParameters.paymentType as? RegularPayment)?.googlePayConfig?.let { googlePayConfig ->
                     GooglePayInteractor(
                         applicationContext = RozetkaPayKoinContext.koin.get(),
                         gateway = googlePayConfig.gateway,
