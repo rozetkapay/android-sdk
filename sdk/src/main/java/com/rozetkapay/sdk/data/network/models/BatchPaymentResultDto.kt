@@ -9,18 +9,8 @@ internal data class BatchPaymentResultDto(
     val action: PaymentResultActionDto?,
     @SerialName("receipt_url")
     val receiptUrl: String?,
-    @SerialName("batch_details")
-    val details: BatchPaymentResultDetailsDto,
     @SerialName("orders_details")
     val ordersDetails: List<BatchPaymentOrderResultDetailsDto>,
-)
-
-@Serializable
-internal data class BatchPaymentResultDetailsDto(
-    @SerialName("amount")
-    val amount: Long,
-    @SerialName("currency")
-    val currency: String,
 )
 
 @Serializable
@@ -42,7 +32,8 @@ internal data class BatchPaymentOrderResultDetailsDto(
 @Serializable
 internal data class BatchPaymentStatusDto(
     @SerialName("batch_external_id")
-    val externalId: String, @SerialName("status")
+    val externalId: String,
+    @SerialName("status")
     val status: String,
     @SerialName("status_code")
     val statusCode: String?,

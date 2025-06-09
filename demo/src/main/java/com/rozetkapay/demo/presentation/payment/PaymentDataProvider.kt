@@ -16,7 +16,7 @@ object PaymentDataProvider {
     val products3 = Product(
         name = "RZTK Power Bank",
         imageUrl = "https://content1.rozetka.com.ua/goods/images/big/426602978.jpg",
-        price = 59900L
+        price = 59905L
     )
 
     val products4 = Product(
