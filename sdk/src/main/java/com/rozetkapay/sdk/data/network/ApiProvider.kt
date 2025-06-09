@@ -17,6 +17,9 @@ internal class ApiProvider(
     val paymentInfoUrl: String
         get() = environment.paymentsApiProviderUrl.afterApiUrl("/api/payments/v1/info")
 
+    val batchPaymentInfoUrl: String
+        get() = environment.paymentsApiProviderUrl.afterApiUrl("/api/payments/batch/v1/status")
+
     private fun String.afterApiUrl(path: String): String {
         return this + path
     }

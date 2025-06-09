@@ -38,3 +38,14 @@ internal data class BatchPaymentOrderResultDetailsDto(
     @SerialName("status_description")
     val statusDescription: String?,
 )
+
+@Serializable
+internal data class BatchPaymentStatusDto(
+    @SerialName("batch_external_id")
+    val externalId: String, @SerialName("status")
+    val status: String,
+    @SerialName("status_code")
+    val statusCode: String?,
+    @SerialName("status_description")
+    val statusDescription: String?,
+)

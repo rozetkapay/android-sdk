@@ -7,6 +7,7 @@ import com.rozetkapay.sdk.data.network.converters.toCreatePaymentData
 import com.rozetkapay.sdk.data.network.converters.toCustomerDto
 import com.rozetkapay.sdk.data.network.converters.toPaymentRequestDto
 import com.rozetkapay.sdk.data.network.models.BatchPaymentResultDto
+import com.rozetkapay.sdk.data.network.models.BatchPaymentStatusDto
 import com.rozetkapay.sdk.data.network.models.PaymentErrorDto
 import com.rozetkapay.sdk.data.network.models.PaymentResultDto
 import com.rozetkapay.sdk.data.network.models.PurchaseDetailsDto
@@ -21,7 +22,6 @@ import com.rozetkapay.sdk.domain.models.payment.CreatePaymentData
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
-import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
 import com.rozetkapay.sdk.util.Logger
 import io.ktor.client.HttpClient
@@ -37,7 +37,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 internal class ApiPaymentsRepository(
@@ -130,7 +129,7 @@ internal class ApiPaymentsRepository(
         paymentId: String?,
         externalId: String,
     ): CheckPaymentData {
-        Logger.d { "Check payment with external id (orderI)=$externalId status start" }
+        Logger.d { "Check payment with external id $externalId status start" }
         val response: HttpResponse = httpClient.get(
             urlString = apiProvider.paymentInfoUrl
         ) {
@@ -160,14 +159,22 @@ internal class ApiPaymentsRepository(
         authParameters: ClientAuthParameters,
         externalId: String,
     ): CheckPaymentData {
-        // TODO: this API is not available yet, so this method is not implemented
-        // temporary implementation for testing purposes
-        delay(1000)
-        return CheckPaymentData(
-            status = PaymentStatus.Success,
-            statusCode = null,
-            statusDescription = null,
-        )
+        Logger.d { "Check batch payment with external id $externalId status start" }
+        val response: HttpResponse = httpClient.get(
+            urlString = apiProvider.batchPaymentInfoUrl
+        ) {
+            header("Authorization", "Basic ${authParameters.token}")
+            contentType(ContentType.Application.Json)
+            parameter("batch_external_id", externalId)
+        }
+        return if (response.status.isSuccess()) {
+            Logger.d { "Check batch payment API request success" }
+            val details = response.body<BatchPaymentStatusDto>()
+            details.toCheckPaymentData()
+        } else {
+            Logger.d { "Check payment API request error" }
+            response.handlePaymentApiError()
+        }
     }
 
     // common
