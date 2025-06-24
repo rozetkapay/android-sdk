@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
-import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
+import com.rozetkapay.sdk.domain.errors.RozetkaPayException
 import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.models.ClientWidgetParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
@@ -90,7 +90,7 @@ internal class TokenizationViewModel(
     private fun failedDueToError(reason: Throwable? = null) {
         _resultStateFlow.tryEmit(
             TokenizationResult.Failed(
-                message = if (reason is RozetkaPayTokenizationException) reason.errorMessage else null,
+                message = if (reason is RozetkaPayException) reason.getReadableMessage() else null,
                 error = reason
             )
         )

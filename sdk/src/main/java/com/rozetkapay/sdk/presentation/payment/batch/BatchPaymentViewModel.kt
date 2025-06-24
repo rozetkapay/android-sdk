@@ -12,8 +12,8 @@ import com.google.android.gms.wallet.contract.ApiTaskResult
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
+import com.rozetkapay.sdk.domain.errors.RozetkaPayException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
-import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
 import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.Currency
@@ -135,11 +135,17 @@ internal class BatchPaymentViewModel(
                         Logger.d { "Google Pay token: $token" }
                         runPaymentWithGooglePay(token)
                     } else {
-                        showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                        showError(
+                            message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                            throwable = null
+                        )
                     }
                 } else {
                     Logger.e { "GooglePay result is null, but task result is success, this should never happen" }
-                    showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                    showError(
+                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                        throwable = null
+                    )
                 }
             }
 
@@ -150,7 +156,10 @@ internal class BatchPaymentViewModel(
 
             AutoResolveHelper.RESULT_ERROR -> {
                 Logger.e { "GooglePay process failed with error, status message = ${taskResult.status.statusMessage}" }
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                    throwable = null
+                )
             }
         }
     }
@@ -165,7 +174,10 @@ internal class BatchPaymentViewModel(
         createBatchPaymentUseCase(paymentRequest)
             .catch { error ->
                 Logger.e(throwable = error) { "Google pay payment error" }
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = error
+                )
             }
             .onEach { result: CreateBatchPaymentResult ->
                 Logger.d { "Payment result: $result" }
@@ -176,7 +188,8 @@ internal class BatchPaymentViewModel(
                     }
 
                     is CreateBatchPaymentResult.Error -> showError(
-                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                        throwable = result.error
                     )
 
                     is CreateBatchPaymentResult.Success -> {
@@ -216,7 +229,10 @@ internal class BatchPaymentViewModel(
             is ConfirmPaymentResult.Success -> success()
 
             is ConfirmPaymentResult.Error -> {
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = result.error
+                )
             }
         }
     }
@@ -231,7 +247,8 @@ internal class BatchPaymentViewModel(
         ).catch { error ->
             Logger.e(throwable = error) { "Tokenization error, cant tokenize card for payment" }
             showError(
-                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                throwable = error
             )
         }.onEach { tokenizedCard ->
             payWithCardToken(
@@ -251,7 +268,10 @@ internal class BatchPaymentViewModel(
             params = paymentRequest
         ).catch { error ->
             Logger.e(throwable = error) { "Card token payment error" }
-            showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+            showError(
+                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                throwable = error
+            )
         }.onEach { result: CreateBatchPaymentResult ->
             Logger.d { "Payment result: $result" }
             when (result) {
@@ -262,7 +282,8 @@ internal class BatchPaymentViewModel(
                 }
 
                 is CreateBatchPaymentResult.Error -> showError(
-                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = result.error
                 )
 
                 is CreateBatchPaymentResult.Success -> {
@@ -290,16 +311,15 @@ internal class BatchPaymentViewModel(
     )
 
     private fun recheckPaymentStatus() {
-        val firstOrderPaymentResult = requireNotNull(lastPaymentOrdersResults).first()
         checkPaymentStatusUseCase(
             CheckPaymentStatusUseCase.Parameters(
                 paymentId = null,
-                externalId = firstOrderPaymentResult.externalId,
+                externalId = parameters.externalId,
                 authParameters = clientAuthParameters,
                 isBatch = true
             )
         ).catch { error ->
-            Logger.e(throwable = error) { "Check payment status error for order $firstOrderPaymentResult" }
+            Logger.e(throwable = error) { "Check payment status error for batch with external id ${parameters.externalId}" }
             completedPending()
         }.onEach { paymentData ->
             Logger.d { "Recheck payment data: $paymentData" }
@@ -345,11 +365,13 @@ internal class BatchPaymentViewModel(
 
     private fun showError(
         message: String,
+        throwable: Throwable?,
     ) {
         _uiState.tryEmit(
             uiState.value.copy(
                 displayState = PaymentDisplayState.Error(
-                    message = message
+                    message = message,
+                    reason = throwable
                 )
             )
         )
@@ -397,7 +419,7 @@ internal class BatchPaymentViewModel(
         _eventsChannel.trySend(
             BatchPaymentEvent.Result(
                 BatchPaymentResult.Failed(
-                    message = if (reason is RozetkaPayTokenizationException) reason.errorMessage else null,
+                    message = if (reason is RozetkaPayException) reason.getReadableMessage() else null,
                     error = reason
                 )
             )

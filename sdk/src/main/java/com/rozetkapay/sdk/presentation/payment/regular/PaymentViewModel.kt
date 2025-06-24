@@ -12,8 +12,8 @@ import com.google.android.gms.wallet.contract.ApiTaskResult
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
+import com.rozetkapay.sdk.domain.errors.RozetkaPayException
 import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
-import com.rozetkapay.sdk.domain.errors.RozetkaPayTokenizationException
 import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.Currency
@@ -130,11 +130,17 @@ internal class PaymentViewModel(
                         Logger.d { "Google Pay token: $token" }
                         runPaymentWithGooglePay(token)
                     } else {
-                        showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                        showError(
+                            message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                            throwable = null
+                        )
                     }
                 } else {
                     Logger.e { "GooglePay result is null, but task result is success, this should never happen" }
-                    showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                    showError(
+                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                        throwable = null
+                    )
                 }
             }
 
@@ -145,7 +151,10 @@ internal class PaymentViewModel(
 
             AutoResolveHelper.RESULT_ERROR -> {
                 Logger.e { "GooglePay process failed with error, status message = ${taskResult.status.statusMessage}" }
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                    throwable = null
+                )
             }
         }
     }
@@ -160,9 +169,12 @@ internal class PaymentViewModel(
         createPaymentUseCase(paymentRequest)
             .catch { error ->
                 Logger.e(throwable = error) { "Google pay payment error" }
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = error
+                )
             }
-            .onEach { result: CreatePaymentResult ->
+            .onEach { result ->
                 Logger.d { "Payment result: $result" }
                 when (result) {
                     is CreatePaymentResult.Confirmation3DsRequired -> {
@@ -171,7 +183,8 @@ internal class PaymentViewModel(
                     }
 
                     is CreatePaymentResult.Error -> showError(
-                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                        message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                        throwable = result.error
                     )
 
                     is CreatePaymentResult.Success -> {
@@ -211,7 +224,10 @@ internal class PaymentViewModel(
             is ConfirmPaymentResult.Success -> success()
 
             is ConfirmPaymentResult.Error -> {
-                showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = result.error
+                )
             }
         }
     }
@@ -226,7 +242,8 @@ internal class PaymentViewModel(
         ).catch { error ->
             Logger.e(throwable = error) { "Tokenization error, cant tokenize card for payment" }
             showError(
-                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                throwable = error
             )
         }.onEach { tokenizedCard ->
             payWithCardToken(
@@ -246,7 +263,10 @@ internal class PaymentViewModel(
             params = paymentRequest
         ).catch { error ->
             Logger.e(throwable = error) { "Card token payment error" }
-            showError(resourcesProvider.getString(R.string.rozetka_pay_payment_error_common))
+            showError(
+                message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                throwable = error
+            )
         }.onEach { result: CreatePaymentResult ->
             Logger.d { "Payment result: $result" }
             when (result) {
@@ -257,7 +277,8 @@ internal class PaymentViewModel(
                 }
 
                 is CreatePaymentResult.Error -> showError(
-                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common)
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_common),
+                    throwable = result.error
                 )
 
                 is CreatePaymentResult.Success -> {
@@ -332,11 +353,13 @@ internal class PaymentViewModel(
 
     private fun showError(
         message: String,
+        throwable: Throwable?,
     ) {
         _uiState.tryEmit(
             _uiState.value.copy(
                 displayState = PaymentDisplayState.Error(
-                    message = message
+                    message = message,
+                    reason = throwable
                 )
             )
         )
@@ -384,7 +407,7 @@ internal class PaymentViewModel(
         _eventsChannel.trySend(
             PaymentEvent.Result(
                 PaymentResult.Failed(
-                    message = if (reason is RozetkaPayTokenizationException) reason.errorMessage else null,
+                    message = if (reason is RozetkaPayException) reason.getReadableMessage() else null,
                     error = reason
                 )
             )
