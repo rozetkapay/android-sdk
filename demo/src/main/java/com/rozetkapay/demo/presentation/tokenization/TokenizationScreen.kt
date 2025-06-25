@@ -25,6 +25,7 @@ import com.rozetkapay.demo.presentation.components.Label
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.rememberTokenizationSheet
@@ -51,9 +52,11 @@ fun TokenizationScreen(
             tokenizationSheet.show(
                 client = viewModel.clientWidgetParameters,
                 parameters = TokenizationParameters(
-                    cardNameField = FieldRequirement.Optional,
-                    emailField = FieldRequirement.None,
-                    cardholderNameField = FieldRequirement.None,
+                    cardFieldsParameters = CardFieldsParameters(
+                        cardNameField = FieldRequirement.Optional,
+                        emailField = FieldRequirement.Optional,
+                        cardholderNameField = FieldRequirement.Optional,
+                    ),
                 ),
             )
         },

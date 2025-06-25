@@ -1,20 +1,22 @@
 package com.rozetkapay.sdk.domain.models.payment
 
 import android.os.Parcelable
+import com.rozetkapay.sdk.domain.models.tokenization.TokenizedCard
 import kotlinx.parcelize.Parcelize
 
 sealed class PaymentResult : Parcelable {
 
     @Parcelize
     data class Pending(
-        val orderId: String,
+        val externalId: String,
         val paymentId: String,
     ) : PaymentResult()
 
     @Parcelize
     data class Complete(
-        val orderId: String,
+        val externalId: String,
         val paymentId: String,
+        val tokenizedCard: TokenizedCard?,
     ) : PaymentResult()
 
     @Parcelize

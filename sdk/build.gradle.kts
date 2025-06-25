@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.compose.compiler)
     `maven-publish`
 }
 
@@ -56,16 +57,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
-    }
-
-    android.libraryVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                val outputFileName = "rozetka-pay-sdk-" + (rootProject.extra["versionName"] as String) + ".aar"
-                output.outputFileName = outputFileName
-            }
     }
 }
 

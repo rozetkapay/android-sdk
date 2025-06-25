@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
+import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationParameters
 import com.rozetkapay.sdk.presentation.tokenization.TokenizationSheet
@@ -40,8 +41,10 @@ class TokenizationActivity : ComponentActivity() {
                         tokenizationSheet.show(
                             client = viewModel.clientWidgetParameters,
                             parameters = TokenizationParameters(
-                                cardNameField = FieldRequirement.None,
-                                cardholderNameField = FieldRequirement.Optional
+                                cardFieldsParameters = CardFieldsParameters(
+                                    cardNameField = FieldRequirement.None,
+                                    cardholderNameField = FieldRequirement.Optional
+                                ),
                             ),
                             themeConfigurator = classicRozetkaPaySdkThemeConfigurator
                         )

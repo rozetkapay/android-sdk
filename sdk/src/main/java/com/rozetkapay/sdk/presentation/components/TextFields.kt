@@ -227,7 +227,6 @@ private fun textFiledColors(): TextFieldColors {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun TextFieldIcon(
     painter: Painter,

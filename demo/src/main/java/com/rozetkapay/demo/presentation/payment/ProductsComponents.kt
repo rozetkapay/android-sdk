@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +26,59 @@ import com.rozetkapay.demo.domain.models.Product
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import java.math.BigDecimal
 import java.math.RoundingMode
+
+data class GroupedCartItemsData(
+    val title: String,
+    val items: List<CartItemData>,
+)
+
+@Composable
+fun GroupedCartItems(data: GroupedCartItemsData) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 8.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    text = data.title
+                )
+                Text(
+                    style = MaterialTheme.typography.titleSmall,
+                    text = data.items.sumOf { it.product.price * it.count }.amount()
+                )
+            }
+            data.items.forEach { item ->
+                CartItem(item = item)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun GroupedCartItemsPreview() {
+    RozetkaPayDemoTheme {
+        GroupedCartItems(
+            data = PaymentDataProvider.groupedCartItems.first()
+        )
+    }
+}
 
 data class CartItemData(
     val product: Product,
@@ -87,7 +142,7 @@ fun Long.amount(): String {
 private fun CartItemPreview() {
     RozetkaPayDemoTheme {
         CartItem(
-            item = PaymentViewModel.mockedCartItemData.first()
+            item = PaymentDataProvider.cartItems.first()
         )
     }
 }

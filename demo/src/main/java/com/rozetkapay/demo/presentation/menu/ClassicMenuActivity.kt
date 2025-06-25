@@ -10,7 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.rozetkapay.demo.presentation.payment.PaymentActivity
+import com.rozetkapay.demo.presentation.payment.batch.BatchPaymentActivity
+import com.rozetkapay.demo.presentation.payment.regular.PaymentActivity
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.tokenization.TokenizationActivity
 
@@ -38,6 +39,10 @@ class ClassicMenuActivity : ComponentActivity() {
 
                                 Route.Payment -> {
                                     startActivity(PaymentActivity.startIntent(this))
+                                }
+
+                                Route.BatchPayment -> {
+                                    startActivity(BatchPaymentActivity.startIntent(this))
                                 }
                             }
                         }

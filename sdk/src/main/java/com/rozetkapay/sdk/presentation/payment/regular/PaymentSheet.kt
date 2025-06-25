@@ -1,4 +1,4 @@
-package com.rozetkapay.sdk.presentation.payment
+package com.rozetkapay.sdk.presentation.payment.regular
 
 import android.app.Application
 import androidx.activity.ComponentActivity
@@ -17,9 +17,9 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 
 @Composable
 fun rememberPaymentSheet(
-    onResultCallback: PaymentSheetResultCallback,
+    onResultCallback: PaymentResultCallback,
 ): PaymentSheet {
-    val resultCallback by rememberUpdatedState(newValue = onResultCallback::onPaymentSheetResult)
+    val resultCallback by rememberUpdatedState(newValue = onResultCallback::onPaymentResult)
     val activityResultLauncher = rememberLauncherForActivityResult(
         contract = PaymentSheetContract(),
         onResult = resultCallback,
@@ -43,14 +43,14 @@ class PaymentSheet internal constructor(
 ) {
     constructor(
         activity: ComponentActivity,
-        callback: PaymentSheetResultCallback,
+        callback: PaymentResultCallback,
     ) : this(
         DefaultPaymentSheetLauncher(activity, callback)
     )
 
     constructor(
         fragment: Fragment,
-        callback: PaymentSheetResultCallback,
+        callback: PaymentResultCallback,
     ) : this(
         DefaultPaymentSheetLauncher(fragment, callback)
     )

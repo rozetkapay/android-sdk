@@ -2,20 +2,19 @@ package com.rozetkapay.sdk.domain.models.payment
 
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 
-internal sealed interface PaymentRequest {
+internal sealed interface PaymentRequest<T: Any> {
     val authParameters: ClientAuthParameters
-    val paymentParameters: BasePaymentParameters
+    val paymentDetails: T
 }
 
-internal data class BasePaymentParameters(
-    val amount: Long,
-    val currencyCode: String,
-    val orderId: String,
-    val callbackUrl: String? = null,
-)
-
-internal data class GooglePayPaymentRequest(
+internal data class GooglePayPaymentRequest<T: Any>(
     override val authParameters: ClientAuthParameters,
-    override val paymentParameters: BasePaymentParameters,
+    override val paymentDetails: T,
     val googlePayToken: String,
-) : PaymentRequest
+) : PaymentRequest<T>
+
+internal data class CardTokenPaymentRequest<T: Any>(
+    override val authParameters: ClientAuthParameters,
+    override val paymentDetails: T,
+    val cardToken: String,
+) : PaymentRequest<T>

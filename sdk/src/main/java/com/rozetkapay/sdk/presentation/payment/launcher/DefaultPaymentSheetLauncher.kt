@@ -8,23 +8,23 @@ import androidx.fragment.app.Fragment
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.PaymentResult
-import com.rozetkapay.sdk.presentation.payment.PaymentSheetContract
-import com.rozetkapay.sdk.presentation.payment.PaymentSheetResultCallback
+import com.rozetkapay.sdk.presentation.payment.regular.PaymentSheetContract
+import com.rozetkapay.sdk.presentation.payment.regular.PaymentResultCallback
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.util.RozetkaPayAnimations
 
 internal class DefaultPaymentSheetLauncher(
     private val activityResultLauncher: ActivityResultLauncher<PaymentSheetContract.Parameters>,
     private val application: Application,
-    private val callback: PaymentSheetResultCallback,
+    private val callback: PaymentResultCallback,
 ) : PaymentSheetLauncher {
 
     constructor(
         activity: ComponentActivity,
-        callback: PaymentSheetResultCallback,
+        callback: PaymentResultCallback,
     ) : this(
         activityResultLauncher = activity.registerForActivityResult(PaymentSheetContract()) {
-            callback.onPaymentSheetResult(it)
+            callback.onPaymentResult(it)
         },
         application = activity.application,
         callback = callback,
@@ -32,10 +32,10 @@ internal class DefaultPaymentSheetLauncher(
 
     constructor(
         fragment: Fragment,
-        callback: PaymentSheetResultCallback,
+        callback: PaymentResultCallback,
     ) : this(
         activityResultLauncher = fragment.registerForActivityResult(PaymentSheetContract()) {
-            callback.onPaymentSheetResult(it)
+            callback.onPaymentResult(it)
         },
         application = fragment.requireActivity().application,
         callback = callback,
@@ -60,7 +60,7 @@ internal class DefaultPaymentSheetLauncher(
             activityResultLauncher.launch(contractParameters, options)
         } catch (e: IllegalStateException) {
             val error = IllegalStateException("The host activity is not in a valid state", e)
-            callback.onPaymentSheetResult(PaymentResult.Failed(error = error))
+            callback.onPaymentResult(PaymentResult.Failed(error = error))
         }
     }
 }
