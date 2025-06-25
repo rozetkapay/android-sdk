@@ -14,6 +14,6 @@ buildscript {
         set("compileSdk", 35)
 
         set("versionCode", 1)
-        set("versionName", "0.1.1-beta01")
+        set("versionName", "0.2.1")
     }
 }
