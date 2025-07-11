@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +19,6 @@ import com.rozetkapay.sdk.presentation.components.rememberRozetkaPayBottomSheetS
 import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
-import com.rozetkapay.sdk.presentation.theme.ThemeMode
 import kotlinx.coroutines.launch
 
 internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
