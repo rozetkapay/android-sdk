@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RozetkaPayThemeConfigurator(
+    val mode: ThemeMode = ThemeMode.System,
     val lightColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.lightColors(),
     val darkColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
     val sizes: DomainSizes = RozetkaPayDomainThemeDefaults.sizes(),
