@@ -22,6 +22,7 @@ import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
+import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.domain.validators.ValidationResult
 import com.rozetkapay.sdk.domain.validators.Validator
 import com.rozetkapay.sdk.presentation.components.FormTextField
@@ -120,7 +121,8 @@ internal val MOCK_CARD_FORM_VIEWMODEL = CardFormViewModel(
                 return "string"
             }
         }
-    )
+    ),
+    provideCardPaymentSystemUseCase = ProvideCardPaymentSystemUseCase(),
 )
 
 @Composable

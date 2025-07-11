@@ -8,6 +8,7 @@ import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.required
 import com.rozetkapay.sdk.domain.usecases.CardParsingResult
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
+import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.presentation.util.isShow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 internal class CardFormViewModel(
     val parameters: CardFieldsParameters,
     private val parseCardDataUseCase: ParseCardDataUseCase,
+    private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -42,10 +44,13 @@ internal class CardFormViewModel(
     }
 
     private fun updateCard(state: CardFieldState) {
+        val complementedState = state.copy(
+            paymentSystem = provideCardPaymentSystemUseCase(state.cardNumber)
+        )
         val newUiState = if (uiState.value.hasErrors) {
-            validateState(uiState.value.copy(cardState = state)).first
+            validateState(uiState.value.copy(cardState = complementedState)).first
         } else {
-            uiState.value.copy(cardState = state)
+            uiState.value.copy(cardState = complementedState)
         }
         _uiState.tryEmit(newUiState)
     }
@@ -120,6 +125,7 @@ internal class CardFormViewModel(
             return CardFormViewModel(
                 parameters = parametersSupplier(),
                 parseCardDataUseCase = RozetkaPayKoinContext.koin.get(),
+                provideCardPaymentSystemUseCase = RozetkaPayKoinContext.koin.get(),
             ) as T
         }
     }
