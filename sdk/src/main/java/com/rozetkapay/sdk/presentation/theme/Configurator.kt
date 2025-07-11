@@ -76,11 +76,17 @@ object RozetkaPayDomainThemeDefaults {
         componentCornerRadius: Dp = 12.dp,
         buttonCornerRadius: Dp = 12.dp,
         borderWidth: Dp = 1.dp,
+        buttonHeight: Dp = 52.dp,
+        googlePayButtonHeight: Dp = 52.dp,
+        inputHeight: Dp = 52.dp,
     ) = DomainSizes(
         sheetCornerRadius = sheetCornerRadius,
         componentCornerRadius = componentCornerRadius,
         buttonCornerRadius = buttonCornerRadius,
         borderWidth = borderWidth,
+        buttonHeight = buttonHeight,
+        googlePayButtonHeight = googlePayButtonHeight,
+        inputHeight = inputHeight,
     )
 
     internal fun typography() = DomainTypographyDefaults

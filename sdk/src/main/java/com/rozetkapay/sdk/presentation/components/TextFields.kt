@@ -1,12 +1,12 @@
 package com.rozetkapay.sdk.presentation.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +75,9 @@ internal fun FormTextField(
     ) {
         BasicTextField(
             value = value,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DomainTheme.sizes.inputHeight),
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = false,
@@ -116,10 +118,8 @@ internal fun FormTextField(
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
-                        bottom = 14.dp,
-                        top = 14.dp,
                     ),
-                    shape = shape
+                    shape = shape,
                 )
             },
         )

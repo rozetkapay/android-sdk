@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -25,8 +26,12 @@ internal fun PrimaryButton(
     onClick: () -> Unit,
 ) {
     Button(
-        modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
+        modifier = modifier
+            .height(DomainTheme.sizes.buttonHeight),
+        contentPadding = PaddingValues(
+            vertical = 0.dp,
+            horizontal = 16.dp
+        ),
         onClick = onClick,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
@@ -52,8 +57,12 @@ internal fun TextButton(
     onClick: () -> Unit,
 ) {
     OutlinedButton(
-        modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
+        modifier = modifier
+            .height(DomainTheme.sizes.buttonHeight),
+        contentPadding = PaddingValues(
+            vertical = 0.dp,
+            horizontal = 16.dp
+        ),
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = DomainTheme.colors.primary,
