@@ -88,7 +88,13 @@ internal fun RozetkaPayTheme(
     themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
     content: @Composable () -> Unit,
 ) {
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = when (
+        themeConfigurator.mode
+    ) {
+        ThemeMode.Light -> false
+        ThemeMode.Dark -> true
+        ThemeMode.System -> isSystemInDarkTheme()
+    }
     MaterialTheme(
         colorScheme = if (darkTheme) RozetkaPayThemeDefaults.darkColors else RozetkaPayThemeDefaults.lightColors,
         shapes = RozetkaPayThemeDefaults.shapes(),

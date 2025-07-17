@@ -2,6 +2,7 @@ package com.rozetkapay.sdk.presentation.forms.card
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.rozetkapay.sdk.di.RozetkaPayKoinContext
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
@@ -12,6 +13,7 @@ import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.presentation.util.isShow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 internal class CardFormViewModel(
     val parameters: CardFieldsParameters,
@@ -19,14 +21,14 @@ internal class CardFormViewModel(
     private val provideCardPaymentSystemUseCase: ProvideCardPaymentSystemUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        CardFormUiState(
-            withCardName = parameters.cardNameField.isShow(),
-            withEmail = parameters.emailField.isShow(),
-            withCardholderName = parameters.cardholderNameField.isShow(),
-            cardState = CardFieldState()
-        )
+    private val defaultState = CardFormUiState(
+        withCardName = parameters.cardNameField.isShow(),
+        withEmail = parameters.emailField.isShow(),
+        withCardholderName = parameters.cardholderNameField.isShow(),
+        cardState = CardFieldState()
     )
+
+    private val _uiState = MutableStateFlow(defaultState)
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: CardFormAction) {
@@ -34,6 +36,13 @@ internal class CardFormViewModel(
             is CardFormAction.UpdateCardName -> updateCardName(action.name)
             is CardFormAction.UpdateEmail -> updateEmail(action.email)
             is CardFormAction.UpdateCard -> updateCard(action.state)
+            is CardFormAction.ClearForm -> clearForm()
+        }
+    }
+
+    private fun clearForm() {
+        viewModelScope.launch {
+            _uiState.emit(defaultState)
         }
     }
 

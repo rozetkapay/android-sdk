@@ -31,11 +31,13 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 
 @Composable
 internal fun CardFormScreen(
+    withCardTitle: Boolean = true,
     viewModel: CardFormViewModel,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CardFormScreenContent(
         state = state,
+        withCardTitle = withCardTitle,
         onAction = viewModel::onAction
     )
 }
@@ -43,6 +45,7 @@ internal fun CardFormScreen(
 @Composable
 private fun CardFormScreenContent(
     state: CardFormUiState,
+    withCardTitle: Boolean = true,
     onAction: (CardFormAction) -> Unit,
 ) {
     Column(
@@ -63,10 +66,17 @@ private fun CardFormScreenContent(
                 errorMessage = state.cardNameError,
                 isError = state.cardNameError != null
             )
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Subtitle(title = stringResource(id = R.string.rozetka_pay_form_card_info_title))
-        Spacer(modifier = Modifier.height(10.dp))
+        if (withCardTitle) {
+            Subtitle(
+                modifier = Modifier.padding(
+                    top = 12.dp,
+                    bottom = 10.dp
+                ),
+                title = stringResource(id = R.string.rozetka_pay_form_card_info_title),
+            )
+        }
         CardField(
             state = state.cardState,
             showCardholderNameField = state.withCardholderName,
@@ -105,7 +115,7 @@ private fun <T> mockValidator(): Validator<T> {
 
 internal val MOCK_CARD_FORM_VIEWMODEL = CardFormViewModel(
     parameters = CardFieldsParameters(
-        cardNameField = FieldRequirement.None,
+        cardNameField = FieldRequirement.Optional,
         emailField = FieldRequirement.Optional,
         cardholderNameField = FieldRequirement.Optional,
     ),
