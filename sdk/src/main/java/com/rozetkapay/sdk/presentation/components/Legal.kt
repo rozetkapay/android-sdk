@@ -72,7 +72,12 @@ internal fun LegalTextBlock(
     Text(
         modifier = modifier,
         text = buildAnnotatedString {
-            append(stringResource(id = R.string.rozetka_pay_payment_legal_text_part_1))
+            append(
+                stringResource(
+                    id = R.string.rozetka_pay_payment_legal_text_part_1,
+                    stringResource(R.string.rozetka_pay_payment_legal_pay_button)
+                )
+            )
             withLink(
                 LinkAnnotation.Url(
                     url = RozetkaPayConfig.LEGAL_PUBLIC_CONTRACT_LINK,

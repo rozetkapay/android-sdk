@@ -34,4 +34,5 @@
     <string name="rozetka_pay_payment_label_use_card">Або оплатіть карткою</string>
     <string name="rozetka_pay_form_save_card">Зберегти картку</string>
     <string name="rozetka_pay_payment_confirmation_3ds_loading">Зачекайте, будь ласка…</string>
+    <string name="rozetka_pay_payment_legal_pay_button">Оплатити</string>
 </resources>
