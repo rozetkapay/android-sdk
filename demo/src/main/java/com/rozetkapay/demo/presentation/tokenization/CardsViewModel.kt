@@ -29,6 +29,7 @@ class CardsViewModel : ViewModel() {
     )
 
     fun tokenizationFinished(result: TokenizationResult) {
+        Log.d("Tokenization", "Tokenization result: $result")
         when (result) {
             is TokenizationResult.Complete -> {
                 addNewCard(result.tokenizedCard)

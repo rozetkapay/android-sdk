@@ -8,9 +8,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RozetkaPayThemeConfigurator(
+    val mode: ThemeMode = ThemeMode.System,
     val lightColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.lightColors(),
     val darkColorScheme: DomainColorScheme = RozetkaPayDomainThemeDefaults.darkColors(),
     val sizes: DomainSizes = RozetkaPayDomainThemeDefaults.sizes(),
+    val typography: DomainTypography = RozetkaPayDomainThemeDefaults.typography(),
 ) : Parcelable
 
 object RozetkaPayDomainThemeDefaults {
@@ -75,12 +77,64 @@ object RozetkaPayDomainThemeDefaults {
         componentCornerRadius: Dp = 12.dp,
         buttonCornerRadius: Dp = 12.dp,
         borderWidth: Dp = 1.dp,
+        buttonHeight: Dp = 52.dp,
+        googlePayButtonHeight: Dp = 52.dp,
+        inputHeight: Dp = 52.dp,
     ) = DomainSizes(
         sheetCornerRadius = sheetCornerRadius,
         componentCornerRadius = componentCornerRadius,
         buttonCornerRadius = buttonCornerRadius,
         borderWidth = borderWidth,
+        buttonHeight = buttonHeight,
+        googlePayButtonHeight = googlePayButtonHeight,
+        inputHeight = inputHeight,
     )
 
-    internal fun typography() = DomainTypographyDefaults
+    fun typography(
+        fontFamily: DomainTypography.FontFamily = DomainTypography.FontFamily.SansSerif,
+        titleTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 22,
+            lineHeightSp = 24,
+            fontWeight = DomainTextStyle.FontWeight.SemiBold,
+        ),
+        subtitleTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 16,
+            lineHeightSp = 20,
+            fontWeight = DomainTextStyle.FontWeight.SemiBold,
+        ),
+        bodyTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 16,
+            lineHeightSp = 20,
+            fontWeight = DomainTextStyle.FontWeight.Normal,
+        ),
+        labelSmallTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 14,
+            lineHeightSp = 16,
+            fontWeight = DomainTextStyle.FontWeight.Normal,
+        ),
+        labelLargeTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 18,
+            lineHeightSp = 20,
+            fontWeight = DomainTextStyle.FontWeight.SemiBold,
+        ),
+        inputTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 16,
+            lineHeightSp = 24,
+            fontWeight = DomainTextStyle.FontWeight.Normal,
+        ),
+        legalTextTextStyle: DomainTextStyle = DomainTextStyle(
+            fontSizeSp = 9,
+            lineHeightSp = 10,
+            fontWeight = DomainTextStyle.FontWeight.Normal,
+        ),
+    ) = DomainTypography(
+        fontFamily = fontFamily,
+        titleTextStyle = titleTextStyle,
+        subtitleTextStyle = subtitleTextStyle,
+        bodyTextStyle = bodyTextStyle,
+        labelSmallTextStyle = labelSmallTextStyle,
+        labelLargeTextStyle = labelLargeTextStyle,
+        inputTextStyle = inputTextStyle,
+        legalTextTextStyle = legalTextTextStyle,
+    )
 }

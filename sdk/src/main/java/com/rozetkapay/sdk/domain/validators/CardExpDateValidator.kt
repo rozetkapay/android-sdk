@@ -4,11 +4,13 @@ import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.domain.models.CardExpDate
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.validators.rules.CardExpirationDateValidationRule
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class CardExpDateValidator(
     private val resourcesProvider: ResourcesProvider,
     private val expirationValidationRule: CardExpirationDateValidationRule,

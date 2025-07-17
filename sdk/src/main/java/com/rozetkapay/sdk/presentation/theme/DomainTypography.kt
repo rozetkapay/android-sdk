@@ -1,58 +1,105 @@
 package com.rozetkapay.sdk.presentation.theme
 
+import android.os.Parcelable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
-internal interface DomainTypography {
-    val title: TextStyle
-    val subtitle: TextStyle
-    val body: TextStyle
-    val labelSmall: TextStyle
-    val labelLarge: TextStyle
-    val input: TextStyle
-    val legalText: TextStyle
+@Parcelize
+data class DomainTypography(
+    val fontFamily: DomainTypography.FontFamily,
+    val titleTextStyle: DomainTextStyle,
+    val subtitleTextStyle: DomainTextStyle,
+    val bodyTextStyle: DomainTextStyle,
+    val labelSmallTextStyle: DomainTextStyle,
+    val labelLargeTextStyle: DomainTextStyle,
+    val inputTextStyle: DomainTextStyle,
+    val legalTextTextStyle: DomainTextStyle,
+) : Parcelable {
+
+    @IgnoredOnParcel
+    val fontFamilyValue: androidx.compose.ui.text.font.FontFamily = fontFamily.toFontFamily()
+
+    @IgnoredOnParcel
+    val title: TextStyle = titleTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val subtitle: TextStyle = subtitleTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val body: TextStyle = bodyTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val labelSmall: TextStyle = labelSmallTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val labelLarge: TextStyle = labelLargeTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val input: TextStyle = inputTextStyle.toTextStyle(fontFamilyValue)
+
+    @IgnoredOnParcel
+    val legalText: TextStyle = legalTextTextStyle.toTextStyle(fontFamilyValue)
+
+    enum class FontFamily {
+        Default,
+        SansSerif,
+        Serif,
+        Monospace,
+        Cursive,
+    }
 }
 
-internal object DomainTypographyDefaults : DomainTypography {
-    private val defaultStyle = TextStyle(
-        fontFamily = FontFamily.SansSerif
-    )
+@Parcelize
+data class DomainTextStyle(
+    val fontSizeSp: Int,
+    val lineHeightSp: Int,
+    val fontWeight: DomainTextStyle.FontWeight,
+) : Parcelable {
 
-    override val title: TextStyle = defaultStyle.copy(
-        fontSize = 22.sp,
-        lineHeight = 24.sp,
-        fontWeight = FontWeight.SemiBold
+    enum class FontWeight() {
+        Thin,
+        ExtraLight,
+        Light,
+        Normal,
+        Medium,
+        SemiBold,
+        Bold,
+        ExtraBold,
+        Black,
+    }
+}
+
+internal fun DomainTextStyle.toTextStyle(
+    fontFamily: FontFamily,
+): TextStyle {
+    return TextStyle(
+        fontSize = fontSizeSp.sp,
+        lineHeight = lineHeightSp.sp,
+        fontWeight = when (fontWeight) {
+            DomainTextStyle.FontWeight.Thin -> FontWeight.Thin
+            DomainTextStyle.FontWeight.ExtraLight -> FontWeight.ExtraLight
+            DomainTextStyle.FontWeight.Light -> FontWeight.Light
+            DomainTextStyle.FontWeight.Normal -> FontWeight.Normal
+            DomainTextStyle.FontWeight.Medium -> FontWeight.Medium
+            DomainTextStyle.FontWeight.SemiBold -> FontWeight.SemiBold
+            DomainTextStyle.FontWeight.Bold -> FontWeight.Bold
+            DomainTextStyle.FontWeight.ExtraBold -> FontWeight.ExtraBold
+            DomainTextStyle.FontWeight.Black -> FontWeight.Black
+        },
+        fontFamily = fontFamily
     )
-    override val subtitle: TextStyle = defaultStyle.copy(
-        fontSize = 16.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.SemiBold
-    )
-    override val body: TextStyle = defaultStyle.copy(
-        fontSize = 16.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.Normal
-    )
-    override val labelSmall: TextStyle = defaultStyle.copy(
-        fontSize = 14.sp,
-        lineHeight = 16.sp,
-        fontWeight = FontWeight.Normal
-    )
-    override val labelLarge: TextStyle = defaultStyle.copy(
-        fontSize = 18.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.SemiBold
-    )
-    override val input: TextStyle = defaultStyle.copy(
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        fontWeight = FontWeight.Normal
-    )
-    override val legalText: TextStyle = defaultStyle.copy(
-        fontSize = 9.sp,
-        lineHeight = 10.sp,
-        fontWeight = FontWeight.Normal
-    )
+}
+
+internal fun DomainTypography.FontFamily.toFontFamily(): FontFamily {
+    return when (this) {
+        DomainTypography.FontFamily.Default -> FontFamily.Default
+        DomainTypography.FontFamily.SansSerif -> FontFamily.SansSerif
+        DomainTypography.FontFamily.Serif -> FontFamily.Serif
+        DomainTypography.FontFamily.Monospace -> FontFamily.Monospace
+        DomainTypography.FontFamily.Cursive -> FontFamily.Cursive
+    }
 }

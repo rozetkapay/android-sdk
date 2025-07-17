@@ -111,7 +111,8 @@ private fun PaymentContent(
             PayButton(
                 modifier = Modifier
                     .testTag("googlePayButton")
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .height(DomainTheme.sizes.googlePayButtonHeight),
                 onClick = onGooglePay,
                 type = ButtonType.Buy,
                 theme = if (isSystemInDarkTheme()) ButtonTheme.Light else ButtonTheme.Dark,

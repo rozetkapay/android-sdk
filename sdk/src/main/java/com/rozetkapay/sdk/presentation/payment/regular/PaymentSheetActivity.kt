@@ -47,6 +47,7 @@ internal class PaymentSheetActivity : BaseRozetkaPayActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupNightMode(parameters?.themeConfigurator?.mode)
         val themeConfigurator = parameters?.themeConfigurator ?: RozetkaPayThemeConfigurator()
         setContent {
             RegularPaymentBottomSheet(

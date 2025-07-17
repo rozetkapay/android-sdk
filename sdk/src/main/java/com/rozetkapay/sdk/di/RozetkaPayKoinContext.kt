@@ -11,7 +11,8 @@ internal object RozetkaPayKoinContext {
             commonModule,
             useCaseModule,
             repositoryModule,
-            networkModule
+            networkModule,
+            viewModelModule,
         )
     }
 

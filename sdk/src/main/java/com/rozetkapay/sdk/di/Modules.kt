@@ -27,8 +27,11 @@ import com.rozetkapay.sdk.domain.validators.CvvValidator
 import com.rozetkapay.sdk.domain.validators.EmailValidator
 import com.rozetkapay.sdk.domain.validators.RequiredFieldValidator
 import com.rozetkapay.sdk.init.RozetkaPaySdkMode
+import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
+import com.rozetkapay.sdk.presentation.tokenization.TokenizationViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.logging.LogLevel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 internal val useCaseModule = module {
@@ -114,4 +117,21 @@ internal val networkModule = module {
         )
     }
     single<RequestSigner> { RequestSignerImpl() }
+}
+
+internal val viewModelModule = module {
+    viewModel { parameters ->
+        TokenizationViewModel(
+            client = parameters.get(),
+            tokenizeCardUseCase = get(),
+            resourcesProvider = get()
+        )
+    }
+    viewModel { parameters ->
+        CardFormViewModel(
+            parameters = parameters.get(),
+            parseCardDataUseCase = get(),
+            provideCardPaymentSystemUseCase = get()
+        )
+    }
 }
