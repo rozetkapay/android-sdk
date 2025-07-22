@@ -27,6 +27,7 @@ import com.rozetkapay.sdk.presentation.components.inSheetPaddings
 import com.rozetkapay.sdk.presentation.forms.card.CardFormScreen
 import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
+import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 
 @Composable
@@ -100,7 +101,7 @@ internal fun TokenizationContent(
             viewModel = cardFormViewModel
         )
         cardFormFooterContent?.invoke()
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stingResourcesProvider.saveButtonTitle,
