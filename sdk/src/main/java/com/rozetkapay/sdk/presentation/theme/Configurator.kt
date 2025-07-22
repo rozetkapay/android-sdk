@@ -80,6 +80,7 @@ object RozetkaPayDomainThemeDefaults {
         buttonHeight: Dp = 52.dp,
         googlePayButtonHeight: Dp = 52.dp,
         inputHeight: Dp = 52.dp,
+        mainButtonTopPadding: Dp = 40.dp,
     ) = DomainSizes(
         sheetCornerRadius = sheetCornerRadius,
         componentCornerRadius = componentCornerRadius,
@@ -88,6 +89,7 @@ object RozetkaPayDomainThemeDefaults {
         buttonHeight = buttonHeight,
         googlePayButtonHeight = googlePayButtonHeight,
         inputHeight = inputHeight,
+        mainButtonTopPadding = mainButtonTopPadding,
     )
 
     fun typography(

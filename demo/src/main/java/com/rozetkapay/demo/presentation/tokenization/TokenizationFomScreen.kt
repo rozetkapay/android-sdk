@@ -32,6 +32,8 @@ import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationFormParameters
 import com.rozetkapay.sdk.domain.models.tokenization.TokenizationResult
 import com.rozetkapay.sdk.domain.usecases.TokenizationStringResourcesProvider
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayDomainThemeDefaults
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import com.rozetkapay.sdk.presentation.tokenization.form.TokenizationForm
 
 @Composable

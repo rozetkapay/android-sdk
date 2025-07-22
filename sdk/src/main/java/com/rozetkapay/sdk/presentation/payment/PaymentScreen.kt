@@ -148,7 +148,7 @@ private fun PaymentContent(
         CardFormScreen(
             viewModel = cardFormViewModel
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_payment_pay_button, state.amountWithCurrency),

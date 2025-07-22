@@ -15,6 +15,7 @@ data class DomainSizes(
     val buttonHeightDp: Int,
     val googlePayButtonHeightDp: Int,
     val inputHeightDp: Int,
+    val mainButtonTopPaddingDp: Int,
 ) : Parcelable {
 
     @IgnoredOnParcel
@@ -38,6 +39,9 @@ data class DomainSizes(
     @IgnoredOnParcel
     val inputHeight: Dp = inputHeightDp.dp
 
+    @IgnoredOnParcel
+    val mainButtonTopPadding: Dp = mainButtonTopPaddingDp.dp
+
     constructor(
         sheetCornerRadius: Dp,
         componentCornerRadius: Dp,
@@ -46,6 +50,7 @@ data class DomainSizes(
         buttonHeight: Dp,
         googlePayButtonHeight: Dp,
         inputHeight: Dp,
+        mainButtonTopPadding: Dp,
     ) : this(
         sheetCornerRadiusDp = sheetCornerRadius.value.toInt(),
         componentCornerRadiusDp = componentCornerRadius.value.toInt(),
@@ -54,5 +59,6 @@ data class DomainSizes(
         buttonHeightDp = buttonHeight.value.toInt(),
         googlePayButtonHeightDp = googlePayButtonHeight.value.toInt(),
         inputHeightDp = inputHeight.value.toInt(),
+        mainButtonTopPaddingDp = mainButtonTopPadding.value.toInt(),
     )
 }
