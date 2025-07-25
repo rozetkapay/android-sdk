@@ -14,6 +14,7 @@ internal fun PaymentDetails.toPaymentRequestDto(
     currency = this.currencyCode,
     externalId = this.externalId,
     callbackUrl = this.callbackUrl,
+    resultUrl = this.resultUrl,
     customer = customer
 )
 

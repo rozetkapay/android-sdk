@@ -17,6 +17,7 @@ import com.rozetkapay.sdk.domain.errors.RozetkaPayPaymentException
 import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.models.ClientAuthParameters
 import com.rozetkapay.sdk.domain.models.Currency
+import com.rozetkapay.sdk.domain.models.RozetkaPayEnvironment
 import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
@@ -59,6 +60,7 @@ internal class PaymentViewModel(
     private val checkPaymentStatusUseCase: CheckPaymentStatusUseCase,
     googlePayInteractor: GooglePayInteractor?,
     private val tokenizeCardUseCase: TokenizeCardUseCase,
+    private val environment: RozetkaPayEnvironment,
 ) : PaymentBottomSheetViewModel(
     googlePayInteractor = googlePayInteractor,
 ) {
@@ -294,7 +296,8 @@ internal class PaymentViewModel(
         amount = parameters.amountParameters.amount,
         currencyCode = parameters.amountParameters.currencyCode,
         externalId = parameters.externalId,
-        callbackUrl = parameters.callbackUrl
+        callbackUrl = parameters.callbackUrl,
+        resultUrl = environment.paymentsConfirmation3DsCallbackUrl,
     )
 
     private fun recheckPaymentStatus() {
@@ -460,7 +463,8 @@ internal class PaymentViewModel(
                         countryCode = RozetkaPayConfig.GOOGLE_PAY_COUNTRY_CODE,
                         isTestEnvironment = googlePayConfig is GooglePayConfig.Test,
                     )
-                }
+                },
+                environment = RozetkaPayKoinContext.koin.get(),
             ) as T
         }
     }
