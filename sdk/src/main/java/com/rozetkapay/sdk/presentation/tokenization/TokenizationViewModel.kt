@@ -28,7 +28,7 @@ internal class TokenizationViewModel(
     private val resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
-    private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 1)
+    private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 0)
     val resultStateFlow = _resultStateFlow.asSharedFlow()
 
     private val _uiState = MutableStateFlow(TokenizationUiState())
