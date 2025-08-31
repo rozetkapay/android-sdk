@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="rozetka_pay_common_loading_message">Operation in progress…</string>
+    <string name="rozetka_pay_common_error_message">An unexpected error occurred</string>
+    <string name="rozetka_pay_common_button_cancel">Cancel</string>
+    <string name="rozetka_pay_common_button_retry">Try again</string>
+
+    <string name="rozetka_pay_tokenization_title">Add your new card</string>
+    <string name="rozetka_pay_tokenization_save_button">Save</string>
+    <string name="rozetka_pay_tokenization_error_common">Sorry… An error occurred during tokenization process</string>
+
+    <string name="rozetka_pay_payment_title">Pay</string>
+    <string name="rozetka_pay_payment_pay_button">Pay %s</string>
+    <string name="rozetka_pay_payment_error_unsupported">Sorry.. Payment with card is not supported yet, it will be available later</string>
+    <string name="rozetka_pay_payment_error_google_pay">An error occurred while trying to pay using Google Pay. Please try again later or contact our support team</string>
+    <string name="rozetka_pay_payment_error_common">Sorry… An error occurred during payment process</string>
+    <string name="rozetka_pay_payment_label_use_card">Or pay using card</string>
+    <string name="rozetka_pay_payment_legal_pay_button">Pay</string>
+
+    <string name="rozetka_pay_payment_confirmation_3ds_loading">Please wait…</string>
+
+    <string name="rozetka_pay_form_card_info_title">Card information</string>
+    <string name="rozetka_pay_form_optional_card_name">Card name</string>
+    <string name="rozetka_pay_form_card_number">Card number</string>
+    <string name="rozetka_pay_form_cvv">CVV</string>
+    <string name="rozetka_pay_form_exp_date">MM/YY</string>
+    <string name="rozetka_pay_form_cardholder_name">Cardholder name</string>
+    <string name="rozetka_pay_form_email">Email</string>
+    <string name="rozetka_pay_form_save_card">Save card</string>
+    <string name="rozetka_pay_form_validation_exp_date_invalid">Invalid expiration date value</string>
+    <string name="rozetka_pay_form_validation_exp_date_expired">Card expired</string>
+    <string name="rozetka_pay_form_validation_card_number_incorrect">Incorrect card number</string>
+    <string name="rozetka_pay_form_validation_card_number_empty">Card number can\'t be empty</string>
+    <string name="rozetka_pay_form_validation_cvv_incorrect">Incorrect CVV value</string>
+    <string name="rozetka_pay_form_validation_cardholder_name_empty">Cardholder name can\'t be empty</string>
+    <string name="rozetka_pay_form_validation_field_empty">Field can\'t be empty</string>
+    <string name="rozetka_pay_form_validation_email_incorrect">Incorrect email value</string>
+
+</resources>

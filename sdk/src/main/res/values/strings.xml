@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="rozetka_pay_common_loading_message">Operation in progress…</string>
-    <string name="rozetka_pay_common_error_message">An unexpected error occurred</string>
-    <string name="rozetka_pay_common_button_cancel">Cancel</string>
-    <string name="rozetka_pay_common_button_retry">Try again</string>
+    <string name="rozetka_pay_common_loading_message">Операція виконується…</string>
 
-    <string name="rozetka_pay_tokenization_title">Add your new card</string>
-    <string name="rozetka_pay_tokenization_save_button">Save</string>
-    <string name="rozetka_pay_tokenization_error_common">Sorry… An error occurred during tokenization process</string>
+    <string name="rozetka_pay_common_button_cancel">Відмінити</string>
+    <string name="rozetka_pay_tokenization_title">Додайте Вашу нову картку</string>
+    <string name="rozetka_pay_tokenization_save_button">Зберегти</string>
+    <string name="rozetka_pay_tokenization_error_common">Вибачте… Сталась помилка в процесі токенізації картки</string>
 
-    <string name="rozetka_pay_payment_title">Pay</string>
-    <string name="rozetka_pay_payment_pay_button">Pay %s</string>
-    <string name="rozetka_pay_payment_error_unsupported">Sorry.. Payment with card is not supported yet, it will be available later</string>
-    <string name="rozetka_pay_payment_error_google_pay">An error occurred while trying to pay using Google Pay. Please try again later or contact our support team</string>
-    <string name="rozetka_pay_payment_error_common">Sorry… An error occurred during payment process</string>
-    <string name="rozetka_pay_payment_label_use_card">Or pay using card</string>
-    <string name="rozetka_pay_payment_legal_pay_button">Pay</string>
+    <string name="rozetka_pay_payment_title">Оплата</string>
+    <string name="rozetka_pay_payment_pay_button">Оплатити %s</string>
+    <string name="rozetka_pay_payment_error_unsupported">Вибачте… Оплата за допомогою картки поки що не підтримується, вона стане доступна пізніше</string>
+    <string name="rozetka_pay_payment_error_google_pay">Виникла помилка під час спроби оплатити за допомогою Google Pay. Будь ласка, спробуйте пізніше або зверніться до нашої служби підтримки</string>
+    <string name="rozetka_pay_payment_error_common">Вибачте… Сталась помилка в процесі обробки платежу</string>
+
+    <string name="rozetka_pay_form_card_info_title">Інформація про картку</string>
+    <string name="rozetka_pay_form_optional_card_name">Назва картки</string>
+    <string name="rozetka_pay_form_card_number">Номер картки</string>
+    <string name="rozetka_pay_form_cvv">CVV</string>
+    <string name="rozetka_pay_form_exp_date">ММ/РР</string>
+    <string name="rozetka_pay_form_cardholder_name">Ім\ʼя на картці</string>
+    <string name="rozetka_pay_form_email">Email</string>
+    <string name="rozetka_pay_form_validation_exp_date_invalid">Неправильне значення дати закінчення терміну дії</string>
+    <string name="rozetka_pay_form_validation_exp_date_expired">Картка протермінована</string>
+    <string name="rozetka_pay_form_validation_card_number_incorrect">Неправильний номер картки</string>
+    <string name="rozetka_pay_form_validation_card_number_empty">Номер картки не може бути пустим</string>
+    <string name="rozetka_pay_form_validation_cvv_incorrect">Неправильне значення CVV</string>
+    <string name="rozetka_pay_form_validation_cardholder_name_empty">Ім\ʼя не може бути пустим</string>
+    <string name="rozetka_pay_form_validation_field_empty">Поле не може бути пустим</string>
+    <string name="rozetka_pay_form_validation_email_incorrect">Неправильний email</string>
+    <string name="rozetka_pay_common_error_message">Сталась неочікувана помилка</string>
+    <string name="rozetka_pay_common_button_retry">Спробувати ще раз</string>
+    <string name="rozetka_pay_payment_label_use_card">Або оплатіть карткою</string>
+    <string name="rozetka_pay_form_save_card">Зберегти картку</string>
+    <string name="rozetka_pay_payment_confirmation_3ds_loading">Зачекайте, будь ласка…</string>
+    <string name="rozetka_pay_payment_legal_pay_button">Оплатити</string>
+
     <string name="rozetka_pay_payment_legal_text_part_1" translatable="false">Натискаючи кнопку «%1$s» щодо оплати замовлення на користь отримувача, користувач підтверджує, що надає інформацію для формування платіжної інструкції та свою згоду на виконання платіжної операції, а також приймає (акцептує) умови&#160;</string>
     <string name="rozetka_pay_payment_legal_text_part_2" translatable="false">публічного договору</string>
     <string name="rozetka_pay_payment_legal_text_part_3" translatable="false">&#160;RozetkaPay (</string>
     <string name="rozetka_pay_payment_legal_text_part_4" translatable="false">детальніше →</string>
     <string name="rozetka_pay_payment_legal_text_part_5" translatable="false">)</string>
-
-    <string name="rozetka_pay_payment_confirmation_3ds_loading">Please wait…</string>
-
-    <string name="rozetka_pay_form_card_info_title">Card information</string>
-    <string name="rozetka_pay_form_optional_card_name">Card name</string>
-    <string name="rozetka_pay_form_card_number">Card number</string>
-    <string name="rozetka_pay_form_cvv">CVV</string>
-    <string name="rozetka_pay_form_exp_date">MM/YY</string>
-    <string name="rozetka_pay_form_cardholder_name">Cardholder name</string>
-    <string name="rozetka_pay_form_email">Email</string>
-    <string name="rozetka_pay_form_save_card">Save card</string>
-    <string name="rozetka_pay_form_validation_exp_date_invalid">Invalid expiration date value</string>
-    <string name="rozetka_pay_form_validation_exp_date_expired">Card expired</string>
-    <string name="rozetka_pay_form_validation_card_number_incorrect">Incorrect card number</string>
-    <string name="rozetka_pay_form_validation_card_number_empty">Card number can\'t be empty</string>
-    <string name="rozetka_pay_form_validation_cvv_incorrect">Incorrect CVV value</string>
-    <string name="rozetka_pay_form_validation_cardholder_name_empty">Cardholder name can\'t be empty</string>
-    <string name="rozetka_pay_form_validation_field_empty">Field can\'t be empty</string>
-    <string name="rozetka_pay_form_validation_email_incorrect">Incorrect email value</string>
-
 </resources>
