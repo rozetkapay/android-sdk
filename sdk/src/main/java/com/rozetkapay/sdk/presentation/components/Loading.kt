@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 private const val LOADING_SCREEN_MIN_HEIGHT_DP = 160
 
@@ -27,17 +28,22 @@ internal fun LoadingScreen(
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("loadingBlock")
             .fillMaxWidth()
             .heightIn(min = LOADING_SCREEN_MIN_HEIGHT_DP.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, CenterVertically)
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.size(36.dp),
+            modifier = Modifier
+                .withResourceId("loadingProgressIndicator")
+                .size(36.dp),
             strokeCap = StrokeCap.Round,
             color = DomainTheme.colors.primary
         )
         Text(
+            modifier = Modifier
+                .withResourceId("loadingMessage"),
             text = message,
             color = DomainTheme.colors.onSurface,
             style = DomainTheme.typography.body

@@ -50,6 +50,7 @@ import com.rozetkapay.sdk.presentation.BaseRozetkaPayActivity
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 import com.rozetkapay.sdk.util.Logger
 
 internal class Confirmation3DsActivity : BaseRozetkaPayActivity() {
@@ -114,6 +115,7 @@ private fun Screen3Ds(
     onAction: (Confirmation3DsAction) -> Unit,
 ) {
     Scaffold(
+        modifier = Modifier.withResourceId("screen3Ds"),
         containerColor = DomainTheme.colors.surface,
         contentColor = DomainTheme.colors.onSurface,
         topBar = {
@@ -121,6 +123,8 @@ private fun Screen3Ds(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TopAppBar(
+                    modifier = Modifier
+                        .withResourceId("topAppBar"),
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = DomainTheme.colors.surface,
                         navigationIconContentColor = DomainTheme.colors.appBarIcon,
@@ -130,6 +134,7 @@ private fun Screen3Ds(
                     navigationIcon = {
                         Icon(
                             modifier = Modifier
+                                .withResourceId("buttonClose")
                                 .clip(CircleShape)
                                 .clickable { onAction(Confirmation3DsAction.ManuallyClosed) }
                                 .padding(8.dp),
@@ -142,7 +147,9 @@ private fun Screen3Ds(
                 )
                 if (state.showToolbarLoading) {
                     LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .withResourceId("toolbarProgressIndicator")
+                            .fillMaxWidth(),
                         strokeCap = StrokeCap.Round,
                         color = DomainTheme.colors.primary,
                         trackColor = DomainTheme.colors.surface
@@ -153,12 +160,15 @@ private fun Screen3Ds(
     ) { innerPadding ->
         Box(
             modifier = Modifier
+                .withResourceId("3dsContent")
                 .padding(innerPadding)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             WebView(
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier
+                    .withResourceId("3dsWebView")
+                    .matchParentSize(),
                 url = state.url,
                 onPageLoadingStarted = { onAction(Confirmation3DsAction.PageLoadingStarted) },
                 onPageLoadingFinished = { onAction(Confirmation3DsAction.PageLoadingFinished) },

@@ -32,8 +32,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +125,7 @@ internal fun FormTextField(
         if (isError && !errorMessage.isNullOrBlank()) {
             Text(
                 modifier = Modifier
-                    .semantics { this.contentDescription = "input-field-helper-text" }
+                    .withResourceId("textFieldErrorMessage")
                     .padding(
                         start = 14.dp,
                         top = 10.dp
@@ -234,9 +233,11 @@ internal fun TextFieldIcon(
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
     contentDescription: String? = null,
+    resourceId: String = "textFieldIcon",
 ) {
     Icon(
         modifier = Modifier
+            .withResourceId(resourceId)
             .size(20.dp)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },

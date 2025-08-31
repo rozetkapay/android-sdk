@@ -74,7 +74,8 @@ internal fun RegularPaymentBottomSheet(
             onDismiss = {
                 onAction(RegularPaymentBottomSheetAction.SetResult(PaymentResult.Cancelled))
                 onAction(RegularPaymentBottomSheetAction.Finish)
-            }
+            },
+            resourceId = "bottomSheetRegularPayment",
         ) {
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             PaymentScreen(

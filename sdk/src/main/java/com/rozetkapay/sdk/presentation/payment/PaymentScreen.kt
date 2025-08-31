@@ -40,6 +40,7 @@ import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun PaymentScreen(
@@ -49,6 +50,7 @@ internal fun PaymentScreen(
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("paymentScreen")
             .animateContentSize()
             .verticalScroll(rememberScrollState())
             .inSheetPaddings()
@@ -100,17 +102,19 @@ private fun PaymentContent(
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("paymentContent")
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
         Title(
+            modifier = Modifier.withResourceId("paymentTitle"),
             title = stringResource(id = R.string.rozetka_pay_payment_title)
         )
         Spacer(modifier = Modifier.height(28.dp))
         if (state.allowGooglePay) {
             PayButton(
                 modifier = Modifier
-                    .testTag("googlePayButton")
+                    .withResourceId("buttonGooglePay")
                     .fillMaxWidth()
                     .height(DomainTheme.sizes.googlePayButtonHeight),
                 onClick = onGooglePay,
@@ -150,7 +154,9 @@ private fun PaymentContent(
         )
         Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .withResourceId("buttonPay")
+                .fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_payment_pay_button, state.amountWithCurrency),
             onClick = {
                 val result = cardFormViewModel.parseCardData()

@@ -29,6 +29,7 @@ import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun TokenizationScreen(
@@ -42,6 +43,7 @@ internal fun TokenizationScreen(
     val stingResourcesProvider = rememberDefaultTokenizationStringResourcesProvider()
     Column(
         modifier = Modifier
+            .withResourceId("tokenizationScreen")
             .animateContentSize()
             .verticalScroll(rememberScrollState())
             .inSheetPaddings()
@@ -87,11 +89,14 @@ internal fun TokenizationContent(
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("tokenizationContent")
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
         if (withTitle) {
             Title(
+                modifier = Modifier
+                    .withResourceId("tokenizationTitle"),
                 title = stringResource(id = R.string.rozetka_pay_tokenization_title)
             )
             Spacer(modifier = Modifier.height(28.dp))
@@ -103,7 +108,9 @@ internal fun TokenizationContent(
         cardFormFooterContent?.invoke()
         Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .withResourceId("buttonSave")
+                .fillMaxWidth(),
             text = stingResourcesProvider.saveButtonTitle,
             onClick = {
                 val result = cardFormViewModel.parseCardData()
