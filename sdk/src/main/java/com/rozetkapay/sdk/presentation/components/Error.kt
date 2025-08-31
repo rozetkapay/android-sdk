@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun ErrorScreen(
@@ -30,6 +31,7 @@ internal fun ErrorScreen(
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("errorBlock")
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, CenterVertically)
@@ -45,12 +47,15 @@ internal fun ErrorScreen(
         ) {
             Image(
                 modifier = Modifier
+                    .withResourceId("errorImage")
                     .size(200.dp),
                 painter = painterResource(id = R.drawable.rozetka_pay_image_error),
                 contentDescription = "error-image"
             )
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("errorMessage")
+                    .fillMaxWidth(),
                 text = message,
                 style = DomainTheme.typography.body,
                 color = DomainTheme.colors.onSurface,
@@ -58,12 +63,16 @@ internal fun ErrorScreen(
             )
         }
         TextButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .withResourceId("buttonCancel")
+                .fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_common_button_cancel),
             onClick = onCancel
         )
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .withResourceId("buttonRetry")
+                .fillMaxWidth(),
             text = stringResource(id = R.string.rozetka_pay_common_button_retry),
             onClick = onRetry
         )

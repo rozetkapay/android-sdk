@@ -24,17 +24,20 @@ import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun LegalIconsBlock(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .withResourceId("legalIconsBlock"),
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
     ) {
         Image(
             modifier = Modifier
+                .withResourceId("legalIconVisa")
                 .width(52.dp)
                 .height(20.dp),
             painter = painterResource(id = R.drawable.rozetka_pay_legal_visa),
@@ -42,6 +45,7 @@ internal fun LegalIconsBlock(
         )
         Image(
             modifier = Modifier
+                .withResourceId("legalIconPcidss")
                 .width(52.dp)
                 .height(20.dp),
             painter = painterResource(id = R.drawable.rozetka_pay_legal_pcidss),
@@ -49,6 +53,7 @@ internal fun LegalIconsBlock(
         )
         Image(
             modifier = Modifier
+                .withResourceId("legalIconMastercard")
                 .width(52.dp)
                 .height(20.dp),
             painter = painterResource(id = R.drawable.rozetka_pay_legal_mastercard),
@@ -70,7 +75,8 @@ internal fun LegalTextBlock(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier,
+        modifier = modifier
+            .withResourceId("legalTextBlock"),
         text = buildAnnotatedString {
             append(
                 stringResource(

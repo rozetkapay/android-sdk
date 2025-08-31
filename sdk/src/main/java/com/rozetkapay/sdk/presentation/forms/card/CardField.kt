@@ -35,6 +35,7 @@ import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.util.masks.CardNumberMask
 import com.rozetkapay.sdk.presentation.util.masks.ExpirationDateMask
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun CardField(
@@ -45,10 +46,13 @@ internal fun CardField(
 ) {
     Column(
         modifier = modifier
+            .withResourceId("cardForm")
             .animateContentSize()
     ) {
         FormTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .withResourceId("textFieldCardNumber")
+                .fillMaxWidth(),
             placeholder = stringResource(id = R.string.rozetka_pay_form_card_number),
             value = state.cardNumber,
             onValueChange = {
@@ -73,6 +77,7 @@ internal fun CardField(
             trailingIcon = {
                 Image(
                     modifier = Modifier
+                        .withResourceId("iconPaymentSystem")
                         .height(22.dp)
                         .width(36.dp)
                         .padding(end = 6.dp),
@@ -91,7 +96,9 @@ internal fun CardField(
                 .height(IntrinsicSize.Min),
         ) {
             FormTextField(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .withResourceId("textFieldExpDate")
+                    .weight(1f),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_exp_date),
                 value = state.expDate,
                 isError = state.isExpDateError,
@@ -114,7 +121,9 @@ internal fun CardField(
                 color = DomainTheme.colors.componentDivider,
             )
             FormTextField(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .withResourceId("textFieldCvv")
+                    .weight(1f),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_cvv),
                 value = state.cvv,
                 isError = state.isCvvError,
@@ -136,10 +145,12 @@ internal fun CardField(
 
         if (state.isCardNumberError || state.isExpDateError || state.isCvvError) {
             Text(
-                modifier = Modifier.padding(
-                    start = 14.dp,
-                    top = 10.dp
-                ),
+                modifier = Modifier
+                    .withResourceId("cardFormErrorMessage")
+                    .padding(
+                        start = 14.dp,
+                        top = 10.dp
+                    ),
                 text = state.cardNumberError ?: state.expDateError ?: state.cvvError ?: "",
                 color = DomainTheme.colors.error,
                 style = DomainTheme.typography.labelSmall,
@@ -149,7 +160,9 @@ internal fun CardField(
         if (showCardholderNameField) {
             Spacer(modifier = Modifier.height(16.dp))
             FormTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("textFieldCardholderName")
+                    .fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_cardholder_name),
                 value = state.cardholderName,
                 onValueChange = {

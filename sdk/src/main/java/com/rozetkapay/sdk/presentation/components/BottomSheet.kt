@@ -27,6 +27,7 @@ import com.rozetkapay.sdk.RozetkaPaySdk
 import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,11 +35,14 @@ internal fun RozetkaPayBottomSheet(
     showSheet: MutableState<Boolean> = remember { mutableStateOf(false) },
     modalBottomSheetState: SheetState = rememberRozetkaPayBottomSheetState(),
     onDismiss: () -> Unit,
+    resourceId: String = "bottomSheet",
     content: @Composable () -> Unit,
 ) {
     if (showSheet.value) {
         ModalBottomSheet(
-            modifier = Modifier.padding(top = 24.dp),
+            modifier = Modifier
+                .withResourceId(resourceId)
+                .padding(top = 24.dp),
             containerColor = DomainTheme.colors.surface,
             contentColor = DomainTheme.colors.onSurface,
             shape = RoundedCornerShape(
@@ -70,6 +74,7 @@ internal fun SheetCloseHeader(
 ) {
     Row(
         modifier = Modifier
+            .withResourceId("bottomSheetHeader")
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {

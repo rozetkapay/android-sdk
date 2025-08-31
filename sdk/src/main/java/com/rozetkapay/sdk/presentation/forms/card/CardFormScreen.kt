@@ -28,6 +28,7 @@ import com.rozetkapay.sdk.domain.validators.Validator
 import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun CardFormScreen(
@@ -49,11 +50,15 @@ private fun CardFormScreenContent(
     onAction: (CardFormAction) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .withResourceId("cardFormScreen")
+            .fillMaxWidth()
     ) {
         if (state.withCardName) {
             FormTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("textFieldCardName")
+                    .fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_optional_card_name),
                 value = state.cardName,
                 onValueChange = {
@@ -70,10 +75,12 @@ private fun CardFormScreenContent(
         }
         if (withCardTitle) {
             Subtitle(
-                modifier = Modifier.padding(
-                    top = 12.dp,
-                    bottom = 10.dp
-                ),
+                modifier = Modifier
+                    .withResourceId("cardFormTitle")
+                    .padding(
+                        top = 12.dp,
+                        bottom = 10.dp
+                    ),
                 title = stringResource(id = R.string.rozetka_pay_form_card_info_title),
             )
         }
@@ -87,7 +94,9 @@ private fun CardFormScreenContent(
         if (state.withEmail) {
             Spacer(modifier = Modifier.height(16.dp))
             FormTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("textFieldEmail")
+                    .fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_email),
                 value = state.email,
                 onValueChange = {
