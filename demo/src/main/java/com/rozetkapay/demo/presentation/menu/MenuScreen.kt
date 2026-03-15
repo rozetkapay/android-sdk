@@ -74,6 +74,11 @@ fun MenuScreen(
                 onClick = { onNavigationEvent(Route.Tokenization) }
             )
             MenuButton(
+                text = "Build-in tokenization",
+                onClick = { onNavigationEvent(Route.BuildInTokenization) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            MenuButton(
                 text = "Make a payment",
                 onClick = { onNavigationEvent(Route.Payment) }
             )

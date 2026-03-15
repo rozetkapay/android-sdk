@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +36,14 @@ class ClassicMenuActivity : ComponentActivity() {
 
                                 Route.Tokenization -> {
                                     startActivity(TokenizationActivity.startIntent(this))
+                                }
+
+                                Route.BuildInTokenization -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Build-in tokenization not supported for Android views",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                                 Route.Payment -> {

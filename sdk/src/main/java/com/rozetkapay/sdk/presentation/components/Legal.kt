@@ -1,10 +1,11 @@
 package com.rozetkapay.sdk.presentation.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,41 +25,48 @@ import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.domain.RozetkaPayConfig
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun LegalIconsBlock(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+        modifier = modifier
+            .withResourceId("legalIconsBlock"),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 16.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             modifier = Modifier
-                .width(52.dp)
+                .withResourceId("legalIconVisa")
                 .height(20.dp),
             painter = painterResource(id = R.drawable.rozetka_pay_legal_visa),
             contentDescription = "legal-icon-visa"
         )
         Image(
             modifier = Modifier
-                .width(52.dp)
+                .withResourceId("legalIconMastercard")
                 .height(20.dp),
-            painter = painterResource(id = R.drawable.rozetka_pay_legal_pcidss),
+            painter = painterResource(id = R.drawable.rozetka_pay_legal_mastercard),
             contentDescription = "legal-icon-pcidss"
         )
         Image(
             modifier = Modifier
-                .width(52.dp)
+                .withResourceId("legalIcoProstir")
                 .height(20.dp),
-            painter = painterResource(id = R.drawable.rozetka_pay_legal_mastercard),
+            painter = painterResource(id = R.drawable.rozetka_pay_legal_prostir),
             contentDescription = "legal-icon-mastercard"
         )
     }
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_NO)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 internal fun LegalBlockPreview() {
     RozetkaPayTheme {
         LegalIconsBlock()
@@ -70,9 +78,15 @@ internal fun LegalTextBlock(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier,
+        modifier = modifier
+            .withResourceId("legalTextBlock"),
         text = buildAnnotatedString {
-            append(stringResource(id = R.string.rozetka_pay_payment_legal_text_part_1))
+            append(
+                stringResource(
+                    id = R.string.rozetka_pay_payment_legal_text_part_1,
+                    stringResource(R.string.rozetka_pay_payment_legal_pay_button)
+                )
+            )
             withLink(
                 LinkAnnotation.Url(
                     url = RozetkaPayConfig.LEGAL_PUBLIC_CONTRACT_LINK,
@@ -107,7 +121,8 @@ internal fun LegalTextBlock(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_NO)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 internal fun LegalTextBlockPreview() {
     RozetkaPayTheme {
         LegalTextBlock()

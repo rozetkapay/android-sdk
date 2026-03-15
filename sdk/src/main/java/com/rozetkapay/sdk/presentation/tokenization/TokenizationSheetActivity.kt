@@ -44,6 +44,7 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupNightMode(parameters?.themeConfigurator?.mode)
         setContent {
             RozetkaPayTheme(
                 themeConfigurator = parameters?.themeConfigurator ?: RozetkaPayThemeConfigurator()

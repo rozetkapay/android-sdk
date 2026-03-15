@@ -22,19 +22,23 @@ import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.FieldRequirement
 import com.rozetkapay.sdk.domain.repository.ResourcesProvider
 import com.rozetkapay.sdk.domain.usecases.ParseCardDataUseCase
+import com.rozetkapay.sdk.domain.usecases.ProvideCardPaymentSystemUseCase
 import com.rozetkapay.sdk.domain.validators.ValidationResult
 import com.rozetkapay.sdk.domain.validators.Validator
 import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun CardFormScreen(
+    withCardTitle: Boolean = true,
     viewModel: CardFormViewModel,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CardFormScreenContent(
         state = state,
+        withCardTitle = withCardTitle,
         onAction = viewModel::onAction
     )
 }
@@ -42,14 +46,19 @@ internal fun CardFormScreen(
 @Composable
 private fun CardFormScreenContent(
     state: CardFormUiState,
+    withCardTitle: Boolean = true,
     onAction: (CardFormAction) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .withResourceId("cardFormScreen")
+            .fillMaxWidth()
     ) {
         if (state.withCardName) {
             FormTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("textFieldCardName")
+                    .fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_optional_card_name),
                 value = state.cardName,
                 onValueChange = {
@@ -62,10 +71,19 @@ private fun CardFormScreenContent(
                 errorMessage = state.cardNameError,
                 isError = state.cardNameError != null
             )
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Subtitle(title = stringResource(id = R.string.rozetka_pay_form_card_info_title))
-        Spacer(modifier = Modifier.height(10.dp))
+        if (withCardTitle) {
+            Subtitle(
+                modifier = Modifier
+                    .withResourceId("cardFormTitle")
+                    .padding(
+                        top = 12.dp,
+                        bottom = 10.dp
+                    ),
+                title = stringResource(id = R.string.rozetka_pay_form_card_info_title),
+            )
+        }
         CardField(
             state = state.cardState,
             showCardholderNameField = state.withCardholderName,
@@ -76,7 +94,9 @@ private fun CardFormScreenContent(
         if (state.withEmail) {
             Spacer(modifier = Modifier.height(16.dp))
             FormTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .withResourceId("textFieldEmail")
+                    .fillMaxWidth(),
                 placeholder = stringResource(id = R.string.rozetka_pay_form_email),
                 value = state.email,
                 onValueChange = {
@@ -104,7 +124,7 @@ private fun <T> mockValidator(): Validator<T> {
 
 internal val MOCK_CARD_FORM_VIEWMODEL = CardFormViewModel(
     parameters = CardFieldsParameters(
-        cardNameField = FieldRequirement.None,
+        cardNameField = FieldRequirement.Optional,
         emailField = FieldRequirement.Optional,
         cardholderNameField = FieldRequirement.Optional,
     ),
@@ -120,7 +140,8 @@ internal val MOCK_CARD_FORM_VIEWMODEL = CardFormViewModel(
                 return "string"
             }
         }
-    )
+    ),
+    provideCardPaymentSystemUseCase = ProvideCardPaymentSystemUseCase(),
 )
 
 @Composable

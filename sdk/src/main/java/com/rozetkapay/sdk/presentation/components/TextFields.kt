@@ -1,12 +1,12 @@
 package com.rozetkapay.sdk.presentation.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,8 +32,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +74,9 @@ internal fun FormTextField(
     ) {
         BasicTextField(
             value = value,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DomainTheme.sizes.inputHeight),
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = false,
@@ -116,17 +117,15 @@ internal fun FormTextField(
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
-                        bottom = 14.dp,
-                        top = 14.dp,
                     ),
-                    shape = shape
+                    shape = shape,
                 )
             },
         )
         if (isError && !errorMessage.isNullOrBlank()) {
             Text(
                 modifier = Modifier
-                    .semantics { this.contentDescription = "input-field-helper-text" }
+                    .withResourceId("textFieldErrorMessage")
                     .padding(
                         start = 14.dp,
                         top = 10.dp
@@ -234,9 +233,11 @@ internal fun TextFieldIcon(
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
     contentDescription: String? = null,
+    resourceId: String = "textFieldIcon",
 ) {
     Icon(
         modifier = Modifier
+            .withResourceId(resourceId)
             .size(20.dp)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },

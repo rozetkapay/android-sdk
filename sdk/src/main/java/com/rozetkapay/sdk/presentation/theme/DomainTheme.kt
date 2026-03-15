@@ -32,10 +32,11 @@ internal fun DomainTheme(
 ) {
     val colorScheme = if (darkTheme) themeConfigurator.darkColorScheme else themeConfigurator.lightColorScheme
     val sizes = themeConfigurator.sizes
+    val typography = themeConfigurator.typography
     CompositionLocalProvider(
         LocalDomainColorScheme provides colorScheme,
         LocalDomainSizes provides sizes,
-        LocalDomainTypography provides RozetkaPayDomainThemeDefaults.typography()
+        LocalDomainTypography provides typography
     ) {
         content()
     }

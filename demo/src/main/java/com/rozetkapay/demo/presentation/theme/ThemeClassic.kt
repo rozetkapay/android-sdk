@@ -6,6 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import com.rozetkapay.sdk.presentation.theme.DomainTextStyle
+import com.rozetkapay.sdk.presentation.theme.DomainTypography
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayDomainThemeDefaults
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 
@@ -126,6 +128,17 @@ val classicRozetkaPaySdkThemeConfigurator = RozetkaPayThemeConfigurator(
         sheetCornerRadius = 0.dp,
         componentCornerRadius = 0.dp,
         buttonCornerRadius = 50.dp,
-        borderWidth = 8.dp
+        borderWidth = 8.dp,
+        buttonHeight = 80.dp,
+        googlePayButtonHeight = 40.dp,
+        inputHeight = 40.dp
     ),
+    typography = RozetkaPayDomainThemeDefaults.typography(
+        fontFamily = DomainTypography.FontFamily.Monospace,
+        titleTextStyle = DomainTextStyle(
+            fontSizeSp = 32,
+            lineHeightSp = 40,
+            fontWeight = DomainTextStyle.FontWeight.Black,
+        ),
+    )
 )

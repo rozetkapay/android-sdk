@@ -23,4 +23,5 @@ internal sealed interface CardFormAction {
     data class UpdateCardName(val name: String) : CardFormAction
     data class UpdateEmail(val email: String) : CardFormAction
     data class UpdateCard(val state: CardFieldState) : CardFormAction
+    data object ClearForm : CardFormAction
 }

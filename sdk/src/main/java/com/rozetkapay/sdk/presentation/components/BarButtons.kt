@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun CloseButton(
@@ -29,7 +30,8 @@ internal fun CloseButton(
         modifier = modifier,
         painter = painterResource(id = R.drawable.rozetka_pay_ic_close),
         contentDescription = "button-close",
-        onClick = onClick
+        onClick = onClick,
+        resourceId = "buttonClose"
     )
 }
 
@@ -38,10 +40,12 @@ internal fun BarButton(
     modifier: Modifier = Modifier,
     painter: Painter,
     contentDescription: String,
+    resourceId: String? = null,
     onClick: () -> Unit,
 ) {
     Icon(
         modifier = modifier
+            .withResourceId(resourceId)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple(

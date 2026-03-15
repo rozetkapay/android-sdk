@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
 import com.rozetkapay.sdk.domain.models.CardData
 import com.rozetkapay.sdk.domain.usecases.CardParsingResult
+import com.rozetkapay.sdk.domain.usecases.TokenizationStringResourcesProvider
 import com.rozetkapay.sdk.presentation.components.ErrorScreen
 import com.rozetkapay.sdk.presentation.components.LegalIconsBlock
 import com.rozetkapay.sdk.presentation.components.LoadingScreen
@@ -26,7 +27,9 @@ import com.rozetkapay.sdk.presentation.components.inSheetPaddings
 import com.rozetkapay.sdk.presentation.forms.card.CardFormScreen
 import com.rozetkapay.sdk.presentation.forms.card.CardFormViewModel
 import com.rozetkapay.sdk.presentation.forms.card.MOCK_CARD_FORM_VIEWMODEL
+import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
+import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
 internal fun TokenizationScreen(
@@ -37,8 +40,10 @@ internal fun TokenizationScreen(
     onFailed: (reason: Throwable?) -> Unit,
     onRetry: () -> Unit,
 ) {
+    val stingResourcesProvider = rememberDefaultTokenizationStringResourcesProvider()
     Column(
         modifier = Modifier
+            .withResourceId("tokenizationScreen")
             .animateContentSize()
             .verticalScroll(rememberScrollState())
             .inSheetPaddings()
@@ -51,6 +56,7 @@ internal fun TokenizationScreen(
                 TokenizationContent(
                     cardFormViewModel = cardFormViewModel,
                     onSave = onSave,
+                    stingResourcesProvider = stingResourcesProvider
                 )
             }
 
@@ -72,26 +78,40 @@ internal fun TokenizationScreen(
 }
 
 @Composable
-private fun TokenizationContent(
+internal fun TokenizationContent(
     cardFormViewModel: CardFormViewModel,
+    withTitle: Boolean = true,
+    withCardTitle: Boolean = true,
+    withLegalBlock: Boolean = true,
+    stingResourcesProvider: TokenizationStringResourcesProvider,
+    cardFormFooterContent: @Composable (() -> Unit)? = null,
     onSave: (CardData) -> Unit,
 ) {
     Column(
         modifier = Modifier
+            .withResourceId("tokenizationContent")
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
-        Title(
-            title = stringResource(id = R.string.rozetka_pay_tokenization_title)
-        )
-        Spacer(modifier = Modifier.height(28.dp))
+        if (withTitle) {
+            Title(
+                modifier = Modifier
+                    .withResourceId("tokenizationTitle"),
+                title = stringResource(id = R.string.rozetka_pay_tokenization_title)
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+        }
         CardFormScreen(
+            withCardTitle = withCardTitle,
             viewModel = cardFormViewModel
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        cardFormFooterContent?.invoke()
+        Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.rozetka_pay_tokenization_save_button),
+            modifier = Modifier
+                .withResourceId("buttonSave")
+                .fillMaxWidth(),
+            text = stingResourcesProvider.saveButtonTitle,
             onClick = {
                 val result = cardFormViewModel.parseCardData()
                 if (result is CardParsingResult.Success) {
@@ -99,11 +119,13 @@ private fun TokenizationContent(
                 }
             }
         )
-        LegalIconsBlock(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 28.dp)
-        )
+        if (withLegalBlock) {
+            LegalIconsBlock(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 28.dp)
+            )
+        }
     }
 }
 

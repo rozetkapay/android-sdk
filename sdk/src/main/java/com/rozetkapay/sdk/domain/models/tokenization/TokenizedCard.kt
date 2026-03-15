@@ -13,6 +13,7 @@ data class TokenizedCard(
     @Parcelize
     data class CardInfo(
         val maskedNumber: String? = null,
+        val expiresAt: String? = null,
         val paymentSystem: String? = null,
         val bank: String? = null,
         val isoA3Code: String? = null,

@@ -74,7 +74,8 @@ internal fun BatchPaymentBottomSheet(
             onDismiss = {
                 onAction(BatchPaymentBottomSheetAction.SetResult(BatchPaymentResult.Cancelled))
                 onAction(BatchPaymentBottomSheetAction.Finish)
-            }
+            },
+            resourceId = "bottomSheetBatchPayment",
         ) {
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             PaymentScreen(

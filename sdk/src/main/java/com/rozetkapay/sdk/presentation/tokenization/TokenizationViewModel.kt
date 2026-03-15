@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 internal class TokenizationViewModel(
     private val client: ClientWidgetParameters,
@@ -27,7 +28,7 @@ internal class TokenizationViewModel(
     private val resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
-    private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 1)
+    private val _resultStateFlow = MutableSharedFlow<TokenizationResult>(replay = 0)
     val resultStateFlow = _resultStateFlow.asSharedFlow()
 
     private val _uiState = MutableStateFlow(TokenizationUiState())
@@ -51,9 +52,12 @@ internal class TokenizationViewModel(
     }
 
     private fun cancelled() {
-        _resultStateFlow.tryEmit(
-            TokenizationResult.Cancelled
-        )
+        viewModelScope.launch {
+            _resultStateFlow.emit(
+                TokenizationResult.Cancelled
+            )
+            resetForm()
+        }
     }
 
     private fun loading() {
@@ -73,27 +77,42 @@ internal class TokenizationViewModel(
             )
         ).catch { error ->
             Logger.e(throwable = error) { "Tokenization error" }
-            _uiState.tryEmit(
+            _uiState.emit(
                 uiState.value.copy(
                     displayState = TokenizationDisplayState.Error(
-                        message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common)
-                    )
+                        message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common),
+                        reason = error,
+                    ),
                 )
             )
         }.onEach { tokenizedCard ->
-            _resultStateFlow.tryEmit(
+            _resultStateFlow.emit(
                 TokenizationResult.Complete(tokenizedCard)
             )
+            resetForm()
         }.launchIn(viewModelScope)
     }
 
     private fun failedDueToError(reason: Throwable? = null) {
-        _resultStateFlow.tryEmit(
-            TokenizationResult.Failed(
-                message = if (reason is RozetkaPayException) reason.getReadableMessage() else null,
-                error = reason
+        viewModelScope.launch {
+            _resultStateFlow.emit(
+                TokenizationResult.Failed(
+                    message = if (reason is RozetkaPayException) reason.getReadableMessage() else null,
+                    error = reason
+                )
             )
-        )
+            resetForm()
+        }
+    }
+
+    private fun resetForm() {
+        viewModelScope.launch {
+            _uiState.emit(
+                uiState.value.copy(
+                    displayState = TokenizationDisplayState.Content
+                )
+            )
+        }
     }
 
     internal class Factory(
