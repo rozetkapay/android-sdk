@@ -80,8 +80,9 @@ internal class TokenizationViewModel(
             _uiState.emit(
                 uiState.value.copy(
                     displayState = TokenizationDisplayState.Error(
-                        message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common)
-                    )
+                        message = resourcesProvider.getString(R.string.rozetka_pay_tokenization_error_common),
+                        reason = error,
+                    ),
                 )
             )
         }.onEach { tokenizedCard ->
