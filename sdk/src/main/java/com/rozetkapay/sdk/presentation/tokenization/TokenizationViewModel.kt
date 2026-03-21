@@ -77,6 +77,12 @@ internal class TokenizationViewModel(
             )
         ).catch { error ->
             Logger.e(throwable = error) { "Tokenization error" }
+            _resultStateFlow.emit(
+                TokenizationResult.Failed(
+                    message = if (error is RozetkaPayException) error.getReadableMessage() else null,
+                    error = error
+                )
+            )
             _uiState.emit(
                 uiState.value.copy(
                     displayState = TokenizationDisplayState.Error(
