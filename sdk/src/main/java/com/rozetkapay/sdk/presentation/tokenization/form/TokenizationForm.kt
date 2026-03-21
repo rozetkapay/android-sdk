@@ -86,7 +86,11 @@ fun TokenizationForm(
         LaunchedEffect(Unit) {
             viewModel.resultStateFlow.collect { result ->
                 onResult(result)
-                cardFormViewModel.onAction(CardFormAction.ClearForm)
+                // failed result is not terminal, user can retry or cancel the process
+                // no need to clear the form in case of failure, user might want to fix the data and retry
+                if (result !is TokenizationResult.Failed) {
+                    cardFormViewModel.onAction(CardFormAction.ClearForm)
+                }
             }
         }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -109,7 +113,7 @@ fun TokenizationForm(
                 ErrorScreen(
                     message = displayState.message,
                     onRetry = { viewModel.onAction(TokenizationAction.Retry) },
-                    onCancel = { viewModel.onAction(TokenizationAction.Failed(displayState.reason)) }
+                    onCancel = { viewModel.onAction(TokenizationAction.Cancel) }
                 )
             }
 
