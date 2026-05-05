@@ -28,7 +28,7 @@ import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.util.withResourceId
 
 @Composable
-internal fun LegalIconsBlock(
+fun LegalIconsBlock(
     modifier: Modifier = Modifier,
 ) {
     Row(
