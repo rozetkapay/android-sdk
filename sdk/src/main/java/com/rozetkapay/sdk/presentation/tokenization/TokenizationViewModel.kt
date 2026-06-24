@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 
 internal class TokenizationViewModel(
     private val client: ClientWidgetParameters,
+    private val isBuiltIn: Boolean,
     private val tokenizeCardUseCase: TokenizeCardUseCase,
     private val resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
@@ -56,7 +57,9 @@ internal class TokenizationViewModel(
             _resultStateFlow.emit(
                 TokenizationResult.Cancelled
             )
-            resetForm()
+            if (isBuiltIn) {
+                resetForm()
+            }
         }
     }
 
@@ -77,12 +80,14 @@ internal class TokenizationViewModel(
             )
         ).catch { error ->
             Logger.e(throwable = error) { "Tokenization error" }
-            _resultStateFlow.emit(
-                TokenizationResult.Failed(
-                    message = if (error is RozetkaPayException) error.getReadableMessage() else null,
-                    error = error
+            if (isBuiltIn) {
+                _resultStateFlow.emit(
+                    TokenizationResult.Failed(
+                        message = if (error is RozetkaPayException) error.getReadableMessage() else null,
+                        error = error
+                    )
                 )
-            )
+            }
             _uiState.emit(
                 uiState.value.copy(
                     displayState = TokenizationDisplayState.Error(
@@ -107,7 +112,9 @@ internal class TokenizationViewModel(
                     error = reason
                 )
             )
-            resetForm()
+            if (isBuiltIn){
+                resetForm()
+            }
         }
     }
 
@@ -123,6 +130,7 @@ internal class TokenizationViewModel(
 
     internal class Factory(
         private val parametersSupplier: () -> TokenizationSheetContract.Parameters,
+        private val isBuiltIn: Boolean = false,
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
@@ -132,6 +140,7 @@ internal class TokenizationViewModel(
         ): T {
             return TokenizationViewModel(
                 client = parametersSupplier().client,
+                isBuiltIn = isBuiltIn,
                 tokenizeCardUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get()
             ) as T

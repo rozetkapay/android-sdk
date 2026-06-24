@@ -123,6 +123,7 @@ internal val viewModelModule = module {
     viewModel { parameters ->
         TokenizationViewModel(
             client = parameters.get(),
+            isBuiltIn = parameters.get(),
             tokenizeCardUseCase = get(),
             resourcesProvider = get()
         )

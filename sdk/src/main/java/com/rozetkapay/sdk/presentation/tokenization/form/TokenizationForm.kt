@@ -73,7 +73,7 @@ fun TokenizationForm(
             )
         } else {
             koinViewModel {
-                parametersOf(client)
+                parametersOf(client, true)
             }
         }
         val cardFormViewModel: CardFormViewModel = if (isPreview) {
@@ -176,6 +176,7 @@ private fun previewTokenizationViewModel(
     context: Context,
 ) = TokenizationViewModel(
     client = client,
+    isBuiltIn = true,
     tokenizeCardUseCase = TokenizeCardUseCase(
         tokenizationRepository = object : TokenizationRepository {
             override suspend fun tokenizeCard(

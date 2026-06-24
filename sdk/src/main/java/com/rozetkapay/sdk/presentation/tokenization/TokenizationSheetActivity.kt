@@ -28,9 +28,10 @@ internal class TokenizationSheetActivity : BaseRozetkaPayActivity() {
     }
 
     @VisibleForTesting
-    internal var viewModelFactory: ViewModelProvider.Factory = TokenizationViewModel.Factory {
-        requireNotNull(parameters)
-    }
+    internal var viewModelFactory: ViewModelProvider.Factory = TokenizationViewModel.Factory(
+        parametersSupplier = { requireNotNull(parameters) },
+        isBuiltIn = false,
+    )
 
     private val viewModel: TokenizationViewModel by viewModels { viewModelFactory }
 
