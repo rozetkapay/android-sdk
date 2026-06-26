@@ -100,7 +100,9 @@ internal class TokenizationViewModel(
             _resultStateFlow.emit(
                 TokenizationResult.Complete(tokenizedCard)
             )
-            resetForm()
+            if (isBuiltIn) {
+                resetForm()
+            }
         }.launchIn(viewModelScope)
     }
 
@@ -112,7 +114,7 @@ internal class TokenizationViewModel(
                     error = reason
                 )
             )
-            if (isBuiltIn){
+            if (isBuiltIn) {
                 resetForm()
             }
         }

@@ -22,7 +22,7 @@ object PaymentCredentials {
         merchantName = Credentials.GOOGLE_PAY_MERCHANT_NAME
     )
 
-    val testCardToken = Credentials.PROD_TEST_CARD_TOKEN_1
+    val testCardToken = Credentials.DEV_TEST_CARD_TOKEN_1
     val errorCardToken = Credentials.ERROR_CARD_TOKEN_1
 
     // this is Google Pay configuration for testing purposes
@@ -34,7 +34,7 @@ object PaymentCredentials {
     )
 
     val merchantsApiKeys = listOf(
-        "0c1b93ff-da7b-4eec-be5c-c5edd0d4fd17",
-        "ef316c93-8dd5-4d86-8366-8174880ec52c"
+        "ce9ac06e-fce8-40ea-b018-3075957fe080",
+        "0e329f16-c617-46f1-aac2-63205153eccc",
     )
 }

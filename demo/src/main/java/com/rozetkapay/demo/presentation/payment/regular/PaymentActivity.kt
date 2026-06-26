@@ -41,7 +41,7 @@ class PaymentActivity : ComponentActivity() {
                     onReset = viewModel::reset,
                     onCheckout = { useToken ->
                         paymentSheet.show(
-                            clientAuthParameters = PaymentCredentials.clientParametersProd,
+                            clientAuthParameters = PaymentCredentials.clientParametersDev,
                             parameters = PaymentParameters(
                                 amountParameters = PaymentParameters.AmountParameters(
                                     amount = state.total,

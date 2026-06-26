@@ -25,7 +25,7 @@ class CardsViewModel : ViewModel() {
     val errorEventsFlow = errorEventsChannel.receiveAsFlow()
 
     val clientWidgetParameters = ClientWidgetParameters(
-        widgetKey = Credentials.PROD_WIDGET_KEY,
+        widgetKey = Credentials.DEV_WIDGET_KEY,
     )
 
     fun tokenizationFinished(result: TokenizationResult) {

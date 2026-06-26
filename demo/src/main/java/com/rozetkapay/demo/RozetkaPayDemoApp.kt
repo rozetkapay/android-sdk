@@ -11,7 +11,7 @@ class RozetkaPayDemoApp : Application() {
         super.onCreate()
         RozetkaPaySdk.init(
             appContext = this,
-            mode = RozetkaPaySdkMode.Production,
+            mode = RozetkaPaySdkMode.Development,
             enableLogging = true,
             validationRules = RozetkaPaySdkValidationRules()
         )

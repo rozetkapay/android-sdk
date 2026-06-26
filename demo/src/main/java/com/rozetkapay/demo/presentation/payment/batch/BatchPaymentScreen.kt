@@ -63,7 +63,7 @@ fun BatchPaymentScreen(
         state = state,
         onCheckout = { useToken ->
             batchPaymentSheet.show(
-                clientAuthParameters = PaymentCredentials.clientParametersProd,
+                clientAuthParameters = PaymentCredentials.clientParametersDev,
                 parameters = BatchPaymentParameters(
                     orders = viewModel.getOrders(),
                     externalId = viewModel.generateBatchExternalId(),
