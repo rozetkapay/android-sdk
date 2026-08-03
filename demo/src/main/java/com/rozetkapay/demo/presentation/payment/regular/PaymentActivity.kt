@@ -9,10 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rozetkapay.demo.presentation.payment.CheckoutOption
 import com.rozetkapay.demo.presentation.payment.PaymentCredentials
 import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoClassicTheme
 import com.rozetkapay.demo.presentation.theme.classicRozetkaPaySdkThemeConfigurator
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
+import com.rozetkapay.sdk.domain.models.payment.GooglePayPayment
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
 import com.rozetkapay.sdk.domain.models.payment.RegularPayment
 import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
@@ -39,7 +41,8 @@ class PaymentActivity : ComponentActivity() {
                     errorsFlow = viewModel.errorEventsFlow,
                     onBack = { finish() },
                     onReset = viewModel::reset,
-                    onCheckout = { useToken ->
+                    themeConfigurator = classicRozetkaPaySdkThemeConfigurator,
+                    onCheckout = { option ->
                         paymentSheet.show(
                             clientAuthParameters = PaymentCredentials.clientParametersDev,
                             parameters = PaymentParameters(
@@ -48,14 +51,18 @@ class PaymentActivity : ComponentActivity() {
                                     currencyCode = "UAH"
                                 ),
                                 externalId = viewModel.generateOrderId(),
-                                paymentType = if (useToken) {
-                                    SingleTokenPayment(
+                                paymentType = when (option) {
+                                    CheckoutOption.TokenizedCard -> SingleTokenPayment(
                                         token = PaymentCredentials.testCardToken,
                                     )
-                                } else {
-                                    RegularPayment(
+
+                                    CheckoutOption.Card -> RegularPayment(
                                         allowTokenization = false,
                                         cardFieldsParameters = CardFieldsParameters(),
+                                        googlePayConfig = PaymentCredentials.testGooglePayConfig,
+                                    )
+
+                                    CheckoutOption.GooglePay -> GooglePayPayment(
                                         googlePayConfig = PaymentCredentials.testGooglePayConfig,
                                     )
                                 }

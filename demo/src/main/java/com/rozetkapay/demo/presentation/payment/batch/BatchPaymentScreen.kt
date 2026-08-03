@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozetkapay.demo.presentation.components.SimpleToolbar
+import com.rozetkapay.demo.presentation.payment.CheckoutOption
 import com.rozetkapay.demo.presentation.payment.GroupedCartItems
 import com.rozetkapay.demo.presentation.payment.PaymentCredentials
 import com.rozetkapay.demo.presentation.payment.PaymentDataProvider
@@ -39,9 +40,12 @@ import com.rozetkapay.demo.presentation.theme.RozetkaPayDemoTheme
 import com.rozetkapay.demo.presentation.util.HandleErrorsFlow
 import com.rozetkapay.sdk.domain.models.CardFieldsParameters
 import com.rozetkapay.sdk.domain.models.payment.BatchPaymentParameters
+import com.rozetkapay.sdk.domain.models.payment.GooglePayPayment
 import com.rozetkapay.sdk.domain.models.payment.RegularPayment
 import com.rozetkapay.sdk.domain.models.payment.SingleTokenPayment
 import com.rozetkapay.sdk.presentation.payment.batch.rememberBatchPaymentSheet
+import com.rozetkapay.sdk.presentation.payment.googlepay.GooglePayButton
+import com.rozetkapay.sdk.presentation.theme.RozetkaPayThemeConfigurator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -61,7 +65,7 @@ fun BatchPaymentScreen(
     BatchPaymentScreenContent(
         onBack = onBack,
         state = state,
-        onCheckout = { useToken ->
+        onCheckout = { option ->
             batchPaymentSheet.show(
                 clientAuthParameters = PaymentCredentials.clientParametersDev,
                 parameters = BatchPaymentParameters(
@@ -69,14 +73,18 @@ fun BatchPaymentScreen(
                     externalId = viewModel.generateBatchExternalId(),
                     currencyCode = "UAH",
                     callbackUrl = "https://example.com/callback",
-                    paymentType = if (useToken) {
-                        SingleTokenPayment(
+                    paymentType = when (option) {
+                        CheckoutOption.TokenizedCard -> SingleTokenPayment(
                             token = PaymentCredentials.testCardToken,
                         )
-                    } else {
-                        RegularPayment(
+
+                        CheckoutOption.Card -> RegularPayment(
                             allowTokenization = true,
                             cardFieldsParameters = CardFieldsParameters(),
+                            googlePayConfig = PaymentCredentials.testGooglePayConfig,
+                        )
+
+                        CheckoutOption.GooglePay -> GooglePayPayment(
                             googlePayConfig = PaymentCredentials.testGooglePayConfig,
                         )
                     }
@@ -92,9 +100,10 @@ fun BatchPaymentScreen(
 fun BatchPaymentScreenContent(
     state: BatchPaymentScreenState,
     onBack: () -> Unit,
-    onCheckout: (useToken: Boolean) -> Unit,
+    onCheckout: (option: CheckoutOption) -> Unit,
     onReset: () -> Unit,
     errorsFlow: Flow<String>,
+    themeConfigurator: RozetkaPayThemeConfigurator = RozetkaPayThemeConfigurator(),
 ) {
     HandleErrorsFlow(errorsFlow = errorsFlow)
     Scaffold(
@@ -114,7 +123,8 @@ fun BatchPaymentScreenContent(
                     BatchPaymentCartScreen(
                         modifier = Modifier.padding(innerPadding),
                         state = state,
-                        onCheckout = onCheckout
+                        onCheckout = onCheckout,
+                        themeConfigurator = themeConfigurator,
                     )
                 }
 
@@ -143,7 +153,8 @@ fun BatchPaymentScreenContent(
 private fun BatchPaymentCartScreen(
     modifier: Modifier,
     state: BatchPaymentScreenState,
-    onCheckout: (useToken: Boolean) -> Unit,
+    onCheckout: (option: CheckoutOption) -> Unit,
+    themeConfigurator: RozetkaPayThemeConfigurator,
 ) {
     Column(
         modifier = modifier
@@ -211,6 +222,18 @@ private fun BatchPaymentCartScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
+        GooglePayButton(
+            modifier = Modifier
+                .padding(
+                    start = 16.dp,
+                    top = 32.dp,
+                    end = 16.dp,
+                )
+                .fillMaxWidth(),
+            googlePayConfig = PaymentCredentials.testGooglePayConfig,
+            themeConfigurator = themeConfigurator,
+            onClick = { onCheckout(CheckoutOption.GooglePay) },
+        )
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -245,7 +268,7 @@ private fun BatchPaymentCartScreen(
                         .fillMaxWidth(),
                     onClick = {
                         onCheckout(
-                            useToken.value
+                            if (useToken.value) CheckoutOption.TokenizedCard else CheckoutOption.Card
                         )
                     }
                 ) {

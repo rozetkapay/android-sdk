@@ -22,6 +22,7 @@ import com.rozetkapay.sdk.domain.models.payment.CardTokenPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.ConfirmPaymentResult
 import com.rozetkapay.sdk.domain.models.payment.CreatePaymentResult
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
+import com.rozetkapay.sdk.domain.models.payment.GooglePayPayment
 import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentParameters
@@ -148,7 +149,13 @@ internal class PaymentViewModel(
 
             CommonStatusCodes.CANCELED -> {
                 Logger.i { "GooglePay process was cancelled by user" }
-                retry()
+                if (parameters.paymentType is GooglePayPayment) {
+                    // there is no card form to fall back to in this mode, so cancelling
+                    // the Google Pay sheet ends the whole payment flow
+                    cancelled()
+                } else {
+                    retry()
+                }
             }
 
             AutoResolveHelper.RESULT_ERROR -> {
@@ -370,7 +377,7 @@ internal class PaymentViewModel(
 
     private fun retry() {
         clearLastPaymentData()
-        when (parameters.paymentType) {
+        when (val type = parameters.paymentType) {
             is RegularPayment -> {
                 _uiState.tryEmit(
                     _uiState.value.copy(
@@ -382,8 +389,32 @@ internal class PaymentViewModel(
             is SingleTokenPayment -> {
                 payWithCardToken(
                     tokenizedCard = TokenizedCard(
-                        token = parameters.paymentType.token
+                        token = type.token
                     )
+                )
+            }
+
+            is GooglePayPayment -> {
+                if (_uiState.value.displayState != PaymentDisplayState.Loading) {
+                    payWithGooglePayDirectly(
+                        googlePayConfig = type.googlePayConfig
+                    )
+                }
+            }
+        }
+    }
+
+    private fun payWithGooglePayDirectly(googlePayConfig: GooglePayConfig) {
+        loading()
+        checkGooglePayParameters(googlePayConfig)
+        viewModelScope.launch {
+            verifyGooglePayReadiness()
+            if (_uiState.value.allowGooglePay) {
+                payWithGooglePay()
+            } else {
+                showError(
+                    message = resourcesProvider.getString(R.string.rozetka_pay_payment_error_google_pay),
+                    throwable = null
                 )
             }
         }
@@ -454,7 +485,11 @@ internal class PaymentViewModel(
                 checkPaymentStatusUseCase = RozetkaPayKoinContext.koin.get(),
                 resourcesProvider = RozetkaPayKoinContext.koin.get(),
                 tokenizeCardUseCase = RozetkaPayKoinContext.koin.get(),
-                googlePayInteractor = (paymentParameters.paymentType as? RegularPayment)?.googlePayConfig?.let { googlePayConfig ->
+                googlePayInteractor = when (val type = paymentParameters.paymentType) {
+                    is RegularPayment -> type.googlePayConfig
+                    is GooglePayPayment -> type.googlePayConfig
+                    is SingleTokenPayment -> null
+                }?.let { googlePayConfig ->
                     GooglePayInteractor(
                         applicationContext = RozetkaPayKoinContext.koin.get(),
                         gateway = googlePayConfig.gateway,

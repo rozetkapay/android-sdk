@@ -16,11 +16,17 @@ internal abstract class PaymentBottomSheetViewModel(
     abstract val uiState: StateFlow<PaymentUiState>
 
     protected suspend fun verifyGooglePayReadiness() {
-        if (googlePayInteractor?.fetchCanUseGooglePay() == true) {
+        val isReady = try {
+            googlePayInteractor?.fetchCanUseGooglePay() == true
+        } catch (e: Exception) {
+            Logger.e(throwable = e) { "Failed to check Google Pay readiness" }
+            false
+        }
+        if (isReady) {
             _uiState.tryEmit(
                 uiState.value.copy(
                     allowGooglePay = true,
-                    googlePayAllowedPaymentMethods = googlePayInteractor.getAllowedPaymentMethods().toString()
+                    googlePayAllowedPaymentMethods = googlePayInteractor?.getAllowedPaymentMethods()?.toString() ?: ""
                 )
             )
         } else {
