@@ -32,3 +32,18 @@ data class RegularPayment(
 data class SingleTokenPayment(
     val token: String,
 ) : PaymentTypeConfiguration
+
+/**
+ * This payment configuration launches the payment flow directly into Google Pay,
+ * skipping the card-form / payment-method-selection UI entirely. Intended to be used
+ * together with the standalone `GooglePayButton` composable
+ * (see `com.rozetkapay.sdk.presentation.payment.googlepay.GooglePayButton`), so that
+ * pressing a Google Pay button placed in the host app's own UI goes straight to the
+ * Google Pay sheet instead of showing the full payment sheet.
+ *
+ * @property googlePayConfig configuration required to complete the Google Pay flow
+ */
+@Parcelize
+data class GooglePayPayment(
+    val googlePayConfig: GooglePayConfig,
+) : PaymentTypeConfiguration
