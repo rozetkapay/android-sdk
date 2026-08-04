@@ -8,6 +8,8 @@ import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
 import com.google.android.gms.wallet.Wallet
 import com.google.android.gms.wallet.WalletConstants
+import com.rozetkapay.sdk.domain.RozetkaPayConfig
+import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.util.Logger
 import kotlinx.coroutines.tasks.await
 import org.json.JSONArray
@@ -15,6 +17,16 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal
 import java.math.RoundingMode
+
+internal fun GooglePayConfig.toInteractor(applicationContext: Context): GooglePayInteractor =
+    GooglePayInteractor(
+        applicationContext = applicationContext,
+        gateway = gateway,
+        merchantId = merchantId,
+        merchantName = merchantName,
+        countryCode = RozetkaPayConfig.GOOGLE_PAY_COUNTRY_CODE,
+        isTestEnvironment = this is GooglePayConfig.Test,
+    )
 
 internal class GooglePayInteractor(
     applicationContext: Context,
