@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.pay.button.ButtonTheme
 import com.google.pay.button.ButtonType
 import com.google.pay.button.PayButton
-import com.rozetkapay.sdk.domain.RozetkaPayConfig
 import com.rozetkapay.sdk.domain.models.payment.GooglePayConfig
 import com.rozetkapay.sdk.presentation.theme.DomainTheme
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
@@ -80,14 +79,7 @@ private fun rememberGooglePayReadiness(
     }
     val applicationContext = LocalContext.current.applicationContext
     val interactor = remember(googlePayConfig) {
-        GooglePayInteractor(
-            applicationContext = applicationContext,
-            gateway = googlePayConfig.gateway,
-            merchantId = googlePayConfig.merchantId,
-            merchantName = googlePayConfig.merchantName,
-            countryCode = RozetkaPayConfig.GOOGLE_PAY_COUNTRY_CODE,
-            isTestEnvironment = googlePayConfig is GooglePayConfig.Test,
-        )
+        googlePayConfig.toInteractor(applicationContext)
     }
     var readiness by remember(interactor) {
         mutableStateOf(GooglePayReadiness(isReady = false, allowedPaymentMethodsJson = ""))
