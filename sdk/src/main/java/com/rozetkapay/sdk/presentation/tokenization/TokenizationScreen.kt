@@ -11,6 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozetkapay.sdk.R
@@ -107,11 +111,18 @@ internal fun TokenizationContent(
         )
         cardFormFooterContent?.invoke()
         Spacer(modifier = Modifier.height(DomainTheme.sizes.mainButtonTopPadding))
+
+        val buttonTestTag = "buttonSave"
+        val buttonText = stingResourcesProvider.saveButtonTitle
         PrimaryButton(
             modifier = Modifier
-                .withResourceId("buttonSave")
+                .withResourceId(buttonTestTag)
+                .semantics(mergeDescendants = true) {
+                    testTag = buttonTestTag
+                    text = AnnotatedString(buttonText)
+                }
                 .fillMaxWidth(),
-            text = stingResourcesProvider.saveButtonTitle,
+            text = buttonText,
             onClick = {
                 val result = cardFormViewModel.parseCardData()
                 if (result is CardParsingResult.Success) {
