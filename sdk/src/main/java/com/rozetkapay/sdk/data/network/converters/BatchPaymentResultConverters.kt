@@ -5,15 +5,18 @@ import com.rozetkapay.sdk.data.network.models.BatchPaymentResultDto
 import com.rozetkapay.sdk.domain.models.payment.BatchOrderPaymentResult
 import com.rozetkapay.sdk.domain.models.payment.CreateBatchPaymentData
 import com.rozetkapay.sdk.domain.models.payment.PaymentStatus
+import com.rozetkapay.sdk.init.RozetkaPayLanguage
 import com.rozetkapay.sdk.util.Logger
 
-internal fun BatchPaymentResultDto.toCreateBatchPaymentData(): CreateBatchPaymentData {
+internal fun BatchPaymentResultDto.toCreateBatchPaymentData(
+    language: RozetkaPayLanguage,
+): CreateBatchPaymentData {
     val firstOrder = this.ordersDetails.first()
     return CreateBatchPaymentData(
         action = this.action?.toAction(),
         status = firstOrder.status.toStatus(),
         statusCode = firstOrder.statusCode,
-        statusDescription = firstOrder.statusDescription,
+        statusDescription = firstOrder.resolveDescription(language = language),
         ordersPayments = this.ordersDetails.map { it.toBatchOrderPaymentResult() }
     )
 }

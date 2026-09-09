@@ -1,5 +1,6 @@
 package com.rozetkapay.sdk.data.network
 
+import com.rozetkapay.sdk.RozetkaPaySdk
 import com.rozetkapay.sdk.data.network.converters.toBatchPaymentRequestDto
 import com.rozetkapay.sdk.data.network.converters.toCheckPaymentData
 import com.rozetkapay.sdk.data.network.converters.toCreateBatchPaymentData
@@ -23,7 +24,10 @@ import com.rozetkapay.sdk.domain.models.payment.GooglePayPaymentRequest
 import com.rozetkapay.sdk.domain.models.payment.PaymentDetails
 import com.rozetkapay.sdk.domain.models.payment.PaymentRequest
 import com.rozetkapay.sdk.domain.repository.PaymentsRepository
+import com.rozetkapay.sdk.domain.repository.ResourcesProvider
+import com.rozetkapay.sdk.init.RozetkaPayLanguage
 import com.rozetkapay.sdk.util.Logger
+import com.rozetkapay.sdk.util.resolveEffective
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -42,7 +46,11 @@ import kotlinx.coroutines.withContext
 internal class ApiPaymentsRepository(
     private val apiProvider: ApiProvider,
     private val httpClient: HttpClient,
+    private val resourcesProvider: ResourcesProvider,
 ) : PaymentsRepository {
+
+    private val language: RozetkaPayLanguage
+        get() = RozetkaPaySdk.apiLanguage.resolveEffective(resourcesProvider.getCurrentLocale())
 
     // regular payments
 
@@ -76,7 +84,7 @@ internal class ApiPaymentsRepository(
         return if (response.status.isSuccess()) {
             Logger.d { "Create payment - API request - success" }
             val result = response.body<PaymentResultDto>()
-            result.toCreatePaymentData()
+            result.toCreatePaymentData(language = language)
         } else {
             Logger.d { "Create payment - API request - error" }
             response.handlePaymentApiError()
@@ -115,7 +123,7 @@ internal class ApiPaymentsRepository(
         return if (response.status.isSuccess()) {
             Logger.d { "Create batch payment - API request - success" }
             val result = response.body<BatchPaymentResultDto>()
-            result.toCreateBatchPaymentData()
+            result.toCreateBatchPaymentData(language = language)
         } else {
             Logger.d { "Create batch payment - API request - error" }
             response.handlePaymentApiError()
@@ -145,7 +153,7 @@ internal class ApiPaymentsRepository(
             } else {
                 result.details.firstOrNull { it.paymentId == paymentId }
             }
-            details?.toCheckPaymentData() ?: throw RozetkaPayPaymentException(
+            details?.toCheckPaymentData(language = language) ?: throw RozetkaPayPaymentException(
                 code = "failure",
                 errorMessage = "Payment with id $paymentId not found in purchase details of order $externalId",
             )
@@ -170,7 +178,7 @@ internal class ApiPaymentsRepository(
         return if (response.status.isSuccess()) {
             Logger.d { "Check batch payment API request success" }
             val details = response.body<BatchPaymentStatusDto>()
-            details.toCheckPaymentData()
+            details.toCheckPaymentData(language = language)
         } else {
             Logger.d { "Check payment API request error" }
             response.handlePaymentApiError()

@@ -2,6 +2,7 @@ package com.rozetkapay.sdk
 
 import android.content.Context
 import android.util.Log
+import com.rozetkapay.sdk.init.RozetkaPayLanguage
 import com.rozetkapay.sdk.init.RozetkaPaySdkMode
 import com.rozetkapay.sdk.init.RozetkaPaySdkValidationRules
 import com.rozetkapay.sdk.util.Logger
@@ -19,18 +20,21 @@ object RozetkaPaySdk {
     internal var isInitialized: Boolean = false
     internal var isLoggingEnabled: Boolean = false
     internal var validationRules: RozetkaPaySdkValidationRules = RozetkaPaySdkValidationRules()
+    internal var apiLanguage: RozetkaPayLanguage = RozetkaPayLanguage.System
 
     fun init(
         appContext: Context,
         mode: RozetkaPaySdkMode = RozetkaPaySdkMode.Production,
         enableLogging: Boolean = false,
         validationRules: RozetkaPaySdkValidationRules = RozetkaPaySdkValidationRules(),
+        apiLanguage: RozetkaPayLanguage = RozetkaPayLanguage.System,
     ) {
         this._appContext = appContext
         this.mode = mode
         this.isInitialized = true
         this.isLoggingEnabled = enableLogging
         this.validationRules = validationRules
+        this.apiLanguage = apiLanguage
         checkParameters()
     }
 

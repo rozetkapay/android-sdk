@@ -26,8 +26,12 @@ internal data class BatchPaymentOrderResultDetailsDto(
     @SerialName("status_code")
     val statusCode: String?,
     @SerialName("status_description")
-    val statusDescription: String?,
-)
+    override val statusDescription: String?,
+    @SerialName("status_description_en")
+    override val statusDescriptionEn: String?,
+    @SerialName("status_description_uk")
+    override val statusDescriptionUk: String?,
+) : LocalizedStatusDescription
 
 @Serializable
 internal data class BatchPaymentStatusDto(
@@ -38,5 +42,9 @@ internal data class BatchPaymentStatusDto(
     @SerialName("status_code")
     val statusCode: String?,
     @SerialName("status_description")
-    val statusDescription: String?,
-)
+    override val statusDescription: String?,
+    @SerialName("status_description_en")
+    override val statusDescriptionEn: String?,
+    @SerialName("status_description_uk")
+    override val statusDescriptionUk: String?,
+) : LocalizedStatusDescription
