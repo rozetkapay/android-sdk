@@ -88,7 +88,8 @@ internal val repositoryModule = module {
     single<PaymentsRepository> {
         ApiPaymentsRepository(
             apiProvider = get(),
-            httpClient = get()
+            httpClient = get(),
+            resourcesProvider = get()
         )
     }
 }

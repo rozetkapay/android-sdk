@@ -22,5 +22,9 @@ internal data class PaymentResultDetailsDto(
     @SerialName("status_code")
     val statusCode: String?,
     @SerialName("status_description")
-    val statusDescription: String?,
-)
+    override val statusDescription: String?,
+    @SerialName("status_description_en")
+    override val statusDescriptionEn: String?,
+    @SerialName("status_description_uk")
+    override val statusDescriptionUk: String?,
+) : LocalizedStatusDescription
