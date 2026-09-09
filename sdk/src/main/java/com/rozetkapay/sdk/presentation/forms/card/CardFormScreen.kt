@@ -29,6 +29,7 @@ import com.rozetkapay.sdk.presentation.components.FormTextField
 import com.rozetkapay.sdk.presentation.components.Subtitle
 import com.rozetkapay.sdk.presentation.theme.RozetkaPayTheme
 import com.rozetkapay.sdk.presentation.util.withResourceId
+import java.util.Locale
 
 @Composable
 internal fun CardFormScreen(
@@ -138,6 +139,10 @@ internal val MOCK_CARD_FORM_VIEWMODEL = CardFormViewModel(
         resourcesProvider = object : ResourcesProvider {
             override fun getString(stringResId: Int, vararg formatArgs: Any): String {
                 return "string"
+            }
+
+            override fun getCurrentLocale(): Locale {
+                return Locale.ENGLISH
             }
         }
     ),

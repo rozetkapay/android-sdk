@@ -53,6 +53,7 @@ import com.rozetkapay.sdk.presentation.tokenization.TokenizationViewModel
 import com.rozetkapay.sdk.presentation.tokenization.rememberDefaultTokenizationStringResourcesProvider
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import java.util.Locale
 
 @Composable
 fun TokenizationForm(
@@ -196,6 +197,10 @@ private fun previewTokenizationViewModel(
         override fun getString(stringResId: Int, vararg formatArgs: Any): String {
             return "preview string"
         }
+
+        override fun getCurrentLocale(): Locale {
+            return Locale.ENGLISH
+        }
     },
 )
 
@@ -238,6 +243,10 @@ private fun previewCardFormViewModel(
         resourcesProvider = object : ResourcesProvider {
             override fun getString(stringResId: Int, vararg formatArgs: Any): String {
                 return "preview string"
+            }
+
+            override fun getCurrentLocale(): Locale {
+                return Locale.ENGLISH
             }
         },
     ),
